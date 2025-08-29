@@ -12,13 +12,15 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DemosIndexRouteImport } from './routes/demos/index'
-import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as Demos_layoutRouteImport } from './routes/demos/__layout'
 import { Route as DemosDemoIdRouteImport } from './routes/demos/$demoId'
-import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
+import { Route as authRegisterRouteImport } from './routes/(auth)/register'
+import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as appDashboardRouteRouteImport } from './routes/(app)/dashboard/route'
+import { Route as appDashboardIndexRouteImport } from './routes/(app)/dashboard/index'
+import { Route as appDashboardSettingsRouteImport } from './routes/(app)/dashboard/settings'
 
 const DemosRouteImport = createFileRoute('/demos')()
 
@@ -32,11 +34,6 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardRouteRoute = DashboardRouteRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -47,11 +44,6 @@ const DemosIndexRoute = DemosIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DemosRoute,
 } as any)
-const DashboardIndexRoute = DashboardIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
 const Demos_layoutRoute = Demos_layoutRouteImport.update({
   id: '/__layout',
   getParentRoute: () => DemosRoute,
@@ -61,78 +53,112 @@ const DemosDemoIdRoute = DemosDemoIdRouteImport.update({
   path: '/demos/$demoId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+const authRegisterRoute = authRegisterRouteImport.update({
+  id: '/(auth)/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authLoginRoute = authLoginRouteImport.update({
+  id: '/(auth)/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const appDashboardRouteRoute = appDashboardRouteRouteImport.update({
+  id: '/(app)/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const appDashboardIndexRoute = appDashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => appDashboardRouteRoute,
+} as any)
+const appDashboardSettingsRoute = appDashboardSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => DashboardRouteRoute,
+  getParentRoute: () => appDashboardRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/about': typeof AboutRoute
-  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard': typeof appDashboardRouteRouteWithChildren
+  '/login': typeof authLoginRoute
+  '/register': typeof authRegisterRoute
   '/demos/$demoId': typeof DemosDemoIdRoute
   '/demos': typeof Demos_layoutRoute
-  '/dashboard/': typeof DashboardIndexRoute
   '/demos/': typeof DemosIndexRoute
+  '/dashboard/settings': typeof appDashboardSettingsRoute
+  '/dashboard/': typeof appDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/login': typeof authLoginRoute
+  '/register': typeof authRegisterRoute
   '/demos/$demoId': typeof DemosDemoIdRoute
   '/demos': typeof DemosIndexRoute
-  '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/settings': typeof appDashboardSettingsRoute
+  '/dashboard': typeof appDashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/about': typeof AboutRoute
-  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/(app)/dashboard': typeof appDashboardRouteRouteWithChildren
+  '/(auth)/login': typeof authLoginRoute
+  '/(auth)/register': typeof authRegisterRoute
   '/demos/$demoId': typeof DemosDemoIdRoute
   '/demos': typeof DemosRouteWithChildren
   '/demos/__layout': typeof Demos_layoutRoute
-  '/dashboard/': typeof DashboardIndexRoute
   '/demos/': typeof DemosIndexRoute
+  '/(app)/dashboard/settings': typeof appDashboardSettingsRoute
+  '/(app)/dashboard/': typeof appDashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/dashboard'
     | '/about'
-    | '/dashboard/settings'
+    | '/dashboard'
+    | '/login'
+    | '/register'
     | '/demos/$demoId'
     | '/demos'
-    | '/dashboard/'
     | '/demos/'
+    | '/dashboard/settings'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/dashboard/settings'
+    | '/login'
+    | '/register'
     | '/demos/$demoId'
     | '/demos'
+    | '/dashboard/settings'
     | '/dashboard'
   id:
     | '__root__'
     | '/'
-    | '/dashboard'
     | '/about'
-    | '/dashboard/settings'
+    | '/(app)/dashboard'
+    | '/(auth)/login'
+    | '/(auth)/register'
     | '/demos/$demoId'
     | '/demos'
     | '/demos/__layout'
-    | '/dashboard/'
     | '/demos/'
+    | '/(app)/dashboard/settings'
+    | '/(app)/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  appDashboardRouteRoute: typeof appDashboardRouteRouteWithChildren
+  authLoginRoute: typeof authLoginRoute
+  authRegisterRoute: typeof authRegisterRoute
   DemosDemoIdRoute: typeof DemosDemoIdRoute
   DemosRoute: typeof DemosRouteWithChildren
 }
@@ -153,13 +179,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -173,13 +192,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/demos/'
       preLoaderRoute: typeof DemosIndexRouteImport
       parentRoute: typeof DemosRoute
-    }
-    '/dashboard/': {
-      id: '/dashboard/'
-      path: '/'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof DashboardIndexRouteImport
-      parentRoute: typeof DashboardRouteRoute
     }
     '/demos/__layout': {
       id: '/demos/__layout'
@@ -195,29 +207,56 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemosDemoIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/settings': {
-      id: '/dashboard/settings'
+    '/(auth)/register': {
+      id: '/(auth)/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof authRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/login': {
+      id: '/(auth)/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(app)/dashboard': {
+      id: '/(app)/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof appDashboardRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(app)/dashboard/': {
+      id: '/(app)/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof appDashboardIndexRouteImport
+      parentRoute: typeof appDashboardRouteRoute
+    }
+    '/(app)/dashboard/settings': {
+      id: '/(app)/dashboard/settings'
       path: '/settings'
       fullPath: '/dashboard/settings'
-      preLoaderRoute: typeof DashboardSettingsRouteImport
-      parentRoute: typeof DashboardRouteRoute
+      preLoaderRoute: typeof appDashboardSettingsRouteImport
+      parentRoute: typeof appDashboardRouteRoute
     }
   }
 }
 
-interface DashboardRouteRouteChildren {
-  DashboardSettingsRoute: typeof DashboardSettingsRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
+interface appDashboardRouteRouteChildren {
+  appDashboardSettingsRoute: typeof appDashboardSettingsRoute
+  appDashboardIndexRoute: typeof appDashboardIndexRoute
 }
 
-const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
-  DashboardSettingsRoute: DashboardSettingsRoute,
-  DashboardIndexRoute: DashboardIndexRoute,
+const appDashboardRouteRouteChildren: appDashboardRouteRouteChildren = {
+  appDashboardSettingsRoute: appDashboardSettingsRoute,
+  appDashboardIndexRoute: appDashboardIndexRoute,
 }
 
-const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
-  DashboardRouteRouteChildren,
-)
+const appDashboardRouteRouteWithChildren =
+  appDashboardRouteRoute._addFileChildren(appDashboardRouteRouteChildren)
 
 interface DemosRouteChildren {
   Demos_layoutRoute: typeof Demos_layoutRoute
@@ -233,8 +272,10 @@ const DemosRouteWithChildren = DemosRoute._addFileChildren(DemosRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRouteRoute: DashboardRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  appDashboardRouteRoute: appDashboardRouteRouteWithChildren,
+  authLoginRoute: authLoginRoute,
+  authRegisterRoute: authRegisterRoute,
   DemosDemoIdRoute: DemosDemoIdRoute,
   DemosRoute: DemosRouteWithChildren,
 }

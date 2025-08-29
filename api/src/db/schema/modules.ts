@@ -1,4 +1,4 @@
-import { date, integer, pgEnum, pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { date, integer, pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { access } from "./access";
 
