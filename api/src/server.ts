@@ -2,11 +2,12 @@ import "dotenv/config";
 import express, { Request, Response } from "express";
 import apiRouter from "./api-routes";
 import { ENV } from "./config/env";
-
+import cookieParser from "cookie-parser";
 const app = express();
 
 const PORT = ENV.PORT;
 
+app.use(cookieParser());
 app.use(express.json());
 
 // Routes

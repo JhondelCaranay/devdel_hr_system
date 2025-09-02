@@ -4,6 +4,8 @@ import { users } from "./users";
 
 export const credentialsStatusEnum = pgEnum("credentials_status", ["active", "inactive"]);
 
+export type ICredentialStatus = (typeof credentialsStatusEnum.enumValues)[number];
+
 export const credentials = pgTable("credentials", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   uuid: uuid().defaultRandom().notNull(),
