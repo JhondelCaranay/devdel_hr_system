@@ -51,15 +51,11 @@ export const validator =
         }
         req.params = result.data;
       }
-      console.log("Unexpected validation error:");
       next();
     } catch (err) {
       if (err instanceof ZodError) {
-        console.log("Zod validation error:", err);
-
         return res.status(400).json(err.flatten().fieldErrors);
       }
-      console.log("Unexpected validation error:", err);
       next(err);
     }
   };

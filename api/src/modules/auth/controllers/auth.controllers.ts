@@ -59,7 +59,11 @@ export const login = async (req: Request<{}, {}, ILogin>, res: Response) => {
 
   setJwtCookies(res, access, refresh);
 
-  return res.status(200).json({ message: "Login successful", accessToken: access });
+  const permission = await authService.getUserAccess(existingUser.users.id);
+
+  const formattedPermissions = permission.map((perm) => perm.code);
+
+  return res.status(200).json({ message: "Login successful", accessToken: access, permissions: formattedPermissions });
 };
 
 export const logout = async (req: Request, res: Response) => {
@@ -93,5 +97,11 @@ export const getMe = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "User not found" });
   }
 
-  return res.status(200).json({ user: existingUser.users });
+  return res.status(200).json(existingUser.users);
+};
+
+export const getMyAccess = async (req: Request, res: Response) => {
+  const userId = req.user?.userId;
+  const access = await authService.getUserAccess(userId!);
+  return res.status(200).json(access);
 };

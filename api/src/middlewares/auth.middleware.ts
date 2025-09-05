@@ -24,11 +24,12 @@ export const authenticate = async (req: AuthRequest, res: Response, next: NextFu
     const comparedTokens = await compareTokens(token, accessToken);
 
     if (!comparedTokens) {
+      res.clearCookie("accessToken");
+      res.clearCookie("refreshToken");
       return res.status(401).json({ message: "Token mismatch" });
     }
 
     const decoded = await generateDecodedToken(token);
-    console.log("Decoded Token:", decoded);
     req.user = decoded as JWT;
     next();
   } catch (error) {

@@ -29,4 +29,6 @@ router.post("/refresh-token", authenticate, authController.refreshToken);
 
 router.get("/me", authenticate, permission("post:create_post"), authController.getMe);
 
+router.get("/my-permissions", authenticate, authController.getMyAccess);
+
 export default router;

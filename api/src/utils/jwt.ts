@@ -29,9 +29,20 @@ const setJwtCookie = (res: Response, key: string, token: string, age: number): v
   });
 };
 
+// const setJwtCookies = (res: Response, accessToken: string, refreshToken: string): void => {
+//   // 1 day = 24 * 60 * 60 * 1000 ms
+//   setJwtCookie(res, "accessToken", accessToken, 24 * 60 * 60 * 1000);
+
+//   // 7 days = 7 * 24 * 60 * 60 * 1000 ms
+//   setJwtCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000);
+// };
+
 const setJwtCookies = (res: Response, accessToken: string, refreshToken: string): void => {
-  setJwtCookie(res, "accessToken", accessToken, 1 * 60 * 60 * 1000); // 1 hour
-  setJwtCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000); // 7 days
+  // 10 minutes = 10 * 60 * 1000 ms
+  setJwtCookie(res, "accessToken", accessToken, 10 * 60 * 1000);
+
+  // 3 days = 3 * 24 * 60 * 60 * 1000 ms
+  setJwtCookie(res, "refreshToken", refreshToken, 3 * 24 * 60 * 60 * 1000);
 };
 
 const generateDecodedToken = async (token: string) => {
