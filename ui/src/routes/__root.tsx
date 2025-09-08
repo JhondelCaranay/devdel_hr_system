@@ -1,7 +1,12 @@
-import { createRootRoute, HeadContent, Outlet } from "@tanstack/react-router";
+import type { AuthState } from "@/context/auth-context";
+import { createRootRouteWithContext, HeadContent, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
-export const Route = createRootRoute({
+interface MyRouterContext {
+  auth: AuthState;
+}
+
+export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
     meta: [
       {
@@ -14,14 +19,10 @@ export const Route = createRootRoute({
     ],
   }),
   component: () => (
-    <html>
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <Outlet />
-      </body>
+    <>
+      <HeadContent />
+      <Outlet />
       <TanStackRouterDevtools />
-    </html>
+    </>
   ),
 });

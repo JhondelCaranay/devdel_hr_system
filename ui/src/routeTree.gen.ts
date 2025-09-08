@@ -11,6 +11,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -28,6 +29,11 @@ const DemosRouteImport = createFileRoute('/demos')()
 const DemosRoute = DemosRouteImport.update({
   id: '/demos',
   path: '/demos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnauthorizedRoute = UnauthorizedRouteImport.update({
+  id: '/unauthorized',
+  path: '/unauthorized',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -87,6 +93,7 @@ const appDashboardSettingsRoute = appDashboardSettingsRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof authRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/unauthorized': typeof UnauthorizedRoute
   '/dashboard': typeof appDashboardRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof authRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/unauthorized': typeof UnauthorizedRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/demos/$demoId': typeof DemosDemoIdRoute
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/(auth)': typeof authRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/unauthorized': typeof UnauthorizedRoute
   '/(app)/dashboard': typeof appDashboardRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
@@ -126,6 +135,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/unauthorized'
     | '/dashboard'
     | '/login'
     | '/register'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/unauthorized'
     | '/login'
     | '/register'
     | '/demos/$demoId'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/'
     | '/(auth)'
     | '/about'
+    | '/unauthorized'
     | '/(app)/dashboard'
     | '/(auth)/login'
     | '/(auth)/register'
@@ -164,6 +176,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   authRouteRoute: typeof authRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  UnauthorizedRoute: typeof UnauthorizedRoute
   appDashboardRouteRoute: typeof appDashboardRouteRouteWithChildren
   DemosDemoIdRoute: typeof DemosDemoIdRoute
   DemosRoute: typeof DemosRouteWithChildren
@@ -176,6 +189,13 @@ declare module '@tanstack/react-router' {
       path: '/demos'
       fullPath: '/demos'
       preLoaderRoute: typeof DemosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/unauthorized': {
+      id: '/unauthorized'
+      path: '/unauthorized'
+      fullPath: '/unauthorized'
+      preLoaderRoute: typeof UnauthorizedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -301,6 +321,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   authRouteRoute: authRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  UnauthorizedRoute: UnauthorizedRoute,
   appDashboardRouteRoute: appDashboardRouteRouteWithChildren,
   DemosDemoIdRoute: DemosDemoIdRoute,
   DemosRoute: DemosRouteWithChildren,

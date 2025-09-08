@@ -63,7 +63,15 @@ export const login = async (req: Request<{}, {}, ILogin>, res: Response) => {
 
   const formattedPermissions = permission.map((perm) => perm.code);
 
-  return res.status(200).json({ message: "Login successful", accessToken: access, permissions: formattedPermissions });
+  return res.status(200).json({
+    message: "Login successful",
+    id: existingUser.users.id,
+    username: existingUser.credentials.username,
+    email: existingUser.users.email,
+    role: existingUser.roles.name,
+    accessToken: access,
+    permissions: formattedPermissions,
+  });
 };
 
 export const logout = async (req: Request, res: Response) => {
@@ -85,7 +93,19 @@ export const refreshToken = async (req: Request, res: Response) => {
 
   setJwtCookies(res, access, refresh);
 
-  return res.status(200).json({ message: "Token refreshed", accessToken: access });
+  const permission = await authService.getUserAccess(existingUser.users.id);
+
+  const formattedPermissions = permission.map((perm) => perm.code);
+
+  return res.status(200).json({
+    message: "Token refreshed",
+    id: existingUser.users.id,
+    username: existingUser.credentials.username,
+    email: existingUser.users.email,
+    role: existingUser.roles.name,
+    accessToken: access,
+    permissions: formattedPermissions,
+  });
 };
 
 export const getMe = async (req: Request, res: Response) => {

@@ -8,6 +8,7 @@ export const findUserByEmailOrUsername = async (email: string, username: string)
     .select()
     .from(users)
     .innerJoin(credentials, eq(users.id, credentials.user_id))
+    .innerJoin(roles, eq(users.role_id, roles.id))
     .where(or(eq(users.email, email), eq(credentials.username, username)));
   return user;
 };
@@ -17,6 +18,7 @@ export const findUserById = async (id: number) => {
     .select()
     .from(users)
     .innerJoin(credentials, eq(users.id, credentials.user_id))
+    .innerJoin(roles, eq(users.role_id, roles.id))
     .where(eq(users.id, id));
   return user;
 };
