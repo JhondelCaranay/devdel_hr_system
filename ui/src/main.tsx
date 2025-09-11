@@ -1,4 +1,4 @@
-import React, { StrictMode, useEffect } from "react";
+import { StrictMode, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import "./index.css";

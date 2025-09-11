@@ -13,6 +13,7 @@ export interface AuthState {
   user: AuthUser | null;
   hasRole: (role: string) => boolean;
   hasAnyRole: (roles: string[]) => boolean;
+  hasAllRoles: (roles: string[]) => boolean;
   hasPermission: (permission: string) => boolean;
   hasAnyPermission: (permissions: string[]) => boolean;
   hasAllPermissions: (permissions: string[]) => boolean;

@@ -23,6 +23,7 @@ import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as appDashboardRouteRouteImport } from './routes/(app)/dashboard/route'
 import { Route as appDashboardIndexRouteImport } from './routes/(app)/dashboard/index'
 import { Route as appDashboardSettingsRouteImport } from './routes/(app)/dashboard/settings'
+import { Route as appDashboardEmployeesIndexRouteImport } from './routes/(app)/dashboard/employees/index'
 
 const DemosRouteImport = createFileRoute('/demos')()
 
@@ -89,6 +90,12 @@ const appDashboardSettingsRoute = appDashboardSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => appDashboardRouteRoute,
 } as any)
+const appDashboardEmployeesIndexRoute =
+  appDashboardEmployeesIndexRouteImport.update({
+    id: '/employees/',
+    path: '/employees/',
+    getParentRoute: () => appDashboardRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof authRouteRouteWithChildren
@@ -102,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/demos/': typeof DemosIndexRoute
   '/dashboard/settings': typeof appDashboardSettingsRoute
   '/dashboard/': typeof appDashboardIndexRoute
+  '/dashboard/employees': typeof appDashboardEmployeesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof authRouteRouteWithChildren
@@ -113,6 +121,7 @@ export interface FileRoutesByTo {
   '/demos': typeof DemosIndexRoute
   '/dashboard/settings': typeof appDashboardSettingsRoute
   '/dashboard': typeof appDashboardIndexRoute
+  '/dashboard/employees': typeof appDashboardEmployeesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -129,6 +138,7 @@ export interface FileRoutesById {
   '/demos/': typeof DemosIndexRoute
   '/(app)/dashboard/settings': typeof appDashboardSettingsRoute
   '/(app)/dashboard/': typeof appDashboardIndexRoute
+  '/(app)/dashboard/employees/': typeof appDashboardEmployeesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
     | '/demos/'
     | '/dashboard/settings'
     | '/dashboard/'
+    | '/dashboard/employees'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/demos'
     | '/dashboard/settings'
     | '/dashboard'
+    | '/dashboard/employees'
   id:
     | '__root__'
     | '/'
@@ -170,6 +182,7 @@ export interface FileRouteTypes {
     | '/demos/'
     | '/(app)/dashboard/settings'
     | '/(app)/dashboard/'
+    | '/(app)/dashboard/employees/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -275,6 +288,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appDashboardSettingsRouteImport
       parentRoute: typeof appDashboardRouteRoute
     }
+    '/(app)/dashboard/employees/': {
+      id: '/(app)/dashboard/employees/'
+      path: '/employees'
+      fullPath: '/dashboard/employees'
+      preLoaderRoute: typeof appDashboardEmployeesIndexRouteImport
+      parentRoute: typeof appDashboardRouteRoute
+    }
   }
 }
 
@@ -295,11 +315,13 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
 interface appDashboardRouteRouteChildren {
   appDashboardSettingsRoute: typeof appDashboardSettingsRoute
   appDashboardIndexRoute: typeof appDashboardIndexRoute
+  appDashboardEmployeesIndexRoute: typeof appDashboardEmployeesIndexRoute
 }
 
 const appDashboardRouteRouteChildren: appDashboardRouteRouteChildren = {
   appDashboardSettingsRoute: appDashboardSettingsRoute,
   appDashboardIndexRoute: appDashboardIndexRoute,
+  appDashboardEmployeesIndexRoute: appDashboardEmployeesIndexRoute,
 }
 
 const appDashboardRouteRouteWithChildren =

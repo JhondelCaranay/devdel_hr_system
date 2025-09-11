@@ -1,18 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
-  beforeLoad: ({ context, location }) => {
-    if (!context.auth.isAuthenticated) {
-      console.log(context.auth);
-      throw redirect({
-        to: "/login",
-        search: {
-          redirect: location.href,
-        },
-      });
-    }
-  },
+  // beforeLoad: ({ context, location }) => {
+  //   requireAuth(context.auth, location.href);
+  // },
   component: Index,
 });
 

@@ -15,6 +15,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const hasRole = (role: string) => user?.role.includes(role) ?? false;
   const hasAnyRole = (roles: string[]) => roles.some((r) => user?.role.includes(r)) ?? false;
+  const hasAllRoles = (roles: string[]) => roles.every((r) => user?.role.includes(r)) ?? false;
   const hasPermission = (permission: string) => user?.permissions.includes(permission) ?? false;
   const hasAnyPermission = (permissions: string[]) => permissions.some((p) => user?.permissions.includes(p)) ?? false;
   const hasAllPermissions = (permissions: string[]) => permissions.every((p) => user?.permissions.includes(p)) ?? false;
@@ -46,6 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         hasRole,
         hasAnyRole,
+        hasAllRoles,
         hasPermission,
         hasAnyPermission,
         hasAllPermissions,
