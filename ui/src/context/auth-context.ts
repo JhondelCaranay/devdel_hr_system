@@ -17,7 +17,7 @@ export interface AuthState {
   hasPermission: (permission: string) => boolean;
   hasAnyPermission: (permissions: string[]) => boolean;
   hasAllPermissions: (permissions: string[]) => boolean;
-  login: (data: AuthUser) => Promise<void>;
+  login: (data: AuthUser, jwt: string) => Promise<void>;
   logout: () => void;
 }
 

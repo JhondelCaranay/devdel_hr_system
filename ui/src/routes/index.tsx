@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
+import { requireAuth } from "@/lib/auth-guards";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
-  // beforeLoad: ({ context, location }) => {
-  //   requireAuth(context.auth, location.href);
-  // },
+  beforeLoad: ({ context, location }) => {
+    requireAuth(context.auth, location.href);
+  },
   component: Index,
 });
 

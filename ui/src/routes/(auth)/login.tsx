@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import LoginForm, { type LoginFormValues } from "@/components/features/auth/ui/login-form";
-import apiClient from "@/lib/axios";
+import { apiClient } from "@/lib/axios";
 
 export const Route = createFileRoute("/(auth)/login")({
   component: RouteComponent,
@@ -14,23 +14,23 @@ function RouteComponent() {
 
   async function onSubmit(values: LoginFormValues) {
     try {
-      const data = await apiClient.post("/auth/login", {
+      const { data } = await apiClient.post("/auth/login", {
         username: values.username,
         password: values.password,
       });
 
       const userData = {
-        id: data.data.id,
-        username: data.data.username,
-        email: data.data.email,
-        role: data.data.role,
-        permissions: data.data.permissions,
+        id: data.id,
+        username: data.username,
+        email: data.email,
+        role: data.role,
+        permissions: data.permissions,
       };
 
-      await auth.login(userData);
+      await auth.login(userData, data.accessToken);
 
       navigate({
-        to: "/",
+        to: "/dashboard",
       });
     } catch {
       alert("Login failed. Please check your credentials and try again.");
@@ -59,9 +59,6 @@ function RouteComponent() {
             </a>
           </div>
         </CardContent>
-        <pre>
-          <code>{JSON.stringify({ isAuthenticated: auth.isAuthenticated, user: auth.user }, null, 2)}</code>
-        </pre>
       </Card>
     </div>
   );

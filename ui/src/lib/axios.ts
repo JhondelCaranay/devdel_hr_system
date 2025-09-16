@@ -1,50 +1,39 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// apiClient.ts
-import axios, { AxiosError, type AxiosRequestConfig, type InternalAxiosRequestConfig } from "axios";
-
-const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL + "/api", // 👈 dynamic from env
-  withCredentials: true,
+import axios from "axios";
+export const apiClient = axios.create({
+  baseURL: "/api",
+  withCredentials: true, // include cookies with requests
 });
 
-let isRefreshing = false;
-let failedQueue: {
-  resolve: (token: string) => void;
-  reject: (err: any) => void;
-}[] = [];
-
-const processQueue = (error: any, token: string | null = null) => {
-  failedQueue.forEach((prom) => {
-    if (error) prom.reject(error);
-    else if (token) prom.resolve(token);
-  });
-  failedQueue = [];
-};
-
 // Request interceptor
-apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = localStorage.getItem("accessToken");
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("jwt");
+  if (token) {
+    config.headers.Authorization = `Bearer ${JSON.parse(token)}`;
   }
   return config;
 });
 
+// Flag to prevent multiple refresh requests at once
+let isRefreshing = false;
+let refreshSubscribers: ((token: string) => void)[] = [];
+
+function onRefreshed(token: string) {
+  refreshSubscribers.forEach((cb) => cb(token));
+  refreshSubscribers = [];
+}
+
 // Response interceptor
 apiClient.interceptors.response.use(
   (response) => response,
-  async (error: AxiosError) => {
-    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
+  async (error) => {
+    const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry && error.response?.data.message == "Expired token") {
       if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({
-            resolve: (token: string) => {
-              if (originalRequest.headers) originalRequest.headers.Authorization = `Bearer ${token}`;
-              resolve(apiClient(originalRequest));
-            },
-            reject,
+        return new Promise((resolve) => {
+          refreshSubscribers.push((token: string) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            resolve(apiClient(originalRequest));
           });
         });
       }
@@ -53,29 +42,36 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { data } = await axios.post(
-          import.meta.env.VITE_API_BASE_URL + "/api/refresh-token", // 👈 use env here too
-          {},
-          { withCredentials: true }
-        );
+        // Call refresh-token API
+        const res = await apiClient.post("/auth/refresh-token"); // if this is 401 the code below is not read
+        const newToken = res.data.accessToken;
 
-        const newToken = data.accessToken;
-        localStorage.setItem("accessToken", newToken);
-        apiClient.defaults.headers.common.Authorization = `Bearer ${newToken}`;
+        // Save new token
+        localStorage.setItem("jwt", JSON.stringify(newToken));
 
-        processQueue(null, newToken);
+        // Update failed requests with new token
+        onRefreshed(newToken);
+        // Retry original request
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return apiClient(originalRequest);
       } catch (refreshError) {
-        processQueue(refreshError, null);
-        localStorage.removeItem("accessToken");
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
       }
     }
 
+    if (error.response?.status === 401 && error.response?.data.message == "Expired refresh token") {
+      clearAuth();
+    }
     return Promise.reject(error);
   }
 );
 
 export default apiClient;
+
+export const clearAuth = () => {
+  localStorage.removeItem("authUser");
+  localStorage.removeItem("jwt");
+  window.location.href = "/login";
+};

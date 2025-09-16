@@ -2,8 +2,12 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/customs/app-sidebar";
 import { useSidebarState } from "@/hooks/use-sidebar-state";
+import { requireAuth } from "@/lib/auth-guards";
 
 export const Route = createFileRoute("/(app)/dashboard")({
+  beforeLoad: ({ context, location }) => {
+    requireAuth(context.auth, location.href);
+  },
   component: RouteComponent,
   notFoundComponent: () => {
     return <p>This setting page doesn't exist!</p>;

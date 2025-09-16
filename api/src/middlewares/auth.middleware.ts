@@ -1,5 +1,6 @@
+import { refreshToken } from "./../modules/auth/controllers/auth.controllers";
 import { JWT } from "@/types";
-import { compareTokens, generateDecodedToken } from "@/utils/jwt";
+import { compareTokens, generateDecodedRefreshToken, generateDecodedToken } from "@/utils/jwt";
 import { Request, Response, NextFunction } from "express";
 
 export interface AuthRequest extends Request {
@@ -21,11 +22,13 @@ export const authenticate = async (req: AuthRequest, res: Response, next: NextFu
   try {
     const accessToken = req.cookies.accessToken;
 
+    if (!accessToken) {
+      return res.status(401).json({ message: "Expired token" });
+    }
+
     const comparedTokens = await compareTokens(token, accessToken);
 
     if (!comparedTokens) {
-      res.clearCookie("accessToken");
-      res.clearCookie("refreshToken");
       return res.status(401).json({ message: "Token mismatch" });
     }
 
@@ -33,6 +36,18 @@ export const authenticate = async (req: AuthRequest, res: Response, next: NextFu
     req.user = decoded as JWT;
     next();
   } catch (error) {
-    return res.status(403).json({ message: "Invalid or expired token" });
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
+};
+
+export const authenticateRefreshToken = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!refreshToken) {
+    return res.status(401).json({ message: "Expired refresh token" });
+  }
+
+  const decoded = await generateDecodedRefreshToken(refreshToken);
+  req.user = decoded as JWT;
+  next();
 };

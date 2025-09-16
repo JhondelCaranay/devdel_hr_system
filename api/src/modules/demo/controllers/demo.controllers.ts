@@ -2,6 +2,10 @@ import { Request, Response } from "express";
 import * as demoService from "../services/demo.services";
 
 export const getDemos = async (req: Request, res: Response) => {
+  const accessToken = req.cookies.accessToken; // ✅ correct way
+
+  console.log({ accessToken });
+
   const demos = await demoService.getAllDemos();
   return res.status(200).json(demos);
 };

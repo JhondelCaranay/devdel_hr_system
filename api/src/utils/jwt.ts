@@ -38,11 +38,11 @@ const setJwtCookie = (res: Response, key: string, token: string, age: number): v
 // };
 
 const setJwtCookies = (res: Response, accessToken: string, refreshToken: string): void => {
-  // 10 minutes = 10 * 60 * 1000 ms
-  setJwtCookie(res, "accessToken", accessToken, 10 * 60 * 1000);
+  // 1 minute = 60 * 1000 ms
+  setJwtCookie(res, "accessToken", accessToken, 20 * 1000);
 
-  // 3 days = 3 * 24 * 60 * 60 * 1000 ms
-  setJwtCookie(res, "refreshToken", refreshToken, 3 * 24 * 60 * 60 * 1000);
+  // 2 minutes = 2 * 60 * 1000 ms
+  setJwtCookie(res, "refreshToken", refreshToken, 30 * 1000);
 };
 
 const generateDecodedToken = async (token: string) => {
@@ -50,8 +50,22 @@ const generateDecodedToken = async (token: string) => {
   return decoded;
 };
 
+const generateDecodedRefreshToken = async (token: string) => {
+  const decoded = jwt.verify(token, ENV.JWT_REFRESH_SECRET);
+  return decoded;
+};
+
 const compareTokens = async (token1: string, token2: string): Promise<boolean> => {
   return token1 === token2;
 };
 
-export { accessToken, refreshToken, setJwtCookie, generateTokens, setJwtCookies, generateDecodedToken, compareTokens };
+export {
+  accessToken,
+  refreshToken,
+  setJwtCookie,
+  generateTokens,
+  setJwtCookies,
+  generateDecodedToken,
+  generateDecodedRefreshToken,
+  compareTokens,
+};

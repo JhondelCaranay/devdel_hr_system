@@ -82,6 +82,7 @@ export const logout = async (req: Request, res: Response) => {
 
 export const refreshToken = async (req: Request, res: Response) => {
   const userId = req.user?.userId;
+  console.log("🚀 ~ refreshToken ~ userId:", userId);
 
   const existingUser = await authService.findUserById(userId!);
 

@@ -28,16 +28,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const login = async (data: AuthUser) => {
+  const login = async (data: AuthUser, jwt: string) => {
     setUser(data);
     setIsAuthenticated(true);
     localStorage.setItem("authUser", JSON.stringify(data));
+    localStorage.setItem("jwt", JSON.stringify(jwt));
   };
 
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
     localStorage.removeItem("authUser");
+    localStorage.removeItem("jwt");
   };
 
   return (

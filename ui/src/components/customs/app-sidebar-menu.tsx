@@ -189,7 +189,8 @@ const AppSidebarMenu = () => {
         </SidebarGroupContent>
       </SidebarGroup>
 
-      <SidebarSeparator />
+      {isCollapse && <SidebarSeparator />}
+
       <Collapsible
         defaultOpen={isCollapse}
         open={collapsible}
