@@ -1,6 +1,6 @@
 import { ChevronDown, User2 } from "lucide-react";
 
-import { SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
+import { SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 
 import {
   DropdownMenu,

@@ -23,6 +23,7 @@ import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as appDashboardRouteRouteImport } from './routes/(app)/dashboard/route'
 import { Route as appDashboardIndexRouteImport } from './routes/(app)/dashboard/index'
 import { Route as appDashboardSettingsRouteImport } from './routes/(app)/dashboard/settings'
+import { Route as appDashboardUsersIndexRouteImport } from './routes/(app)/dashboard/users/index'
 import { Route as appDashboardEmployeesIndexRouteImport } from './routes/(app)/dashboard/employees/index'
 
 const DemosRouteImport = createFileRoute('/demos')()
@@ -90,6 +91,11 @@ const appDashboardSettingsRoute = appDashboardSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => appDashboardRouteRoute,
 } as any)
+const appDashboardUsersIndexRoute = appDashboardUsersIndexRouteImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => appDashboardRouteRoute,
+} as any)
 const appDashboardEmployeesIndexRoute =
   appDashboardEmployeesIndexRouteImport.update({
     id: '/employees/',
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/settings': typeof appDashboardSettingsRoute
   '/dashboard/': typeof appDashboardIndexRoute
   '/dashboard/employees': typeof appDashboardEmployeesIndexRoute
+  '/dashboard/users': typeof appDashboardUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof authRouteRouteWithChildren
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/dashboard/settings': typeof appDashboardSettingsRoute
   '/dashboard': typeof appDashboardIndexRoute
   '/dashboard/employees': typeof appDashboardEmployeesIndexRoute
+  '/dashboard/users': typeof appDashboardUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/(app)/dashboard/settings': typeof appDashboardSettingsRoute
   '/(app)/dashboard/': typeof appDashboardIndexRoute
   '/(app)/dashboard/employees/': typeof appDashboardEmployeesIndexRoute
+  '/(app)/dashboard/users/': typeof appDashboardUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -155,6 +164,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/dashboard/'
     | '/dashboard/employees'
+    | '/dashboard/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -167,6 +177,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/dashboard'
     | '/dashboard/employees'
+    | '/dashboard/users'
   id:
     | '__root__'
     | '/'
@@ -183,6 +194,7 @@ export interface FileRouteTypes {
     | '/(app)/dashboard/settings'
     | '/(app)/dashboard/'
     | '/(app)/dashboard/employees/'
+    | '/(app)/dashboard/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -288,6 +300,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appDashboardSettingsRouteImport
       parentRoute: typeof appDashboardRouteRoute
     }
+    '/(app)/dashboard/users/': {
+      id: '/(app)/dashboard/users/'
+      path: '/users'
+      fullPath: '/dashboard/users'
+      preLoaderRoute: typeof appDashboardUsersIndexRouteImport
+      parentRoute: typeof appDashboardRouteRoute
+    }
     '/(app)/dashboard/employees/': {
       id: '/(app)/dashboard/employees/'
       path: '/employees'
@@ -316,12 +335,14 @@ interface appDashboardRouteRouteChildren {
   appDashboardSettingsRoute: typeof appDashboardSettingsRoute
   appDashboardIndexRoute: typeof appDashboardIndexRoute
   appDashboardEmployeesIndexRoute: typeof appDashboardEmployeesIndexRoute
+  appDashboardUsersIndexRoute: typeof appDashboardUsersIndexRoute
 }
 
 const appDashboardRouteRouteChildren: appDashboardRouteRouteChildren = {
   appDashboardSettingsRoute: appDashboardSettingsRoute,
   appDashboardIndexRoute: appDashboardIndexRoute,
   appDashboardEmployeesIndexRoute: appDashboardEmployeesIndexRoute,
+  appDashboardUsersIndexRoute: appDashboardUsersIndexRoute,
 }
 
 const appDashboardRouteRouteWithChildren =

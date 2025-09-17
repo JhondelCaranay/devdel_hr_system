@@ -1,5 +1,5 @@
 import { AuthContext } from "@/context/auth-context";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 interface AuthUser {
   id: number;
@@ -10,8 +10,14 @@ interface AuthUser {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<AuthUser | null>(() => {
+    const storedUser = localStorage.getItem("authUser");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return !!localStorage.getItem("authUser");
+  });
 
   const hasRole = (role: string) => user?.role.includes(role) ?? false;
   const hasAnyRole = (roles: string[]) => roles.some((r) => user?.role.includes(r)) ?? false;
@@ -19,14 +25,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const hasPermission = (permission: string) => user?.permissions.includes(permission) ?? false;
   const hasAnyPermission = (permissions: string[]) => permissions.some((p) => user?.permissions.includes(p)) ?? false;
   const hasAllPermissions = (permissions: string[]) => permissions.every((p) => user?.permissions.includes(p)) ?? false;
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("authUser");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      setIsAuthenticated(true);
-    }
-  }, []);
 
   const login = async (data: AuthUser, jwt: string) => {
     setUser(data);

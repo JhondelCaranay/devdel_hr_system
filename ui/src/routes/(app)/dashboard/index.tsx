@@ -33,6 +33,9 @@ function RouteComponent() {
       <pre>
         <code>{JSON.stringify({ message: data }, null, 2)}</code>
       </pre>
+      <pre>
+        <code>{JSON.stringify({ message: auth }, null, 2)}</code>
+      </pre>
       <Button className="" onClick={handleLogout}>
         log out
       </Button>

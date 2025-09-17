@@ -1,19 +1,33 @@
-import { ZodSchema, ZodError } from "zod";
+import { ZodSchema, ZodError, ZodTypeAny } from "zod";
 import { Request, Response, NextFunction } from "express";
 
-export const validate = (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
-  const result = schema.safeParse(req.body);
+export const validate =
+  <T extends ZodTypeAny>(schema: T) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = schema.safeParse({
+        body: req.body,
+        query: req.query,
+        params: req.params,
+      });
 
-  if (!result.success) {
-    if (result.error instanceof ZodError) {
-      return res.status(400).json(result.error.flatten().fieldErrors);
+      if (!result.success) {
+        return res.status(400).json(result.error.flatten().fieldErrors);
+      }
+
+      // // override with parsed + coerced values
+      // if (result.data.body) req.body = result.data.body;
+      // if (result.data.query) Object.assign(req.query, result.data);
+      // if (result.data.params) Object.assign(req.params, result.data);
+
+      next();
+    } catch (err) {
+      if (err instanceof ZodError) {
+        return res.status(400).json(err.flatten().fieldErrors);
+      }
+      next(err);
     }
-  }
-
-  // override body with parsed + validated data
-  req.body = result.data;
-  next();
-};
+  };
 
 type Schemas<B = any, Q = any, P = any> = {
   body?: ZodSchema<B>;
@@ -22,7 +36,7 @@ type Schemas<B = any, Q = any, P = any> = {
 };
 
 export const validator =
-  <B = any, Q = any, P = any>(schemas: Schemas<B, Q, P>) =>
+  <B extends object = any, Q extends object = any, P extends object = any>(schemas: Schemas<B, Q, P>) =>
   (req: Request<P, any, B, Q>, res: Response, next: NextFunction) => {
     try {
       // validate body if schema provided
@@ -40,7 +54,7 @@ export const validator =
         if (!result.success) {
           return res.status(400).json(result.error.flatten().fieldErrors);
         }
-        req.query = result.data;
+        Object.assign(req.query, result.data);
       }
 
       // validate params if schema provided
@@ -49,7 +63,7 @@ export const validator =
         if (!result.success) {
           return res.status(400).json(result.error.flatten().fieldErrors);
         }
-        req.params = result.data;
+        Object.assign(req.params, result.data);
       }
       next();
     } catch (err) {

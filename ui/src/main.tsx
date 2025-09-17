@@ -1,4 +1,4 @@
-import { StrictMode, useEffect } from "react";
+import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import "./index.css";
@@ -25,9 +25,9 @@ declare module "@tanstack/react-router" {
 export function InnerApp() {
   const auth = useAuth();
 
-  useEffect(() => {
-    router.invalidate();
-  }, [auth]);
+  // useEffect(() => {
+  //   router.invalidate();
+  // }, [auth]);
 
   return <RouterProvider router={router} context={{ auth }} />;
 }
