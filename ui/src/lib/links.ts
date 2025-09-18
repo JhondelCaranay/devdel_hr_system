@@ -56,11 +56,6 @@ export const humanResourceLinks: MenuLinkType[] = [
     url: "/dashboard/leaves",
     icon: Users2,
   },
-  {
-    title: "Cheques",
-    url: "/dashboard/cheques",
-    icon: Users2,
-  },
 ];
 
 export const financeLinks: MenuLinkType[] = [
@@ -87,6 +82,11 @@ export const financeLinks: MenuLinkType[] = [
   {
     title: "Voucher",
     url: "/dashboard/Voucher",
+    icon: Users2,
+  },
+  {
+    title: "Cheques",
+    url: "/dashboard/cheques",
     icon: Users2,
   },
 ];

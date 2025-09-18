@@ -29,7 +29,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTableClient<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -208,30 +208,3 @@ function getPageNumbers(current: number, total: number, delta = 2) {
 
   return rangeWithDots;
 }
-
-// function getPageNumbers(current: number, total: number) {
-//   const delta = 1; // how many pages to show around current
-//   const range: (number | string)[] = [];
-//   const rangeWithDots: (number | string)[] = [];
-//   let l: number | undefined;
-
-//   for (let i = 1; i <= total; i++) {
-//     if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
-//       range.push(i);
-//     }
-//   }
-
-//   for (const i of range) {
-//     if (l) {
-//       if ((i as number) - l === 2) {
-//         rangeWithDots.push(l + 1);
-//       } else if ((i as number) - l > 2) {
-//         rangeWithDots.push("...");
-//       }
-//     }
-//     rangeWithDots.push(i);
-//     l = i as number;
-//   }
-
-//   return rangeWithDots;
-// }

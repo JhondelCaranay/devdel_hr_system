@@ -16,7 +16,7 @@ export const permission = (permission: string) => {
     const accessCodes = userAccess.map((a) => a.code);
 
     if (!accessCodes.includes(permission)) {
-      return res.status(403).json({ message: "Forbidden: insufficient rights" });
+      return res.status(403).json({ message: "Insufficient rights" });
     }
     next();
   };

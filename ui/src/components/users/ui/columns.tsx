@@ -13,45 +13,33 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SortableHeader } from "@/components/customs/sortable-header";
+import type { User } from "@/types";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
-};
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<User>[] = [
   {
-    accessorKey: "status",
-    header: ({ column }) => <SortableHeader column={column} title="Status" align="left" />,
+    accessorKey: "first_name",
+    header: ({ column }) => <SortableHeader column={column} title="First Name" align="left" />,
+  },
+  {
+    accessorKey: "last_name",
+    header: ({ column }) => <SortableHeader column={column} title="Last Name" align="left" />,
   },
   {
     accessorKey: "email",
-    header: "Email",
+    header: ({ column }) => <SortableHeader column={column} title="Email" align="left" />,
   },
-
   {
-    accessorKey: "amount",
-    header: ({ column }) => <SortableHeader column={column} title="Status" align="right" />,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
+    accessorKey: "role_name",
+    header: ({ column }) => <SortableHeader column={column} title="Role" align="left" />,
   },
   {
     id: "actions",
     size: 25,
-
     cell: ({ row }) => {
-      const payment = row.original;
+      const data = row.original;
 
       return (
         <div className="flex justify-center items-center">
@@ -64,12 +52,9 @@ export const columns: ColumnDef<Payment>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
-                Copy payment ID
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(data.uuid)}>Copy ID</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
+              <DropdownMenuItem>View details</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

@@ -30,6 +30,7 @@ export function SortableHeader<TData>({ column, title, align = "left" }: Sortabl
       ) : (
         <ArrowUpDown className="ml-2 h-4 w-4" />
       )}
+      <small className="text-xs">{sorted}</small>
     </Button>
   );
 }

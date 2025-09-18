@@ -38,6 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsAuthenticated(false);
     localStorage.removeItem("authUser");
     localStorage.removeItem("jwt");
+    window.location.href = "/login";
   };
 
   return (

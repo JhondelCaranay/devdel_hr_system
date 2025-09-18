@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import LoginForm, { type LoginFormValues } from "@/components/features/auth/ui/login-form";
+import LoginForm, { type LoginFormValues } from "@/components/auth/ui/login-form";
 import { apiClient } from "@/lib/axios";
 
 export const Route = createFileRoute("/(auth)/login")({

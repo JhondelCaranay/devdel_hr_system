@@ -28,7 +28,8 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry && error.response?.data.message == "Expired token") {
+    // if (error.response?.status === 401 && !originalRequest._retry && error.response?.data.message == "Expired token")
+    if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise((resolve) => {
           refreshSubscribers.push((token: string) => {

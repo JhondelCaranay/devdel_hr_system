@@ -6,6 +6,7 @@ import "./index.css";
 import { routeTree } from "./routeTree.gen";
 import { useAuth } from "./context/auth-context";
 import { AuthProvider } from "./providers/auth-provider";
+import QueryProvider from "./providers/query-provider";
 
 // Create a new router instance
 const router = createRouter({
@@ -39,7 +40,9 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <AuthProvider>
-        <InnerApp />
+        <QueryProvider>
+          <InnerApp />
+        </QueryProvider>
       </AuthProvider>
     </StrictMode>
   );

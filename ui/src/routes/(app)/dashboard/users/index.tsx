@@ -1,199 +1,71 @@
-import { columns, type Payment } from "@/components/features/users/ui/columns";
-import { DataTable } from "@/components/features/users/ui/data-table";
+import { DataTable } from "@/components/customs/data-table";
+import { fetchUsersPaginated } from "@/components/users/api";
+import { columns } from "@/components/users/ui/columns";
+import type { Pagination, User } from "@/types";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import z from "zod";
+
+type UsersPaginated = {
+  data: User[];
+  pagination: Pagination;
+};
+
+const PageSearchSchema = z.object({
+  page: z.number().default(1),
+  search: z.string().default(""),
+});
 
 export const Route = createFileRoute("/(app)/dashboard/users/")({
+  validateSearch: PageSearchSchema,
   component: RouteComponent,
+  head: () => {
+    return {
+      meta: [
+        {
+          title: "HR System / Users",
+        },
+      ],
+    };
+  },
 });
 
 function RouteComponent() {
-  const [data] = useState<Payment[]>([
-    { id: "a1b2c3d4", amount: 250, status: "pending", email: "alice@example.com" },
-    { id: "e5f6g7h8", amount: 420, status: "success", email: "bob@example.com" },
-    { id: "i9j0k1l2", amount: 150, status: "failed", email: "charlie@example.com" },
-    { id: "m3n4o5p6", amount: 780, status: "pending", email: "dave@example.com" },
-    { id: "q7r8s9t0", amount: 999, status: "success", email: "eve@example.com" },
-    { id: "u1v2w3x4", amount: 320, status: "failed", email: "frank@example.com" },
-    { id: "y5z6a7b8", amount: 560, status: "pending", email: "grace@example.com" },
-    { id: "c9d0e1f2", amount: 875, status: "success", email: "hannah@example.com" },
-    { id: "g3h4i5j6", amount: 430, status: "pending", email: "ian@example.com" },
-    { id: "k7l8m9n0", amount: 210, status: "failed", email: "jane@example.com" },
-    { id: "o1p2q3r4", amount: 640, status: "success", email: "kate@example.com" },
-    { id: "s5t6u7v8", amount: 355, status: "pending", email: "leo@example.com" },
-    { id: "w9x0y1z2", amount: 720, status: "success", email: "mia@example.com" },
-    { id: "a3b4c5d6", amount: 180, status: "failed", email: "nate@example.com" },
-    { id: "e7f8g9h0", amount: 950, status: "success", email: "olivia@example.com" },
-    { id: "i1j2k3l4", amount: 275, status: "pending", email: "peter@example.com" },
-    { id: "m5n6o7p8", amount: 600, status: "failed", email: "quinn@example.com" },
-    { id: "q9r0s1t2", amount: 815, status: "success", email: "ryan@example.com" },
-    { id: "u3v4w5x6", amount: 495, status: "pending", email: "sara@example.com" },
-    { id: "y7z8a9b0", amount: 370, status: "success", email: "tom@example.com" },
-    { id: "a1b2c3d4", amount: 250, status: "pending", email: "alice@example.com" },
-    { id: "e5f6g7h8", amount: 420, status: "success", email: "bob@example.com" },
-    { id: "i9j0k1l2", amount: 150, status: "failed", email: "charlie@example.com" },
-    { id: "m3n4o5p6", amount: 780, status: "pending", email: "dave@example.com" },
-    { id: "q7r8s9t0", amount: 999, status: "success", email: "eve@example.com" },
-    { id: "u1v2w3x4", amount: 320, status: "failed", email: "frank@example.com" },
-    { id: "y5z6a7b8", amount: 560, status: "pending", email: "grace@example.com" },
-    { id: "c9d0e1f2", amount: 875, status: "success", email: "hannah@example.com" },
-    { id: "g3h4i5j6", amount: 430, status: "pending", email: "ian@example.com" },
-    { id: "k7l8m9n0", amount: 210, status: "failed", email: "jane@example.com" },
-    { id: "o1p2q3r4", amount: 640, status: "success", email: "kate@example.com" },
-    { id: "s5t6u7v8", amount: 355, status: "pending", email: "leo@example.com" },
-    { id: "w9x0y1z2", amount: 720, status: "success", email: "mia@example.com" },
-    { id: "a3b4c5d6", amount: 180, status: "failed", email: "nate@example.com" },
-    { id: "e7f8g9h0", amount: 950, status: "success", email: "olivia@example.com" },
-    { id: "i1j2k3l4", amount: 275, status: "pending", email: "peter@example.com" },
-    { id: "m5n6o7p8", amount: 600, status: "failed", email: "quinn@example.com" },
-    { id: "q9r0s1t2", amount: 815, status: "success", email: "ryan@example.com" },
-    { id: "u3v4w5x6", amount: 495, status: "pending", email: "sara@example.com" },
-    { id: "y7z8a9b0", amount: 370, status: "success", email: "tom@example.com" },
-    { id: "a1b2c3d4", amount: 250, status: "pending", email: "alice@example.com" },
-    { id: "e5f6g7h8", amount: 420, status: "success", email: "bob@example.com" },
-    { id: "i9j0k1l2", amount: 150, status: "failed", email: "charlie@example.com" },
-    { id: "m3n4o5p6", amount: 780, status: "pending", email: "dave@example.com" },
-    { id: "q7r8s9t0", amount: 999, status: "success", email: "eve@example.com" },
-    { id: "u1v2w3x4", amount: 320, status: "failed", email: "frank@example.com" },
-    { id: "y5z6a7b8", amount: 560, status: "pending", email: "grace@example.com" },
-    { id: "c9d0e1f2", amount: 875, status: "success", email: "hannah@example.com" },
-    { id: "g3h4i5j6", amount: 430, status: "pending", email: "ian@example.com" },
-    { id: "k7l8m9n0", amount: 210, status: "failed", email: "jane@example.com" },
-    { id: "o1p2q3r4", amount: 640, status: "success", email: "kate@example.com" },
-    { id: "s5t6u7v8", amount: 355, status: "pending", email: "leo@example.com" },
-    { id: "w9x0y1z2", amount: 720, status: "success", email: "mia@example.com" },
-    { id: "a3b4c5d6", amount: 180, status: "failed", email: "nate@example.com" },
-    { id: "e7f8g9h0", amount: 950, status: "success", email: "olivia@example.com" },
-    { id: "i1j2k3l4", amount: 275, status: "pending", email: "peter@example.com" },
-    { id: "m5n6o7p8", amount: 600, status: "failed", email: "quinn@example.com" },
-    { id: "q9r0s1t2", amount: 815, status: "success", email: "ryan@example.com" },
-    { id: "u3v4w5x6", amount: 495, status: "pending", email: "sara@example.com" },
-    { id: "y7z8a9b0", amount: 370, status: "success", email: "tom@example.com" },
-    { id: "a1b2c3d4", amount: 250, status: "pending", email: "alice@example.com" },
-    { id: "e5f6g7h8", amount: 420, status: "success", email: "bob@example.com" },
-    { id: "i9j0k1l2", amount: 150, status: "failed", email: "charlie@example.com" },
-    { id: "m3n4o5p6", amount: 780, status: "pending", email: "dave@example.com" },
-    { id: "q7r8s9t0", amount: 999, status: "success", email: "eve@example.com" },
-    { id: "u1v2w3x4", amount: 320, status: "failed", email: "frank@example.com" },
-    { id: "y5z6a7b8", amount: 560, status: "pending", email: "grace@example.com" },
-    { id: "c9d0e1f2", amount: 875, status: "success", email: "hannah@example.com" },
-    { id: "g3h4i5j6", amount: 430, status: "pending", email: "ian@example.com" },
-    { id: "k7l8m9n0", amount: 210, status: "failed", email: "jane@example.com" },
-    { id: "o1p2q3r4", amount: 640, status: "success", email: "kate@example.com" },
-    { id: "s5t6u7v8", amount: 355, status: "pending", email: "leo@example.com" },
-    { id: "w9x0y1z2", amount: 720, status: "success", email: "mia@example.com" },
-    { id: "a3b4c5d6", amount: 180, status: "failed", email: "nate@example.com" },
-    { id: "e7f8g9h0", amount: 950, status: "success", email: "olivia@example.com" },
-    { id: "i1j2k3l4", amount: 275, status: "pending", email: "peter@example.com" },
-    { id: "m5n6o7p8", amount: 600, status: "failed", email: "quinn@example.com" },
-    { id: "q9r0s1t2", amount: 815, status: "success", email: "ryan@example.com" },
-    { id: "u3v4w5x6", amount: 495, status: "pending", email: "sara@example.com" },
-    { id: "y7z8a9b0", amount: 370, status: "success", email: "tom@example.com" },
-    { id: "a1b2c3d4", amount: 250, status: "pending", email: "alice@example.com" },
-    { id: "e5f6g7h8", amount: 420, status: "success", email: "bob@example.com" },
-    { id: "i9j0k1l2", amount: 150, status: "failed", email: "charlie@example.com" },
-    { id: "m3n4o5p6", amount: 780, status: "pending", email: "dave@example.com" },
-    { id: "q7r8s9t0", amount: 999, status: "success", email: "eve@example.com" },
-    { id: "u1v2w3x4", amount: 320, status: "failed", email: "frank@example.com" },
-    { id: "y5z6a7b8", amount: 560, status: "pending", email: "grace@example.com" },
-    { id: "c9d0e1f2", amount: 875, status: "success", email: "hannah@example.com" },
-    { id: "g3h4i5j6", amount: 430, status: "pending", email: "ian@example.com" },
-    { id: "k7l8m9n0", amount: 210, status: "failed", email: "jane@example.com" },
-    { id: "o1p2q3r4", amount: 640, status: "success", email: "kate@example.com" },
-    { id: "s5t6u7v8", amount: 355, status: "pending", email: "leo@example.com" },
-    { id: "w9x0y1z2", amount: 720, status: "success", email: "mia@example.com" },
-    { id: "a3b4c5d6", amount: 180, status: "failed", email: "nate@example.com" },
-    { id: "e7f8g9h0", amount: 950, status: "success", email: "olivia@example.com" },
-    { id: "i1j2k3l4", amount: 275, status: "pending", email: "peter@example.com" },
-    { id: "m5n6o7p8", amount: 600, status: "failed", email: "quinn@example.com" },
-    { id: "q9r0s1t2", amount: 815, status: "success", email: "ryan@example.com" },
-    { id: "u3v4w5x6", amount: 495, status: "pending", email: "sara@example.com" },
-    { id: "y7z8a9b0", amount: 370, status: "success", email: "tom@example.com" },
-    { id: "a1b2c3d4", amount: 250, status: "pending", email: "alice@example.com" },
-    { id: "e5f6g7h8", amount: 420, status: "success", email: "bob@example.com" },
-    { id: "i9j0k1l2", amount: 150, status: "failed", email: "charlie@example.com" },
-    { id: "m3n4o5p6", amount: 780, status: "pending", email: "dave@example.com" },
-    { id: "q7r8s9t0", amount: 999, status: "success", email: "eve@example.com" },
-    { id: "u1v2w3x4", amount: 320, status: "failed", email: "frank@example.com" },
-    { id: "y5z6a7b8", amount: 560, status: "pending", email: "grace@example.com" },
-    { id: "c9d0e1f2", amount: 875, status: "success", email: "hannah@example.com" },
-    { id: "g3h4i5j6", amount: 430, status: "pending", email: "ian@example.com" },
-    { id: "k7l8m9n0", amount: 210, status: "failed", email: "jane@example.com" },
-    { id: "o1p2q3r4", amount: 640, status: "success", email: "kate@example.com" },
-    { id: "s5t6u7v8", amount: 355, status: "pending", email: "leo@example.com" },
-    { id: "w9x0y1z2", amount: 720, status: "success", email: "mia@example.com" },
-    { id: "a3b4c5d6", amount: 180, status: "failed", email: "nate@example.com" },
-    { id: "e7f8g9h0", amount: 950, status: "success", email: "olivia@example.com" },
-    { id: "i1j2k3l4", amount: 275, status: "pending", email: "peter@example.com" },
-    { id: "m5n6o7p8", amount: 600, status: "failed", email: "quinn@example.com" },
-    { id: "q9r0s1t2", amount: 815, status: "success", email: "ryan@example.com" },
-    { id: "u3v4w5x6", amount: 495, status: "pending", email: "sara@example.com" },
-    { id: "y7z8a9b0", amount: 370, status: "success", email: "tom@example.com" },
-    { id: "a1b2c3d4", amount: 250, status: "pending", email: "alice@example.com" },
-    { id: "e5f6g7h8", amount: 420, status: "success", email: "bob@example.com" },
-    { id: "i9j0k1l2", amount: 150, status: "failed", email: "charlie@example.com" },
-    { id: "m3n4o5p6", amount: 780, status: "pending", email: "dave@example.com" },
-    { id: "q7r8s9t0", amount: 999, status: "success", email: "eve@example.com" },
-    { id: "u1v2w3x4", amount: 320, status: "failed", email: "frank@example.com" },
-    { id: "y5z6a7b8", amount: 560, status: "pending", email: "grace@example.com" },
-    { id: "c9d0e1f2", amount: 875, status: "success", email: "hannah@example.com" },
-    { id: "g3h4i5j6", amount: 430, status: "pending", email: "ian@example.com" },
-    { id: "k7l8m9n0", amount: 210, status: "failed", email: "jane@example.com" },
-    { id: "o1p2q3r4", amount: 640, status: "success", email: "kate@example.com" },
-    { id: "s5t6u7v8", amount: 355, status: "pending", email: "leo@example.com" },
-    { id: "w9x0y1z2", amount: 720, status: "success", email: "mia@example.com" },
-    { id: "a3b4c5d6", amount: 180, status: "failed", email: "nate@example.com" },
-    { id: "e7f8g9h0", amount: 950, status: "success", email: "olivia@example.com" },
-    { id: "i1j2k3l4", amount: 275, status: "pending", email: "peter@example.com" },
-    { id: "m5n6o7p8", amount: 600, status: "failed", email: "quinn@example.com" },
-    { id: "q9r0s1t2", amount: 815, status: "success", email: "ryan@example.com" },
-    { id: "u3v4w5x6", amount: 495, status: "pending", email: "sara@example.com" },
-    { id: "y7z8a9b0", amount: 370, status: "success", email: "tom@example.com" },
-    { id: "a1b2c3d4", amount: 250, status: "pending", email: "alice@example.com" },
-    { id: "e5f6g7h8", amount: 420, status: "success", email: "bob@example.com" },
-    { id: "i9j0k1l2", amount: 150, status: "failed", email: "charlie@example.com" },
-    { id: "m3n4o5p6", amount: 780, status: "pending", email: "dave@example.com" },
-    { id: "q7r8s9t0", amount: 999, status: "success", email: "eve@example.com" },
-    { id: "u1v2w3x4", amount: 320, status: "failed", email: "frank@example.com" },
-    { id: "y5z6a7b8", amount: 560, status: "pending", email: "grace@example.com" },
-    { id: "c9d0e1f2", amount: 875, status: "success", email: "hannah@example.com" },
-    { id: "g3h4i5j6", amount: 430, status: "pending", email: "ian@example.com" },
-    { id: "k7l8m9n0", amount: 210, status: "failed", email: "jane@example.com" },
-    { id: "o1p2q3r4", amount: 640, status: "success", email: "kate@example.com" },
-    { id: "s5t6u7v8", amount: 355, status: "pending", email: "leo@example.com" },
-    { id: "w9x0y1z2", amount: 720, status: "success", email: "mia@example.com" },
-    { id: "a3b4c5d6", amount: 180, status: "failed", email: "nate@example.com" },
-    { id: "e7f8g9h0", amount: 950, status: "success", email: "olivia@example.com" },
-    { id: "i1j2k3l4", amount: 275, status: "pending", email: "peter@example.com" },
-    { id: "m5n6o7p8", amount: 600, status: "failed", email: "quinn@example.com" },
-    { id: "q9r0s1t2", amount: 815, status: "success", email: "ryan@example.com" },
-    { id: "u3v4w5x6", amount: 495, status: "pending", email: "sara@example.com" },
-    { id: "y7z8a9b0", amount: 370, status: "success", email: "tom@example.com" },
-    { id: "a1b2c3d4", amount: 250, status: "pending", email: "alice@example.com" },
-    { id: "e5f6g7h8", amount: 420, status: "success", email: "bob@example.com" },
-    { id: "i9j0k1l2", amount: 150, status: "failed", email: "charlie@example.com" },
-    { id: "m3n4o5p6", amount: 780, status: "pending", email: "dave@example.com" },
-    { id: "q7r8s9t0", amount: 999, status: "success", email: "eve@example.com" },
-    { id: "u1v2w3x4", amount: 320, status: "failed", email: "frank@example.com" },
-    { id: "y5z6a7b8", amount: 560, status: "pending", email: "grace@example.com" },
-    { id: "c9d0e1f2", amount: 875, status: "success", email: "hannah@example.com" },
-    { id: "g3h4i5j6", amount: 430, status: "pending", email: "ian@example.com" },
-    { id: "k7l8m9n0", amount: 210, status: "failed", email: "jane@example.com" },
-    { id: "o1p2q3r4", amount: 640, status: "success", email: "kate@example.com" },
-    { id: "s5t6u7v8", amount: 355, status: "pending", email: "leo@example.com" },
-    { id: "w9x0y1z2", amount: 720, status: "success", email: "mia@example.com" },
-    { id: "a3b4c5d6", amount: 180, status: "failed", email: "nate@example.com" },
-    { id: "e7f8g9h0", amount: 950, status: "success", email: "olivia@example.com" },
-    { id: "i1j2k3l4", amount: 275, status: "pending", email: "peter@example.com" },
-    { id: "m5n6o7p8", amount: 600, status: "failed", email: "quinn@example.com" },
-    { id: "q9r0s1t2", amount: 815, status: "success", email: "ryan@example.com" },
-    { id: "u3v4w5x6", amount: 495, status: "pending", email: "sara@example.com" },
-    { id: "y7z8a9b0", amount: 370, status: "success", email: "tom@example.com" },
-  ]);
+  const { page, search } = Route.useSearch();
+  const navigate = Route.useNavigate();
+
+  const { data, isLoading, isError } = useQuery<UsersPaginated>({
+    queryKey: ["users-paginated", page, search],
+    queryFn: () => fetchUsersPaginated(page, search),
+  });
+
+  const handleSearchChange = (search: string) => {
+    navigate({
+      search: { search },
+      replace: true, // Optional: replace the current history entry
+    });
+  };
+
+  const handlePageChange = (page: number) => {
+    navigate({
+      search: { page },
+      replace: true, // Optional: replace the current history entry
+    });
+  };
 
   return (
     <div className="w-full py-10">
-      <DataTable columns={columns} data={data} />
+      {isLoading && <div>Loading...</div>}
+      {isError && <div>Something went wrong</div>}
+
+      <DataTable
+        columns={columns}
+        data={data?.data ?? []}
+        pageCount={data?.pagination?.totalPages ?? 1}
+        currentPage={page}
+        onPageChange={handlePageChange}
+        onSearch={handleSearchChange}
+      />
     </div>
   );
 }
