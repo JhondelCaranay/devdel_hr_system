@@ -3,7 +3,8 @@ import type { AuthState } from "@/context/auth-context";
 import { redirect } from "@tanstack/react-router";
 
 export function notAuthenticated(auth: AuthState) {
-  console.log("notAuthenticated", auth);
+  console.log("notAuthenticated - is auth", auth.isAuthenticated, window.location.pathname);
+
   if (auth.isAuthenticated) {
     throw redirect({
       to: "/dashboard",
@@ -12,7 +13,7 @@ export function notAuthenticated(auth: AuthState) {
 }
 
 export function requireAuth(auth: AuthState, locationHref: string) {
-  console.log("requireAuth", auth);
+  console.log("requireAuth - is auth", auth.isAuthenticated, window.location.pathname);
   if (!auth.isAuthenticated) {
     throw redirect({
       to: "/login",

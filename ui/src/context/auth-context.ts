@@ -10,6 +10,7 @@ interface AuthUser {
 
 export interface AuthState {
   isAuthenticated: boolean;
+  token: string | null;
   user: AuthUser | null;
   hasRole: (role: string) => boolean;
   hasAnyRole: (roles: string[]) => boolean;

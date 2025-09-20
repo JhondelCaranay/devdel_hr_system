@@ -7,12 +7,9 @@ export const getPaginatedUsers = async (req: Request, res: Response) => {
   const search = (req.query.search as string) || "";
   const offset = (page - 1) * limit;
 
-  console.log({ page, limit, search, offset });
-
   const data = await usersService.getPaginatedUsers(search, limit, offset);
 
   const total = await usersService.getPaginatedTotalUsers(search);
-  console.log(total);
 
   return res.json({
     data: data,

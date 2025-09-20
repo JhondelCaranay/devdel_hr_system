@@ -10,6 +10,7 @@ export const Route = createFileRoute("/(app)/dashboard/")({
 function RouteComponent() {
   const { auth } = Route.useRouteContext();
   const [data, setData] = useState("");
+  const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
@@ -24,31 +25,32 @@ function RouteComponent() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSeconds((prev) => prev + 1);
+    }, 1000);
+
+    return () => clearInterval(timer); // cleanup
+  }, []);
+
   const handleLogout = () => {
     auth.logout();
   };
 
   return (
-    <div className="">
-      <pre>
-        <code>{JSON.stringify({ demos: data }, null, 2)}</code>
-      </pre>
-      <pre>
-        <code>{JSON.stringify({ auth: auth }, null, 2)}</code>
-      </pre>
-      <Button className="" onClick={handleLogout}>
+    <div className="flex flex-col p-4 gap-4">
+      <Button className="self-end" onClick={handleLogout}>
         log out
       </Button>
-      <p>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Magnam adipisci rem quae repellendus, soluta minima
-        aspernatur molestiae ratione voluptates recusandae et aperiam provident? Quod vero eligendi autem ex repellat
-        rem dicta sed harum deleniti incidunt distinctio, nihil rerum, veritatis assumenda praesentium placeat ducimus
-        natus? Earum sed tempore, adipisci voluptatibus eum facilis sint repudiandae aperiam doloremque magni doloribus
-        corporis cupiditate eius quia officiis! Voluptatem magnam sit iusto nam dignissimos voluptas exercitationem
-        quibusdam! Eos hic molestias nulla illo dolorum temporibus similique, consectetur nesciunt! Tempora, eaque quia.
-        Exercitationem temporibus corrupti illo! Soluta incidunt animi officiis modi? Repudiandae velit fuga tenetur ex
-        consectetur ipsa.
-      </p>
+      <div className="text-sm font-mono bg-blue-900 text-white p-2 rounded">Timer: {seconds} sec</div>
+      <pre className="text-xs bg-slate-900 p-2 rounded mb-4 text-white">
+        <p>fetch demo</p>
+        <code>{JSON.stringify({ demos: data }, null, 2)}</code>
+      </pre>
+      <pre className="text-xs bg-slate-900 p-2 rounded mb-4 text-white">
+        <p>auth</p>
+        <code>{JSON.stringify({ auth: auth }, null, 2)}</code>
+      </pre>
     </div>
   );
 }
