@@ -26,11 +26,11 @@ export const authenticate = async (req: AuthRequest, res: Response, next: NextFu
       return res.status(401).json({ message: "Expired token" });
     }
 
-    const comparedTokens = await compareTokens(token, accessToken);
+    // const comparedTokens = await compareTokens(token, accessToken);
 
-    if (!comparedTokens) {
-      return res.status(401).json({ message: "Token mismatch" });
-    }
+    // if (!comparedTokens) {
+    //   return res.status(401).json({ message: "Token mismatch" });
+    // }
 
     const decoded = await generateDecodedToken(token);
     req.user = decoded as JWT;

@@ -8,7 +8,7 @@ export const modules = pgTable("modules", {
   name: varchar({ length: 255 }).notNull().unique(),
   updated_at: timestamp(),
   created_at: timestamp().defaultNow().notNull(),
-  deleted_at: date(),
+  deleted_at: timestamp(),
 });
 
 export const moduleRelations = relations(modules, ({ many }) => ({

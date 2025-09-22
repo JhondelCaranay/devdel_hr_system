@@ -45,6 +45,18 @@ function RouteComponent() {
           <CardDescription>Enter your credentials to access your account</CardDescription>
         </CardHeader>
         <CardContent>
+          <pre>
+            <code>
+              {JSON.stringify(
+                {
+                  authUser: auth.user,
+                  isAuthenticated: auth.isAuthenticated,
+                },
+                null,
+                2
+              )}
+            </code>
+          </pre>
           <LoginForm
             onSubmit={onSubmit}
             defaultValues={{

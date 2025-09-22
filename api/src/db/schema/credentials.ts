@@ -16,7 +16,7 @@ export const credentials = pgTable("credentials", {
     .references(() => users.id),
   updated_at: timestamp(),
   created_at: timestamp().defaultNow().notNull(),
-  deleted_at: date(),
+  deleted_at: timestamp(),
   status: credentialsStatusEnum().default("active").notNull(),
 });
 

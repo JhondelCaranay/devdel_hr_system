@@ -33,6 +33,9 @@ interface AuthUser {
 */
 const authRoutePatterns = [
   /^\/$/, // matches "/"
+  // /login
+  /^\/login(\/.*)?$/,
+  /^\/register(\/.*)?$/,
   /^\/dashboard(\/.*)?$/, // matches "/dashboard" and anything starting with "/dashboard/"
   /^\/profile(\/.*)?$/, // matches "/profile" and nested routes like "/profile/edit"
   /^\/settings(\/.*)?$/, // matches "/settings" and nested routes like "/settings/security"
@@ -73,25 +76,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!token && authRoutePatterns.some((pattern) => pattern.test(pathname))) {
         console.log("Refreshing auth...");
 
-        try {
-          const { data } = await apiClient.post("/auth/refresh-token");
-          if (data) {
-            const authUser: AuthUser = {
-              id: data.id,
-              username: data.username,
-              email: data.email,
-              role: data.role,
-              permissions: data.permissions,
-            };
-            setToken(data.accessToken);
-            setUser(authUser);
-            setIsAuthenticated(true);
-            localStorage.setItem("jwt", JSON.stringify(data.accessToken));
-          }
-        } catch (err) {
-          console.log("🚀 ~ refreshAuth ~ err:", err);
-          logout();
-          console.error("Failed to refresh token:", err);
+        const { data } = await apiClient.post("/auth/refresh-token");
+
+        if (data) {
+          const authUser: AuthUser = {
+            id: data.id,
+            username: data.username,
+            email: data.email,
+            role: data.role,
+            permissions: data.permissions,
+          };
+          setToken(data.accessToken);
+          setUser(authUser);
+          setIsAuthenticated(true);
+          localStorage.setItem("jwt", JSON.stringify(data.accessToken));
         }
       }
       setLoading(false);

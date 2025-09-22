@@ -7,9 +7,10 @@ export const roles = pgTable("roles", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   uuid: uuid().defaultRandom().notNull(),
   name: varchar({ length: 255 }).notNull().unique(),
+  description: varchar({ length: 500 }),
   updated_at: timestamp(),
   created_at: timestamp().defaultNow().notNull(),
-  deleted_at: date(),
+  deleted_at: timestamp(),
 });
 
 export const roleRelations = relations(roles, ({ many }) => ({

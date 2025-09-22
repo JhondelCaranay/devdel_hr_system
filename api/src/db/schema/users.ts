@@ -21,7 +21,7 @@ export const users = pgTable("users", {
     .references(() => roles.id),
   updated_at: timestamp(),
   created_at: timestamp().defaultNow().notNull(),
-  deleted_at: date(),
+  deleted_at: timestamp(),
 });
 
 export const userRelations = relations(users, ({ one }) => ({

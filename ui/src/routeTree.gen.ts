@@ -24,6 +24,7 @@ import { Route as appDashboardRouteRouteImport } from './routes/(app)/dashboard/
 import { Route as appDashboardIndexRouteImport } from './routes/(app)/dashboard/index'
 import { Route as appDashboardSettingsRouteImport } from './routes/(app)/dashboard/settings'
 import { Route as appDashboardUsersIndexRouteImport } from './routes/(app)/dashboard/users/index'
+import { Route as appDashboardRolesIndexRouteImport } from './routes/(app)/dashboard/roles/index'
 import { Route as appDashboardEmployeesIndexRouteImport } from './routes/(app)/dashboard/employees/index'
 
 const DemosRouteImport = createFileRoute('/demos')()
@@ -96,6 +97,11 @@ const appDashboardUsersIndexRoute = appDashboardUsersIndexRouteImport.update({
   path: '/users/',
   getParentRoute: () => appDashboardRouteRoute,
 } as any)
+const appDashboardRolesIndexRoute = appDashboardRolesIndexRouteImport.update({
+  id: '/roles/',
+  path: '/roles/',
+  getParentRoute: () => appDashboardRouteRoute,
+} as any)
 const appDashboardEmployeesIndexRoute =
   appDashboardEmployeesIndexRouteImport.update({
     id: '/employees/',
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/settings': typeof appDashboardSettingsRoute
   '/dashboard/': typeof appDashboardIndexRoute
   '/dashboard/employees': typeof appDashboardEmployeesIndexRoute
+  '/dashboard/roles': typeof appDashboardRolesIndexRoute
   '/dashboard/users': typeof appDashboardUsersIndexRoute
 }
 export interface FileRoutesByTo {
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/dashboard/settings': typeof appDashboardSettingsRoute
   '/dashboard': typeof appDashboardIndexRoute
   '/dashboard/employees': typeof appDashboardEmployeesIndexRoute
+  '/dashboard/roles': typeof appDashboardRolesIndexRoute
   '/dashboard/users': typeof appDashboardUsersIndexRoute
 }
 export interface FileRoutesById {
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/(app)/dashboard/settings': typeof appDashboardSettingsRoute
   '/(app)/dashboard/': typeof appDashboardIndexRoute
   '/(app)/dashboard/employees/': typeof appDashboardEmployeesIndexRoute
+  '/(app)/dashboard/roles/': typeof appDashboardRolesIndexRoute
   '/(app)/dashboard/users/': typeof appDashboardUsersIndexRoute
 }
 export interface FileRouteTypes {
@@ -164,6 +173,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/dashboard/'
     | '/dashboard/employees'
+    | '/dashboard/roles'
     | '/dashboard/users'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -177,6 +187,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/dashboard'
     | '/dashboard/employees'
+    | '/dashboard/roles'
     | '/dashboard/users'
   id:
     | '__root__'
@@ -194,6 +205,7 @@ export interface FileRouteTypes {
     | '/(app)/dashboard/settings'
     | '/(app)/dashboard/'
     | '/(app)/dashboard/employees/'
+    | '/(app)/dashboard/roles/'
     | '/(app)/dashboard/users/'
   fileRoutesById: FileRoutesById
 }
@@ -307,6 +319,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appDashboardUsersIndexRouteImport
       parentRoute: typeof appDashboardRouteRoute
     }
+    '/(app)/dashboard/roles/': {
+      id: '/(app)/dashboard/roles/'
+      path: '/roles'
+      fullPath: '/dashboard/roles'
+      preLoaderRoute: typeof appDashboardRolesIndexRouteImport
+      parentRoute: typeof appDashboardRouteRoute
+    }
     '/(app)/dashboard/employees/': {
       id: '/(app)/dashboard/employees/'
       path: '/employees'
@@ -335,6 +354,7 @@ interface appDashboardRouteRouteChildren {
   appDashboardSettingsRoute: typeof appDashboardSettingsRoute
   appDashboardIndexRoute: typeof appDashboardIndexRoute
   appDashboardEmployeesIndexRoute: typeof appDashboardEmployeesIndexRoute
+  appDashboardRolesIndexRoute: typeof appDashboardRolesIndexRoute
   appDashboardUsersIndexRoute: typeof appDashboardUsersIndexRoute
 }
 
@@ -342,6 +362,7 @@ const appDashboardRouteRouteChildren: appDashboardRouteRouteChildren = {
   appDashboardSettingsRoute: appDashboardSettingsRoute,
   appDashboardIndexRoute: appDashboardIndexRoute,
   appDashboardEmployeesIndexRoute: appDashboardEmployeesIndexRoute,
+  appDashboardRolesIndexRoute: appDashboardRolesIndexRoute,
   appDashboardUsersIndexRoute: appDashboardUsersIndexRoute,
 }
 

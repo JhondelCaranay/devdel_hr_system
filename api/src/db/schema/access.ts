@@ -13,7 +13,7 @@ export const access = pgTable("access", {
     .references(() => modules.id),
   updated_at: timestamp(),
   created_at: timestamp().defaultNow().notNull(),
-  deleted_at: date(),
+  deleted_at: timestamp(),
 });
 
 export const accessRelations = relations(access, ({ one, many }) => ({

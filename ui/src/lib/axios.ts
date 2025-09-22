@@ -8,7 +8,6 @@ export const apiClient = axios.create({
 // Request interceptor
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("jwt");
-  console.log("🚀 ~ token:", token);
 
   if (token) {
     config.headers.Authorization = `Bearer ${JSON.parse(token)}`;
@@ -35,7 +34,6 @@ apiClient.interceptors.response.use(
     const message = error.response && error.response.data ? error.response.data.message : null;
 
     if (status === 401 && message == "Expired refresh token") {
-      console.log("Refresh token expired. Logging out...");
       localStorage.removeItem("jwt");
       window.location.href = "/login";
     } else if (status === 401 && !originalRequest._retry) {

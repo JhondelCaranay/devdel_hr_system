@@ -29,18 +29,18 @@ const setJwtCookie = (res: Response, key: string, token: string, age: number): v
   });
 };
 
-// const setJwtCookies = (res: Response, accessToken: string, refreshToken: string): void => {
-//   // 1 day = 24 * 60 * 60 * 1000 ms
-//   setJwtCookie(res, "accessToken", accessToken, 24 * 60 * 60 * 1000);
-
-//   // 7 days = 7 * 24 * 60 * 60 * 1000 ms
-//   setJwtCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000);
-// };
-
 const setJwtCookies = (res: Response, accessToken: string, refreshToken: string): void => {
-  setJwtCookie(res, "accessToken", accessToken, 20 * 1000);
-  setJwtCookie(res, "refreshToken", refreshToken, 30 * 1000);
+  // 1 day = 24 * 60 * 60 * 1000 ms
+  setJwtCookie(res, "accessToken", accessToken, 24 * 60 * 60 * 1000);
+
+  // 7 days = 7 * 24 * 60 * 60 * 1000 ms
+  setJwtCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000);
 };
+
+// const setJwtCookies = (res: Response, accessToken: string, refreshToken: string): void => {
+//   setJwtCookie(res, "accessToken", accessToken, 20 * 1000);
+//   setJwtCookie(res, "refreshToken", refreshToken, 30 * 1000);
+// };
 
 const generateDecodedToken = async (token: string) => {
   const decoded = jwt.verify(token, ENV.JWT_SECRET);
