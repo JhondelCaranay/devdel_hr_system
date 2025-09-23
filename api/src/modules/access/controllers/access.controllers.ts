@@ -39,7 +39,7 @@ export const storeRole = async (req: Request, res: Response) => {
 
   const data = await accessService.createAccess({ code, label, module_id });
 
-  return res.status(201).json({ data });
+  return res.status(201).json(data);
 };
 
 export const updateRole = async (req: Request, res: Response) => {
@@ -54,7 +54,7 @@ export const updateRole = async (req: Request, res: Response) => {
 
   const data = await accessService.updateRole(existingRole.id, { code, label, module_id });
 
-  return res.status(200).json({ data });
+  return res.status(200).json(data);
 };
 
 export const destroyRole = async (req: Request, res: Response) => {
@@ -67,7 +67,7 @@ export const destroyRole = async (req: Request, res: Response) => {
 
   const data = await accessService.deleteRole(existingRole.id);
 
-  return res.status(200).json({ data });
+  return res.status(200).json(data);
 };
 
 export const restoreRole = async (req: Request, res: Response) => {

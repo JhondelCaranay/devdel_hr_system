@@ -6,8 +6,11 @@
     "dev": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/server.ts",
     "build": "tsc",
     "start": "node -r tsconfig-paths/register dist/server.js",
-    "db:seed": "ts-node ./src/db/seeders/reset.ts",
+    "db:reset": "ts-node -r tsconfig-paths/register ./src/db/seeders/reset.ts",
+    "db:seed": "ts-node -r tsconfig-paths/register ./src/db/seeders/seed.ts",
     "db:push": "npx drizzle-kit push",
+    "db:generate": "npx drizzle-kit generate",
+    "db:migrate": "npx drizzle-kit migrate",
     "db:studio": "npx drizzle-kit studio"
   },
   "keywords": [],

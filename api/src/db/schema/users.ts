@@ -1,5 +1,5 @@
 import { date, integer, pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { InferModel, relations } from "drizzle-orm";
 import { roles } from "./roles";
 import { credentials } from "./credentials";
 
@@ -28,3 +28,6 @@ export const userRelations = relations(users, ({ one }) => ({
   credential: one(credentials, { fields: [users.id], references: [credentials.user_id] }),
   role: one(roles, { fields: [users.role_id], references: [roles.id] }),
 }));
+
+export type SelectUser = typeof users.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;

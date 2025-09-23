@@ -1,4 +1,4 @@
-// components/Loader.tsx
+// features/Loader.tsx
 import React from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 

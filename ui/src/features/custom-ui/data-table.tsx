@@ -1,11 +1,10 @@
 "use client";
 
+import { useDebouncedCallback } from "use-debounce";
 import {
   type ColumnDef,
-  type ColumnFiltersState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   type SortingState,
@@ -13,31 +12,43 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/features/ui/table";
+import { Button } from "@/features/ui/button";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/features/ui/input";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/features/ui/dropdown-menu";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  pageCount: number;
+  currentPage: number;
+  onPageChange: (page: number) => void;
+  onSearch: (value: string) => void;
 }
 
-export function DataTableClient<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+  pageCount,
+  currentPage,
+  onPageChange,
+  onSearch,
+}: DataTableProps<TData, TValue>) {
+  const [, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const table = useReactTable({
     state: {
       sorting,
-      columnFilters,
+      // columnFilters,
       columnVisibility,
     },
     initialState: {},
@@ -52,20 +63,24 @@ export function DataTableClient<TData, TValue>({ columns, data }: DataTableProps
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
+    // onColumnFiltersChange: setColumnFilters,
+    // getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+
+    manualPagination: true, // important: server-side
+    manualFiltering: true, // important: server-side
+    pageCount, // total pages from API
   });
+
+  const debounced = useDebouncedCallback((value) => {
+    setGlobalFilter(value);
+    onSearch(value);
+  }, 500);
 
   return (
     <div className="">
       <div className="flex items-center py-4">
-        <Input
-          placeholder="Search something..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("email")?.setFilterValue(event.target.value)}
-          className="max-w-sm"
-        />
+        <Input placeholder="Search something..." onChange={(e) => debounced(e.target.value)} className="max-w-sm" />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -141,23 +156,17 @@ export function DataTableClient<TData, TValue>({ columns, data }: DataTableProps
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between ">
-        <div className="space-x-2 py-4">
-          <span className="text-sm font-medium">
-            Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-          </span>
-        </div>
-        <div className="space-x-2 py-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
+      {/* Pagination Controls */}
+      <div className="flex items-center justify-between py-4">
+        <span className="text-sm font-medium">
+          Page {currentPage} of {pageCount}
+        </span>
+        <div className="space-x-2">
+          <Button variant="outline" size="sm" onClick={() => onPageChange(currentPage - 1)} disabled={currentPage <= 1}>
             Previous
           </Button>
 
-          {getPageNumbers(table.getState().pagination.pageIndex + 1, table.getPageCount()).map((page, i) =>
+          {getPageNumbers(currentPage, pageCount).map((page, i) =>
             page === "..." ? (
               <span key={i} className="px-2">
                 ...
@@ -165,16 +174,21 @@ export function DataTableClient<TData, TValue>({ columns, data }: DataTableProps
             ) : (
               <Button
                 key={i}
-                variant={(page as number) - 1 === table.getState().pagination.pageIndex ? "default" : "outline"}
+                variant={page === currentPage ? "default" : "outline"}
                 size="sm"
-                onClick={() => table.setPageIndex((page as number) - 1)}
+                onClick={() => onPageChange(page as number)}
               >
                 {page}
               </Button>
             )
           )}
 
-          <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage >= pageCount}
+          >
             Next
           </Button>
         </div>
@@ -182,6 +196,32 @@ export function DataTableClient<TData, TValue>({ columns, data }: DataTableProps
     </div>
   );
 }
+
+// function getPageNumbers(current: number, total: number, delta = 2) {
+//   const range: (number | string)[] = [];
+//   const rangeWithDots: (number | string)[] = [];
+//   let last: number | undefined;
+
+//   for (let i = 1; i <= total; i++) {
+//     if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
+//       range.push(i);
+//     }
+//   }
+
+//   for (const i of range) {
+//     if (last) {
+//       if ((i as number) - last === 2) {
+//         rangeWithDots.push(last + 1);
+//       } else if ((i as number) - last > 2) {
+//         rangeWithDots.push("...");
+//       }
+//     }
+//     rangeWithDots.push(i);
+//     last = i as number;
+//   }
+
+//   return rangeWithDots;
+// }
 
 function getPageNumbers(current: number, total: number, delta = 2) {
   const range: (number | string)[] = [];

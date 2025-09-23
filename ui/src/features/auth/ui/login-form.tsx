@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { FormInput } from "@/components/customs/form-input";
+import { Button } from "@/features/ui/button";
+import { Form } from "@/features/ui/form";
+import { FormInput } from "@/features/custom-ui/form-input";
 
 const loginSchema = z.object({
   username: z.string().min(2, "Username must be at least 2 characters long"),

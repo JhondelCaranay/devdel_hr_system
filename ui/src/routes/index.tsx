@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/ui/button";
 import { requireAuth } from "@/lib/auth-guards";
 import { createFileRoute } from "@tanstack/react-router";
 

@@ -4,7 +4,6 @@ import { redirect } from "@tanstack/react-router";
 
 export function notAuthenticated(auth: AuthState) {
   console.log("notAuthenticated - is auth", auth.isAuthenticated, window.location.pathname);
-
   if (auth.isAuthenticated) {
     throw redirect({
       to: "/dashboard",

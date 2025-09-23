@@ -20,3 +20,6 @@ export const accessRelations = relations(access, ({ one, many }) => ({
   module: one(modules, { fields: [access.module_id], references: [modules.id] }),
   role_access: many(roleAccess),
 }));
+
+export type SelectAccess = typeof access.$inferSelect;
+export type InsertAccess = typeof access.$inferInsert;

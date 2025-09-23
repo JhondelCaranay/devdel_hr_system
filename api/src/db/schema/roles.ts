@@ -17,3 +17,6 @@ export const roleRelations = relations(roles, ({ many }) => ({
   users: many(users),
   role_access: many(roleAccess),
 }));
+
+export type SelectRole = typeof roles.$inferSelect;
+export type InsertRole = typeof roles.$inferInsert;

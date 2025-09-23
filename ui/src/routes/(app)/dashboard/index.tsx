@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/ui/button";
 import { apiClient } from "@/lib/axios";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";

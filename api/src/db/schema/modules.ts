@@ -14,3 +14,6 @@ export const modules = pgTable("modules", {
 export const moduleRelations = relations(modules, ({ many }) => ({
   accesses: many(access),
 }));
+
+export type SelectModule = typeof modules.$inferSelect;
+export type InsertModule = typeof modules.$inferInsert;

@@ -1,4 +1,4 @@
-import Loader from "@/components/customs/loader";
+import Loader from "@/features/custom-ui/loader";
 import { AuthContext } from "@/context/auth-context";
 import apiClient from "@/lib/axios";
 import React, { useEffect, useState } from "react";
@@ -33,8 +33,6 @@ interface AuthUser {
 */
 const authRoutePatterns = [
   /^\/$/, // matches "/"
-  // /login
-  /^\/login(\/.*)?$/,
   /^\/register(\/.*)?$/,
   /^\/dashboard(\/.*)?$/, // matches "/dashboard" and anything starting with "/dashboard/"
   /^\/profile(\/.*)?$/, // matches "/profile" and nested routes like "/profile/edit"
@@ -43,8 +41,11 @@ const authRoutePatterns = [
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
+    typeof window !== "undefined" && localStorage.getItem("jwt") ? true : false
+  );
+
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
 
   const hasRole = (role: string) => user?.role.includes(role) ?? false;
@@ -73,9 +74,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const refreshAuth = async () => {
       const pathname = window.location.pathname;
-      if (!token && authRoutePatterns.some((pattern) => pattern.test(pathname))) {
-        console.log("Refreshing auth...");
 
+      if (!token && authRoutePatterns.some((pattern) => pattern.test(pathname))) {
         const { data } = await apiClient.post("/auth/refresh-token");
 
         if (data) {

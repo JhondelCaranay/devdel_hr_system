@@ -6,7 +6,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/features/ui/dialog";
 
 type ModalSize = "sm" | "md" | "lg" | "xl" | "full";
 

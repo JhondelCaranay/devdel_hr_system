@@ -3,7 +3,7 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,8 +11,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { SortableHeader } from "@/components/customs/sortable-header";
+} from "@/features/ui/dropdown-menu";
+import { SortableHeader } from "@/features/custom-ui/sortable-header";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.

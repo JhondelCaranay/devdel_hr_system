@@ -6,7 +6,7 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "@/features/ui/sidebar";
 import { Link } from "@tanstack/react-router";
 import { type MenuLinkType } from "@/lib/links";
 

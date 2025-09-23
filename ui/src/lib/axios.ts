@@ -7,10 +7,10 @@ export const apiClient = axios.create({
 
 // Request interceptor
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("jwt");
+  const token = JSON.parse(localStorage.getItem("jwt") || "null");
 
   if (token) {
-    config.headers.Authorization = `Bearer ${JSON.parse(token)}`;
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });

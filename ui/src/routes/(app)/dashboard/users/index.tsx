@@ -1,6 +1,6 @@
-import { DataTable } from "@/components/customs/data-table";
-import { fetchUsersPaginated } from "@/components/users/api";
-import { columns } from "@/components/users/ui/columns";
+import { DataTable } from "@/features/custom-ui/data-table";
+import { fetchUsersPaginated } from "@/features/users/api";
+import { columns } from "@/features/users/ui/columns";
 import type { Pagination, User } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
