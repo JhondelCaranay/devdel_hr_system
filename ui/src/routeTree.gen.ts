@@ -23,6 +23,7 @@ import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as appDashboardRouteRouteImport } from './routes/(app)/dashboard/route'
 import { Route as appDashboardIndexRouteImport } from './routes/(app)/dashboard/index'
 import { Route as appDashboardSettingsRouteImport } from './routes/(app)/dashboard/settings'
+import { Route as appDashboardDeveloperRouteImport } from './routes/(app)/dashboard/developer'
 import { Route as appDashboardUsersIndexRouteImport } from './routes/(app)/dashboard/users/index'
 import { Route as appDashboardRolesIndexRouteImport } from './routes/(app)/dashboard/roles/index'
 import { Route as appDashboardEmployeesIndexRouteImport } from './routes/(app)/dashboard/employees/index'
@@ -92,6 +93,11 @@ const appDashboardSettingsRoute = appDashboardSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => appDashboardRouteRoute,
 } as any)
+const appDashboardDeveloperRoute = appDashboardDeveloperRouteImport.update({
+  id: '/developer',
+  path: '/developer',
+  getParentRoute: () => appDashboardRouteRoute,
+} as any)
 const appDashboardUsersIndexRoute = appDashboardUsersIndexRouteImport.update({
   id: '/users/',
   path: '/users/',
@@ -119,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/demos/$demoId': typeof DemosDemoIdRoute
   '/demos': typeof Demos_layoutRoute
   '/demos/': typeof DemosIndexRoute
+  '/dashboard/developer': typeof appDashboardDeveloperRoute
   '/dashboard/settings': typeof appDashboardSettingsRoute
   '/dashboard/': typeof appDashboardIndexRoute
   '/dashboard/employees': typeof appDashboardEmployeesIndexRoute
@@ -133,6 +140,7 @@ export interface FileRoutesByTo {
   '/register': typeof authRegisterRoute
   '/demos/$demoId': typeof DemosDemoIdRoute
   '/demos': typeof DemosIndexRoute
+  '/dashboard/developer': typeof appDashboardDeveloperRoute
   '/dashboard/settings': typeof appDashboardSettingsRoute
   '/dashboard': typeof appDashboardIndexRoute
   '/dashboard/employees': typeof appDashboardEmployeesIndexRoute
@@ -152,6 +160,7 @@ export interface FileRoutesById {
   '/demos': typeof DemosRouteWithChildren
   '/demos/__layout': typeof Demos_layoutRoute
   '/demos/': typeof DemosIndexRoute
+  '/(app)/dashboard/developer': typeof appDashboardDeveloperRoute
   '/(app)/dashboard/settings': typeof appDashboardSettingsRoute
   '/(app)/dashboard/': typeof appDashboardIndexRoute
   '/(app)/dashboard/employees/': typeof appDashboardEmployeesIndexRoute
@@ -170,6 +179,7 @@ export interface FileRouteTypes {
     | '/demos/$demoId'
     | '/demos'
     | '/demos/'
+    | '/dashboard/developer'
     | '/dashboard/settings'
     | '/dashboard/'
     | '/dashboard/employees'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/demos/$demoId'
     | '/demos'
+    | '/dashboard/developer'
     | '/dashboard/settings'
     | '/dashboard'
     | '/dashboard/employees'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
     | '/demos'
     | '/demos/__layout'
     | '/demos/'
+    | '/(app)/dashboard/developer'
     | '/(app)/dashboard/settings'
     | '/(app)/dashboard/'
     | '/(app)/dashboard/employees/'
@@ -312,6 +324,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appDashboardSettingsRouteImport
       parentRoute: typeof appDashboardRouteRoute
     }
+    '/(app)/dashboard/developer': {
+      id: '/(app)/dashboard/developer'
+      path: '/developer'
+      fullPath: '/dashboard/developer'
+      preLoaderRoute: typeof appDashboardDeveloperRouteImport
+      parentRoute: typeof appDashboardRouteRoute
+    }
     '/(app)/dashboard/users/': {
       id: '/(app)/dashboard/users/'
       path: '/users'
@@ -351,6 +370,7 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
 )
 
 interface appDashboardRouteRouteChildren {
+  appDashboardDeveloperRoute: typeof appDashboardDeveloperRoute
   appDashboardSettingsRoute: typeof appDashboardSettingsRoute
   appDashboardIndexRoute: typeof appDashboardIndexRoute
   appDashboardEmployeesIndexRoute: typeof appDashboardEmployeesIndexRoute
@@ -359,6 +379,7 @@ interface appDashboardRouteRouteChildren {
 }
 
 const appDashboardRouteRouteChildren: appDashboardRouteRouteChildren = {
+  appDashboardDeveloperRoute: appDashboardDeveloperRoute,
   appDashboardSettingsRoute: appDashboardSettingsRoute,
   appDashboardIndexRoute: appDashboardIndexRoute,
   appDashboardEmployeesIndexRoute: appDashboardEmployeesIndexRoute,

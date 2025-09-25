@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
   useSidebar,
-} from "@/features/ui/sidebar";
+} from "@/components/ui/sidebar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";

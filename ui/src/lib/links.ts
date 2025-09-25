@@ -102,6 +102,11 @@ export const developersLinks: MenuLinkType[] = [
     url: "/dashboard/roles",
     icon: Lock,
   },
+  {
+    title: "Developer",
+    url: "/dashboard/developer",
+    icon: Lock,
+  },
 ];
 
 export const userLinks: MenuLinkType[] = [

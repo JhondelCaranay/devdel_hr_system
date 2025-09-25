@@ -12,24 +12,24 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/features/ui/table";
-import { Button } from "@/features/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Input } from "@/features/ui/input";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/features/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   pageCount: number;
   currentPage: number;
-  onPageChange: (page: number) => void;
-  onSearch: (value: string) => void;
+  openFilter: (open: boolean) => void;
+  handleFilterChange: (key: string, value: string | number) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -37,8 +37,8 @@ export function DataTable<TData, TValue>({
   data,
   pageCount,
   currentPage,
-  onPageChange,
-  onSearch,
+  openFilter,
+  handleFilterChange,
 }: DataTableProps<TData, TValue>) {
   const [, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -74,37 +74,41 @@ export function DataTable<TData, TValue>({
 
   const debounced = useDebouncedCallback((value) => {
     setGlobalFilter(value);
-    onSearch(value);
+    // onSearch(value);
+    handleFilterChange("search", value);
   }, 500);
 
   return (
     <div className="">
-      <div className="flex items-center py-4">
+      <div className="flex items-center justify-between py-4">
         <Input placeholder="Search something..." onChange={(e) => debounced(e.target.value)} className="max-w-sm" />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex gap-4">
+          <Button variant="outline" onClick={() => openFilter(true)}>
+            Filters
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">Columns</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       <div className="overflow-hidden rounded-md border">
         <Table className="border border-collaps">
@@ -162,7 +166,12 @@ export function DataTable<TData, TValue>({
           Page {currentPage} of {pageCount}
         </span>
         <div className="space-x-2">
-          <Button variant="outline" size="sm" onClick={() => onPageChange(currentPage - 1)} disabled={currentPage <= 1}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleFilterChange("page", currentPage - 1)}
+            disabled={currentPage <= 1}
+          >
             Previous
           </Button>
 
@@ -176,7 +185,7 @@ export function DataTable<TData, TValue>({
                 key={i}
                 variant={page === currentPage ? "default" : "outline"}
                 size="sm"
-                onClick={() => onPageChange(page as number)}
+                onClick={() => handleFilterChange("page", page as number)}
               >
                 {page}
               </Button>
@@ -186,7 +195,7 @@ export function DataTable<TData, TValue>({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => onPageChange(currentPage + 1)}
+            onClick={() => handleFilterChange("page", currentPage + 1)}
             disabled={currentPage >= pageCount}
           >
             Next

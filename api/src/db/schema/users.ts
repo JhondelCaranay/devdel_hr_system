@@ -1,5 +1,5 @@
-import { date, integer, pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
-import { InferModel, relations } from "drizzle-orm";
+import { integer, pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import { roles } from "./roles";
 import { credentials } from "./credentials";
 

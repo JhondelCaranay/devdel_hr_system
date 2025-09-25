@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { SidebarProvider, SidebarTrigger } from "@/features/ui/sidebar";
-import { AppSidebar } from "@/features/custom-ui/app-sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/custom-ui/app-sidebar";
 import { useSidebarState } from "@/hooks/use-sidebar-state";
 import { requireAuth } from "@/lib/auth-guards";
 

@@ -1,4 +1,4 @@
-import Loader from "@/features/custom-ui/loader";
+import Loader from "@/components/custom-ui/loader";
 import { AuthContext } from "@/context/auth-context";
 import apiClient from "@/lib/axios";
 import React, { useEffect, useState } from "react";

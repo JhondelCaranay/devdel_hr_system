@@ -1,6 +1,11 @@
-import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/features/ui/sidebar";
+import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/features/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ChevronUp, User2 } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 
