@@ -22,3 +22,8 @@ export const getPaginatedUsers = async (req: Request, res: Response) => {
     },
   });
 };
+
+export const getUserOptions = async (req: Request, res: Response) => {
+  const data = await usersService.getUserOptions();
+  return res.json(data);
+};

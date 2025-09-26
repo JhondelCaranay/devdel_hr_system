@@ -27,6 +27,11 @@ export const getTotalRoles = async (req: Request, res: Response) => {
   return res.json({ total });
 };
 
+export const getRoleOptions = async (req: Request, res: Response) => {
+  const data = await rolesService.getRoleOptions();
+  return res.json(data);
+};
+
 export const storeRole = async (req: Request, res: Response) => {
   const { name, description }: { name: string; description: string } = req.body;
 

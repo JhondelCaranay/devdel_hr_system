@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { roles, users } from "@/db/schema";
-import { and, asc, count, eq, ilike, isNull, or, SQL } from "drizzle-orm";
+import { and, asc, count, eq, ilike, isNull, or, sql, SQL } from "drizzle-orm";
 
 const selectedRoleFields = {
   id: roles.id,
@@ -45,6 +45,21 @@ export const getPaginatedTotalRoles = async (search: string) => {
 export const getTotalRoles = async () => {
   const [data] = await db.select({ total: count() }).from(roles).where(isNull(roles.deleted_at));
   return data.total;
+};
+
+export const getRoleOptions = async () => {
+  const data = await db
+    .select({
+      value: roles.uuid,
+      label: sql<string>`CONCAT(INITCAP(${roles.name}), ' (', COUNT(${users.id}), ' users)')`,
+    })
+    .from(roles)
+    .innerJoin(users, and(eq(users.role_id, roles.id), isNull(users.deleted_at)))
+    .where(isNull(roles.deleted_at))
+    .groupBy(roles.id, roles.uuid, roles.name)
+    .orderBy(asc(roles.name));
+
+  return data;
 };
 
 export const getRoleByName = async (name: string) => {

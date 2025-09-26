@@ -1,11 +1,14 @@
 import { BaseDrawer } from "@/components/custom-ui/base-drawer";
 import { CompoBox } from "@/components/custom-ui/combobox";
 import { DataTable } from "@/components/custom-ui/data-table";
+import { DataTableSkeleton } from "@/components/custom-ui/data-table-skeleton";
+import Loader from "@/components/custom-ui/loader";
+import { fetchRoleOptions } from "@/components/roles/api";
 import { Button } from "@/components/ui/button";
 import { fetchUsersPaginated } from "@/components/users/api";
 import { columns } from "@/components/users/ui/columns";
 import { requirePermission } from "@/lib/auth-guards";
-import type { Pagination, User } from "@/types";
+import type { Pagination, User, Option } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
@@ -38,15 +41,28 @@ export const Route = createFileRoute("/(app)/dashboard/users/")({
     };
   },
 });
-
 function RouteComponent() {
   const [openFilter, setOpenFilter] = useState(false);
   const { page, search, role_uuid } = Route.useSearch();
   const navigate = Route.useNavigate();
 
-  const { data, isLoading, isError } = useQuery<UsersPaginated>({
+  const {
+    data: userData,
+    isLoading: userDataIsLoading,
+    isError: userDataIsError,
+  } = useQuery<UsersPaginated>({
     queryKey: ["users-paginated", page, search, role_uuid],
     queryFn: () => fetchUsersPaginated(page, search, role_uuid),
+  });
+
+  const {
+    data: roleOptionsData,
+    isLoading: roleOptionsDataIsLoading,
+    isError: roleOptionsDataIsError,
+  } = useQuery<Option[]>({
+    queryKey: ["roles-options"],
+    queryFn: fetchRoleOptions,
+    enabled: openFilter, // Only fetch when the filter drawer is open
   });
 
   const handleFilterChange = (key: string, value: string | number) => {
@@ -59,18 +75,15 @@ function RouteComponent() {
     });
   };
 
-  const rolesOption = [
-    { value: "ac44fbf2-6dd7-496a-9532-86d153f10952", label: "admin" },
-    { value: "ae0b6ebc-1bbd-4d3b-86e3-a2e86f1c5736", label: "ceo" },
-    { value: "7905f882-d31c-425e-8d64-3faee7cebe57", label: "hr" },
-    { value: "35aa6e4c-1736-4d11-b127-d16a0867280b", label: "finance" },
-    { value: "4efc7603-a034-4ef1-88c7-c395f0772676", label: "employee" },
-  ];
+  const isError = userDataIsError || roleOptionsDataIsError;
+  const isLoading = userDataIsLoading || roleOptionsDataIsLoading;
+
+  if (isError) {
+    return <div className="p-4">Error loading data. Please try again later.</div>;
+  }
 
   return (
     <div className="w-full py-10">
-      {isLoading && <div>Loading...</div>}
-      {isError && <div>Something went wrong</div>}
       <BaseDrawer
         open={openFilter}
         onOpenChange={setOpenFilter}
@@ -101,7 +114,7 @@ function RouteComponent() {
         <CompoBox
           filterKey="role_uuid"
           className="w-full"
-          options={rolesOption}
+          options={roleOptionsData ?? []}
           value={role_uuid}
           onChange={handleFilterChange}
           placeholder="Select Role..."
@@ -109,14 +122,17 @@ function RouteComponent() {
         />
       </BaseDrawer>
 
-      <DataTable
-        columns={columns}
-        data={data?.data ?? []}
-        pageCount={data?.pagination?.totalPages ?? 1}
-        currentPage={page}
-        openFilter={setOpenFilter}
-        handleFilterChange={handleFilterChange}
-      />
+      {isLoading && <DataTableSkeleton />}
+      {userData && (
+        <DataTable
+          columns={columns}
+          data={userData?.data ?? []}
+          pageCount={userData?.pagination?.totalPages ?? 1}
+          currentPage={page}
+          openFilter={setOpenFilter}
+          handleFilterChange={handleFilterChange}
+        />
+      )}
     </div>
   );
 }

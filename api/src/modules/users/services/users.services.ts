@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { access, credentials, ICredentialStatus, roleAccess, roles, users } from "@/db/schema";
-import { and, asc, count, eq, ilike, isNull, or, SQL } from "drizzle-orm";
+import { and, asc, count, eq, ilike, isNull, or, sql, SQL } from "drizzle-orm";
 
 export const getPaginatedUsers = async (search: string, limit: number, offset: number, role_uuid: string) => {
   const searchFilter: SQL[] = [];
@@ -19,6 +19,8 @@ export const getPaginatedUsers = async (search: string, limit: number, offset: n
 
   const data = await db
     .select({
+      id: users.id,
+      uuid: users.uuid,
       first_name: users.first_name,
       middle_name: users.middle_name,
       last_name: users.last_name,
@@ -62,4 +64,16 @@ export const getPaginatedTotalUsers = async (search: string, role_uuid: string) 
 export const getTotalUsers = async () => {
   const [data] = await db.select({ total: count() }).from(users).where(isNull(users.deleted_at));
   return data.total;
+};
+
+export const getUserOptions = async () => {
+  const data = await db
+    .select({
+      value: users.uuid,
+      label: sql<string>`CONCAT(INITCAP(${users.first_name}), ' ', INITCAP(${users.last_name}))`,
+    })
+    .from(users)
+    .where(isNull(users.deleted_at))
+    .orderBy(asc(users.first_name));
+  return data;
 };

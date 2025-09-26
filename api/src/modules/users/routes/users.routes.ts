@@ -5,6 +5,7 @@ import { usersPaginatedSchema } from "../validators/users.validators";
 
 const router = Router();
 
-router.get("/paginated", validate(usersPaginatedSchema), usersController.getPaginatedUsers);
+router.get("/", validate(usersPaginatedSchema), usersController.getPaginatedUsers);
+router.get("/options", usersController.getUserOptions);
 
 export default router;

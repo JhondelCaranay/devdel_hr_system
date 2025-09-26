@@ -11,5 +11,6 @@ router.patch("/update/:uuid", validate(rolesChema.storeRoleSchema), rolesControl
 router.delete("/destroy/:uuid", rolesController.destroyRole);
 router.patch("/restore/:uuid", rolesController.restoreRole);
 router.get("/total", rolesController.getTotalRoles);
+router.get("/options", rolesController.getRoleOptions);
 
 export default router;

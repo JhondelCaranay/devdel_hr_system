@@ -5,6 +5,11 @@ export type Pagination = {
   totalPages: number;
 };
 
+export type Option = {
+  value: string;
+  label: string;
+};
+
 export type User = {
   id: number;
   uuid: string;
