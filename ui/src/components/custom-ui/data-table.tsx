@@ -80,8 +80,12 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="">
-      <div className="flex items-center justify-between py-4">
-        <Input placeholder="Search something..." onChange={(e) => debounced(e.target.value)} className="max-w-sm" />
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between py-4 gap-4">
+        <Input
+          placeholder="Search something..."
+          onChange={(e) => debounced(e.target.value)}
+          className="w-full lg:max-w-sm bg-white"
+        />
         <div className="flex gap-4">
           <Button variant="outline" onClick={() => openFilter(true)}>
             Filters
@@ -110,7 +114,7 @@ export function DataTable<TData, TValue>({
           </DropdownMenu>
         </div>
       </div>
-      <div className="overflow-hidden rounded-md border">
+      <div className="overflow-hidden rounded-md bg-white">
         <Table className="border border-collaps">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -143,7 +147,7 @@ export function DataTable<TData, TValue>({
                         minWidth: cell.column.columnDef.size,
                         maxWidth: cell.column.columnDef.size,
                       }}
-                      className="border"
+                      className="border whitespace-normal break-words"
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>

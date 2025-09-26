@@ -4,6 +4,7 @@ import { DataTable } from "@/components/custom-ui/data-table";
 import { Button } from "@/components/ui/button";
 import { fetchUsersPaginated } from "@/components/users/api";
 import { columns } from "@/components/users/ui/columns";
+import { requirePermission } from "@/lib/auth-guards";
 import type { Pagination, User } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -23,6 +24,9 @@ const PageSearchSchema = z.object({
 
 export const Route = createFileRoute("/(app)/dashboard/users/")({
   validateSearch: PageSearchSchema,
+  beforeLoad: ({ context, location }) => {
+    requirePermission(context.auth, "users:view_users_list_page", location.href);
+  },
   component: RouteComponent,
   head: () => {
     return {
@@ -57,7 +61,7 @@ function RouteComponent() {
 
   const rolesOption = [
     { value: "ac44fbf2-6dd7-496a-9532-86d153f10952", label: "admin" },
-    { value: "ae0b6ebc-1bbd-4d3b-86e3-a2e86f1c5736", label: "developer" },
+    { value: "ae0b6ebc-1bbd-4d3b-86e3-a2e86f1c5736", label: "ceo" },
     { value: "7905f882-d31c-425e-8d64-3faee7cebe57", label: "hr" },
     { value: "35aa6e4c-1736-4d11-b127-d16a0867280b", label: "finance" },
     { value: "4efc7603-a034-4ef1-88c7-c395f0772676", label: "employee" },

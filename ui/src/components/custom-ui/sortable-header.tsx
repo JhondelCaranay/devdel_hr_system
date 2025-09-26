@@ -17,7 +17,7 @@ export function SortableHeader<TData>({ column, title, align = "left" }: Sortabl
       variant="ghost"
       onClick={() => column.toggleSorting(sorted === "asc")}
       className={cn(
-        "cursor-pointer w-full justify-start", // base
+        "cursor-pointer w-full justify-start hover:bg-blue-50", // base
         align === "center" && "justify-center",
         align === "right" && "justify-end"
       )}

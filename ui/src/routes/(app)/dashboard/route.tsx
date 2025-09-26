@@ -21,7 +21,7 @@ function RouteComponent() {
     <div>
       <SidebarProvider defaultOpen={isOpen} onOpenChange={handleChange} open={isOpen}>
         <AppSidebar />
-        <main className="w-full min-h-screen flex flex-col bg-white">
+        <main className="w-full min-h-screen flex flex-col">
           <div className="w-full p-2 lg:px-8 sticky top-0 flex justify-between items-center border-b bg-background">
             <SidebarTrigger className="cursor-pointer" />
           </div>

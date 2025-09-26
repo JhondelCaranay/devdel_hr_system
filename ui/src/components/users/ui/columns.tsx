@@ -37,14 +37,15 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     id: "actions",
-    size: 25,
+    size: 50,
+    minSize: 50,
     cell: ({ row }) => {
       const data = row.original;
 
       return (
         <div className="flex justify-center items-center">
           <DropdownMenu>
-            <DropdownMenuTrigger asChild className="bg-blue-500/10 text-slate-900 cursor-pointer">
+            <DropdownMenuTrigger asChild className="bg-blue-500/30 text-slate-900 cursor-pointer">
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
                 <MoreHorizontal className="h-4 w-4" />
