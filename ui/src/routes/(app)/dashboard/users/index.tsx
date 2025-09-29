@@ -1,8 +1,6 @@
 import { BaseDrawer } from "@/components/custom-ui/base-drawer";
 import { CompoBox } from "@/components/custom-ui/combobox";
 import { DataTable } from "@/components/custom-ui/data-table";
-import { DataTableSkeleton } from "@/components/custom-ui/data-table-skeleton";
-import Loader from "@/components/custom-ui/loader";
 import { fetchRoleOptions } from "@/components/roles/api";
 import { Button } from "@/components/ui/button";
 import { fetchUsersPaginated } from "@/components/users/api";
@@ -90,6 +88,7 @@ function RouteComponent() {
         title="Filters"
         size="md"
         side="right"
+        description="Customize your list with filters."
         footer={
           <>
             <Button
@@ -122,17 +121,17 @@ function RouteComponent() {
         />
       </BaseDrawer>
 
-      {isLoading && <DataTableSkeleton />}
-      {userData && (
-        <DataTable
-          columns={columns}
-          data={userData?.data ?? []}
-          pageCount={userData?.pagination?.totalPages ?? 1}
-          currentPage={page}
-          openFilter={setOpenFilter}
-          handleFilterChange={handleFilterChange}
-        />
-      )}
+      <DataTable
+        withFilter
+        isLoading={isLoading}
+        columns={columns}
+        data={userData?.data ?? []}
+        pageCount={userData?.pagination?.totalPages ?? 1}
+        currentPage={page}
+        openFilter={setOpenFilter}
+        handleFilterChange={handleFilterChange}
+        search={search}
+      />
     </div>
   );
 }

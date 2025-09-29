@@ -23,7 +23,7 @@ const AppSidebarLinkGroup = ({ title, links, withBadge = false }: AppSidebarLink
         <SidebarMenu>
           {links.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <Link to={item.url} activeOptions={{ exact: true }}>
+              <Link to={item.url} activeOptions={{ exact: true, includeSearch: false }}>
                 {({ isActive }) => (
                   <div className="flex items-center gap-2">
                     <SidebarMenuButton isActive={isActive}>

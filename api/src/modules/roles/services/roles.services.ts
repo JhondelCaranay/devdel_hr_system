@@ -5,7 +5,7 @@ import { and, asc, count, eq, ilike, isNull, or, sql, SQL } from "drizzle-orm";
 const selectedRoleFields = {
   id: roles.id,
   uuid: roles.uuid,
-  name: roles.name,
+  name: sql<string>`INITCAP(${roles.name})`,
   created_at: roles.created_at,
   updated_at: roles.updated_at,
 };
@@ -18,7 +18,13 @@ export const getPaginatedRoles = async (search: string, limit: number, offset: n
   }
 
   const data = await db
-    .select(selectedRoleFields)
+    .select({
+      id: roles.id,
+      uuid: roles.uuid,
+      name: sql<string>`INITCAP(${roles.name})`,
+      created_at: roles.created_at,
+      updated_at: roles.updated_at,
+    })
     .from(roles)
     .where(and(isNull(roles.deleted_at), or(...searchFilter)))
     .orderBy(asc(roles.name)) // order by is mandatory
@@ -51,7 +57,15 @@ export const getRoleOptions = async () => {
   const data = await db
     .select({
       value: roles.uuid,
-      label: sql<string>`CONCAT(INITCAP(${roles.name}), ' (', COUNT(${users.id}), ' users)')`,
+      label: sql<string>`
+        CONCAT(
+          INITCAP(${roles.name}),
+          ' (',
+          COUNT(${users.id}),
+          CASE WHEN COUNT(${users.id}) = 1 THEN ' user' ELSE ' users' END,
+          ')'
+        )
+      `,
     })
     .from(roles)
     .innerJoin(users, and(eq(users.role_id, roles.id), isNull(users.deleted_at)))

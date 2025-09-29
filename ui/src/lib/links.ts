@@ -65,23 +65,29 @@ export const financeLinks: MenuLinkType[] = [
     icon: Users2,
   },
   {
+    title: "Reimbursement",
+    url: "/dashboard/reimbursement",
+    icon: Users2,
+  },
+  {
     title: "Utility",
     url: "/dashboard/utility",
     icon: Users2,
   },
   {
     title: "Supplier",
-    url: "/dashboard/Supplier",
+    url: "/dashboard/supplier",
     icon: Users2,
   },
+
   {
-    title: "Reimbursement",
-    url: "/dashboard/reimbursement",
+    title: "Purchasing",
+    url: "/dashboard/purchasing",
     icon: Users2,
   },
   {
     title: "Voucher",
-    url: "/dashboard/Voucher",
+    url: "/dashboard/voucher",
     icon: Users2,
   },
   {

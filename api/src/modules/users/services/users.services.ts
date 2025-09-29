@@ -2,6 +2,17 @@ import { db } from "@/db";
 import { access, credentials, ICredentialStatus, roleAccess, roles, users } from "@/db/schema";
 import { and, asc, count, eq, ilike, isNull, or, sql, SQL } from "drizzle-orm";
 
+export const selectedUserFields = {
+  id: users.id,
+  uuid: users.uuid,
+  first_name: sql<string>`INITCAP(${users.first_name})`,
+  middle_name: sql<string>`INITCAP(${users.middle_name})`,
+  last_name: sql<string>`INITCAP(${users.last_name})`,
+  email: users.email,
+  created_at: users.created_at,
+  role_name: sql<string>`INITCAP(${roles.name})`,
+};
+
 export const getPaginatedUsers = async (search: string, limit: number, offset: number, role_uuid: string) => {
   const searchFilter: SQL[] = [];
   const roleFilter: SQL[] = [];
@@ -18,16 +29,7 @@ export const getPaginatedUsers = async (search: string, limit: number, offset: n
   }
 
   const data = await db
-    .select({
-      id: users.id,
-      uuid: users.uuid,
-      first_name: users.first_name,
-      middle_name: users.middle_name,
-      last_name: users.last_name,
-      email: users.email,
-      created_at: users.created_at,
-      role_name: roles.name,
-    })
+    .select(selectedUserFields)
     .from(users)
     .innerJoin(roles, eq(users.role_id, roles.id))
     .where(and(or(...searchFilter), or(...roleFilter), isNull(users.deleted_at)))
