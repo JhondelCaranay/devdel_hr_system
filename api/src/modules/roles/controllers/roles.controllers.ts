@@ -32,6 +32,20 @@ export const getRoleOptions = async (req: Request, res: Response) => {
   return res.json(data);
 };
 
+export const getRole = async (req: Request, res: Response) => {
+  const { uuid }: { uuid?: string } = req.params;
+  console.log("🚀 ~ getRole ~ uuid:", uuid);
+  const role = await rolesService.getRoleByUUID(uuid);
+
+  if (!role) {
+    return res.status(404).json({ message: "Role not found" });
+  }
+
+  const detailedRole = await rolesService.GetRoleDetailsById(role.id);
+
+  return res.status(200).json({ data: detailedRole });
+};
+
 export const storeRole = async (req: Request, res: Response) => {
   const { name, description }: { name: string; description: string } = req.body;
 

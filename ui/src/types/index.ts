@@ -35,7 +35,20 @@ export type Role = {
   id: number;
   uuid: string;
   name: string;
+  description: string | null;
   updated_at: string | null;
   created_at: string;
   deleted_at: string | null;
+};
+
+export type Access = {
+  id: number;
+  uuid: string;
+  code: string;
+  label: string;
+  module_id: number;
+  created_at: string;
+  updated_at: string | null;
+  /* relation */
+  module_name: string;
 };

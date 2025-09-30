@@ -15,10 +15,15 @@ import {
 import { SortableHeader } from "@/components/custom-ui/sortable-header";
 import type { Role } from "@/types";
 import { formatDate } from "@/lib/format";
+import { Link } from "@tanstack/react-router";
 export const columns: ColumnDef<Role>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => <SortableHeader column={column} title="System Role" align="left" />,
+  },
+  {
+    accessorKey: "description",
+    header: ({ column }) => <SortableHeader column={column} title="Description" align="left" />,
   },
   {
     accessorKey: "created_at",
@@ -30,7 +35,7 @@ export const columns: ColumnDef<Role>[] = [
   },
   {
     accessorKey: "updated_at",
-    header: ({ column }) => <SortableHeader column={column} title="Created At" align="left" />,
+    header: ({ column }) => <SortableHeader column={column} title="Updated At" align="left" />,
     cell: ({ row }) => {
       const data = row.original;
       return <span>{formatDate(data.updated_at)}</span>;
@@ -56,7 +61,11 @@ export const columns: ColumnDef<Role>[] = [
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => navigator.clipboard.writeText(data.uuid)}>Copy ID</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View details</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/dashboard/roles/$roleId" params={{ roleId: data.uuid }}>
+                  View Details
+                </Link>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

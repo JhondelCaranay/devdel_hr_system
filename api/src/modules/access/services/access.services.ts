@@ -11,6 +11,7 @@ const selectedAccessFields = {
   module_id: access.module_id,
   created_at: access.created_at,
   updated_at: access.updated_at,
+  module_name: modules.name,
 };
 
 export const getPaginatedaccess = async (search: string, limit: number, offset: number) => {
@@ -26,7 +27,7 @@ export const getPaginatedaccess = async (search: string, limit: number, offset: 
     .from(access)
     .innerJoin(modules, eq(access.module_id, modules.id))
     .where(and(isNull(access.deleted_at), or(...searchFilter)))
-    .orderBy(asc(access.label))
+    .orderBy(asc(modules.name), asc(access.code))
     .limit(limit)
     .offset(offset);
 

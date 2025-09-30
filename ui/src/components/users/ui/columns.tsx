@@ -14,11 +14,32 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SortableHeader } from "@/components/custom-ui/sortable-header";
 import type { User } from "@/types";
+import { Checkbox } from "@/components/ui/checkbox";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
 export const columns: ColumnDef<User>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    size: 20,
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "first_name",
     header: ({ column }) => <SortableHeader column={column} title="First Name" align="left" />,

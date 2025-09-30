@@ -1,6 +1,8 @@
 import { DataTable } from "@/components/custom-ui/data-table";
+import FetchErrorMessage from "@/components/custom-ui/fetch-error-message";
 import { fetchRolesPaginated } from "@/components/roles/api";
 import { columns } from "@/components/roles/ui/columns";
+import { Button } from "@/components/ui/button";
 import { requirePermission } from "@/lib/auth-guards";
 import type { Pagination, Role } from "@/types";
 import { useQuery } from "@tanstack/react-query";
@@ -36,16 +38,18 @@ type RolesPaginated = {
 };
 
 function RouteComponent() {
-  const [, setOpenFilter] = useState(false);
+  const [rowSelection, setRowSelection] = useState({});
+  // const [, setOpenFilter] = useState(false);
+
   const { page, search } = Route.useSearch();
   const navigate = Route.useNavigate();
 
   const {
-    data: roleData,
-    isLoading: roleDataIsLoading,
-    isError: roleDataIsError,
+    data: rolesData,
+    isLoading: rolesDataIsLoading,
+    isError: rolesDataIsError,
   } = useQuery<RolesPaginated>({
-    queryKey: ["roles-paginated", page, search],
+    queryKey: ["roles", page, search],
     queryFn: () => fetchRolesPaginated(page, search),
   });
 
@@ -54,28 +58,42 @@ function RouteComponent() {
       search: (old) => ({
         ...old,
         [key]: value,
+        ...(key !== "page" ? { page: 1 } : {}),
       }),
+      replace: true,
     });
+    if (key !== "page") {
+      setRowSelection({});
+    }
   };
 
-  const isError = roleDataIsError;
-  const isLoading = roleDataIsLoading;
+  const isError = rolesDataIsError;
+  const isLoading = rolesDataIsLoading;
 
   if (isError) {
-    return <div className="p-4">Error loading data. Please try again later.</div>;
+    return <FetchErrorMessage />;
   }
 
   return (
     <div className="w-full py-10">
       <DataTable
+        title="Roles"
         isLoading={isLoading}
         columns={columns}
-        data={roleData?.data ?? []}
-        pageCount={roleData?.pagination?.totalPages ?? 1}
+        data={rolesData?.data ?? []}
+        pageCount={rolesData?.pagination?.totalPages ?? 1}
         currentPage={page}
-        openFilter={setOpenFilter}
         handleFilterChange={handleFilterChange}
         search={search}
+        rowSelection={rowSelection}
+        setRowSelection={setRowSelection}
+        headerComponent={
+          <>
+            <Button variant="outline" className="text-sm font-medium">
+              Add Roles
+            </Button>
+          </>
+        }
       />
     </div>
   );

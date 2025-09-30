@@ -1,6 +1,7 @@
 import { BaseDrawer } from "@/components/custom-ui/base-drawer";
 import { CompoBox } from "@/components/custom-ui/combobox";
 import { DataTable } from "@/components/custom-ui/data-table";
+import FetchErrorMessage from "@/components/custom-ui/fetch-error-message";
 import { fetchRoleOptions } from "@/components/roles/api";
 import { Button } from "@/components/ui/button";
 import { fetchUsersPaginated } from "@/components/users/api";
@@ -40,6 +41,7 @@ export const Route = createFileRoute("/(app)/dashboard/users/")({
   },
 });
 function RouteComponent() {
+  const [rowSelection, setRowSelection] = useState({});
   const [openFilter, setOpenFilter] = useState(false);
   const { page, search, role_uuid } = Route.useSearch();
   const navigate = Route.useNavigate();
@@ -68,16 +70,24 @@ function RouteComponent() {
       search: (old) => ({
         ...old,
         [key]: value,
+        ...(key !== "page" ? { page: 1 } : {}),
       }),
       replace: true, // Optional: replace the current history entry
     });
+    if (key !== "page") {
+      setRowSelection({});
+    }
+  };
+
+  const handleUsersDelete = (ids: number[]) => {
+    console.log("Deleting IDs:", ids);
   };
 
   const isError = userDataIsError || roleOptionsDataIsError;
   const isLoading = userDataIsLoading || roleOptionsDataIsLoading;
 
   if (isError) {
-    return <div className="p-4">Error loading data. Please try again later.</div>;
+    return <FetchErrorMessage />;
   }
 
   return (
@@ -99,7 +109,7 @@ function RouteComponent() {
                     ...old,
                     role_uuid: "",
                   }),
-                  replace: true, // Optional: replace the current history entry
+                  replace: true,
                 })
               }
             >
@@ -122,15 +132,40 @@ function RouteComponent() {
       </BaseDrawer>
 
       <DataTable
-        withFilter
+        title="Users"
         isLoading={isLoading}
         columns={columns}
         data={userData?.data ?? []}
         pageCount={userData?.pagination?.totalPages ?? 1}
         currentPage={page}
-        openFilter={setOpenFilter}
         handleFilterChange={handleFilterChange}
+        rowSelection={rowSelection}
+        setRowSelection={setRowSelection}
         search={search}
+        tableComponent={
+          <>
+            {Boolean(Object.keys(rowSelection || {}).length) && (
+              <>
+                <div className="text-muted-foreground flex-1 text-sm">
+                  {Object.keys(rowSelection || {}).length} of {userData?.pagination.total} row(s)
+                </div>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    const selectedIds = Object.keys(rowSelection || {}).map((id) => Number(id));
+                    handleUsersDelete(selectedIds);
+                  }}
+                  disabled={false}
+                >
+                  Delete
+                </Button>
+              </>
+            )}
+            <Button variant="outline" onClick={() => setOpenFilter(true)}>
+              Filters
+            </Button>
+          </>
+        }
       />
     </div>
   );

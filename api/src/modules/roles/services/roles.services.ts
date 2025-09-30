@@ -6,8 +6,25 @@ const selectedRoleFields = {
   id: roles.id,
   uuid: roles.uuid,
   name: sql<string>`INITCAP(${roles.name})`,
+  description: roles.description,
   created_at: roles.created_at,
   updated_at: roles.updated_at,
+};
+
+const showRoleFields = {
+  id: roles.id,
+  uuid: roles.uuid,
+  name: sql<string>`INITCAP(${roles.name})`,
+  description: roles.description,
+  created_at: roles.created_at,
+  updated_at: roles.updated_at,
+  total_users: sql<string>`
+    CONCAT(
+      COUNT(${users.id}),
+      ' ',
+      CASE WHEN COUNT(${users.id}) = 1 THEN 'User' ELSE 'Users' END
+    )
+  `,
 };
 
 export const getPaginatedRoles = async (search: string, limit: number, offset: number) => {
@@ -18,13 +35,7 @@ export const getPaginatedRoles = async (search: string, limit: number, offset: n
   }
 
   const data = await db
-    .select({
-      id: roles.id,
-      uuid: roles.uuid,
-      name: sql<string>`INITCAP(${roles.name})`,
-      created_at: roles.created_at,
-      updated_at: roles.updated_at,
-    })
+    .select(selectedRoleFields)
     .from(roles)
     .where(and(isNull(roles.deleted_at), or(...searchFilter)))
     .orderBy(asc(roles.name)) // order by is mandatory
@@ -88,7 +99,17 @@ export const getRoleByUUID = async (uuid: string) => {
   const [data] = await db
     .select(selectedRoleFields)
     .from(roles)
-    .where(and(eq(roles.uuid, uuid)));
+    .where(and(eq(roles.uuid, uuid), isNull(roles.deleted_at)));
+  return data;
+};
+
+export const GetRoleDetailsById = async (id: number) => {
+  const [data] = await db
+    .select(showRoleFields)
+    .from(roles)
+    .innerJoin(users, eq(users.role_id, roles.id))
+    .where(and(eq(roles.id, id), isNull(roles.deleted_at)))
+    .groupBy(roles.id);
   return data;
 };
 

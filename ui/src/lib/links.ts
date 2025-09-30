@@ -79,7 +79,6 @@ export const financeLinks: MenuLinkType[] = [
     url: "/dashboard/supplier",
     icon: Users2,
   },
-
   {
     title: "Purchasing",
     url: "/dashboard/purchasing",
@@ -88,6 +87,11 @@ export const financeLinks: MenuLinkType[] = [
   {
     title: "Voucher",
     url: "/dashboard/voucher",
+    icon: Users2,
+  },
+  {
+    title: "Accounts Payable",
+    url: "/dashboard/accounts-payable",
     icon: Users2,
   },
   {
@@ -106,6 +110,11 @@ export const developersLinks: MenuLinkType[] = [
   {
     title: "Roles",
     url: "/dashboard/roles",
+    icon: Lock,
+  },
+  {
+    title: "Access",
+    url: "/dashboard/access",
     icon: Lock,
   },
   {
