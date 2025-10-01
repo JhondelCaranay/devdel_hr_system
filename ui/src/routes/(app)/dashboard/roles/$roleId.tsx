@@ -1,8 +1,9 @@
-import { fetchAccessPaginated } from "@/components/access/api";
 import { RoleAccessColumns } from "@/components/access/api/columns";
 import { DataTable } from "@/components/custom-ui/data-table";
 import FetchErrorMessage from "@/components/custom-ui/fetch-error-message";
-import { fetchRoleById } from "@/components/roles/api";
+import { fetchRoleAccessPaginated, fetchRoleById } from "@/components/roles/api";
+import { UseCopyExistingAccessModal } from "@/components/roles/hooks/use-copy-existing-access";
+import CopyExistingAccessModal from "@/components/roles/ui/copy-existing-access-modal";
 import { RoleDetails, RoleDetailSkeleton } from "@/components/roles/ui/role-detail";
 import { Button } from "@/components/ui/button";
 import { requirePermission } from "@/lib/auth-guards";
@@ -13,8 +14,8 @@ import { useState } from "react";
 import z from "zod";
 
 const PageSearchSchema = z.object({
-  access_page: z.number().default(1),
-  access_search: z.string().default(""),
+  ra_page: z.number().default(1),
+  ra_search: z.string().default(""),
 });
 
 export const Route = createFileRoute("/(app)/dashboard/roles/$roleId")({
@@ -38,16 +39,21 @@ type RoleDetails = {
   data: Role & { total_users: string };
 };
 
-type AccessPaginated = {
+type RoleAccessPaginated = {
   data: Access[];
   pagination: Pagination;
 };
 
 function RouteComponent() {
+  const {
+    auth: { hasPermission },
+  } = Route.useRouteContext();
   const [rowSelection, setRowSelection] = useState({});
   const { roleId } = Route.useParams();
-  const { access_page, access_search } = Route.useSearch();
+  const { ra_page, ra_search } = Route.useSearch();
   const navigate = Route.useNavigate();
+
+  const { onOpenChange: onCopyAccessModalOpenChange } = UseCopyExistingAccessModal();
 
   const {
     data: roleData,
@@ -62,29 +68,32 @@ function RouteComponent() {
     data: accessData,
     isLoading: accessDataIsLoading,
     isError: accessDataIsError,
-  } = useQuery<AccessPaginated>({
-    queryKey: ["access", access_page, access_search],
-    queryFn: () => fetchAccessPaginated(access_page, access_search),
+  } = useQuery<RoleAccessPaginated>({
+    queryKey: ["access", ra_page, ra_search],
+    queryFn: () => fetchRoleAccessPaginated(ra_page, ra_search, roleId),
     enabled: !!roleId,
   });
 
-  const handleFilterChange = (key: string, value: string | number) => {
+  const onChangeFilter = (key: string, value: string | number) => {
     navigate({
       search: (old) => ({
         ...old,
         [key]: value,
-        ...(key !== "access_page" ? { access_page: 1 } : {}),
+        ...(key !== "ra_page" ? { ra_page: 1 } : {}),
       }),
       replace: true,
     });
-    if (key !== "access_page") {
+    if (key !== "ra_page") {
       setRowSelection({});
     }
   };
 
-  const handleRoleAccessDelete = (ids: number[]) => {
+  const onDeleteRoleAccessIds = (ids: number[]) => {
     console.log("Deleting IDs:", ids);
   };
+
+  const canEditRole = hasPermission("roles:edit_roles");
+  const hasSelectedRows = Object.keys(rowSelection || {}).length > 0;
 
   const isError = roleDataIsError || accessDataIsError;
 
@@ -96,7 +105,7 @@ function RouteComponent() {
     <div className="w-full py-10">
       {/* Detail section */}
       {roleDataIsLoading && <RoleDetailSkeleton />}
-      {roleData && <RoleDetails data={roleData.data} />}
+      {roleData && <RoleDetails data={roleData.data} isloading={roleDataIsLoading} />}
       {/* Role access section */}
       <DataTable
         title="Role Access"
@@ -104,41 +113,47 @@ function RouteComponent() {
         columns={RoleAccessColumns}
         data={accessData?.data ?? []}
         pageCount={accessData?.pagination?.totalPages ?? 1}
-        currentPage={access_page}
-        handleFilterChange={handleFilterChange}
-        search={access_search}
+        currentPage={ra_page}
+        onChangeFilter={onChangeFilter}
+        search={ra_search}
         rowSelection={rowSelection}
         setRowSelection={setRowSelection}
-        pageKey="access_page"
-        searchKey="access_search"
+        pageKey="ra_page"
+        searchKey="ra_search"
         headerComponent={
           <>
-            <Button variant={"outline"} className="text-sm font-medium">
+            <Button
+              variant={"outline"}
+              className="text-sm font-medium"
+              onClick={() => onCopyAccessModalOpenChange(true)}
+              disabled={!canEditRole}
+            >
               Copy Existing Access
             </Button>
-            <Button variant="outline" className="text-sm font-medium">
+            <CopyExistingAccessModal />
+            <Button variant="outline" className="text-sm font-medium" disabled={!canEditRole}>
               Add Access
             </Button>
           </>
         }
         tableComponent={
           <>
-            {Boolean(Object.keys(rowSelection || {}).length) && (
-              <>
-                <div className="text-muted-foreground flex-1 text-sm">
-                  {Object.keys(rowSelection || {}).length} of {accessData?.pagination.total} row(s)
-                </div>
-                <Button
-                  variant="destructive"
-                  onClick={() => {
-                    const selectedIds = Object.keys(rowSelection || {}).map((id) => Number(id));
-                    handleRoleAccessDelete(selectedIds);
-                  }}
-                  disabled={false}
-                >
-                  Delete
-                </Button>
-              </>
+            {hasSelectedRows && (
+              <div className="text-muted-foreground flex-1 text-sm">
+                {Object.keys(rowSelection || {}).length} of {accessData?.pagination.total} row(s)
+              </div>
+            )}
+            {hasSelectedRows && (
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  const selectedIds = Object.keys(rowSelection || {}).map((id) => Number(id));
+                  onDeleteRoleAccessIds(selectedIds);
+                }}
+                disabled={!canEditRole}
+              >
+                Delete
+              </Button>
             )}
           </>
         }

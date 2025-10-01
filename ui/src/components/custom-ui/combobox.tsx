@@ -42,6 +42,7 @@ export function CompoBox({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
+          id={filterKey}
           variant="outline"
           role="combobox"
           aria-expanded={open}
@@ -53,7 +54,7 @@ export function CompoBox({
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder={searchPlaceholder} />
+          <CommandInput id={filterKey} placeholder={searchPlaceholder} />
           <CommandList>
             <CommandEmpty>{emptyMessage}</CommandEmpty>
             <CommandGroup>

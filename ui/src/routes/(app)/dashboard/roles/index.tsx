@@ -53,7 +53,7 @@ function RouteComponent() {
     queryFn: () => fetchRolesPaginated(page, search),
   });
 
-  const handleFilterChange = (key: string, value: string | number) => {
+  const onChangeFilter = (key: string, value: string | number) => {
     navigate({
       search: (old) => ({
         ...old,
@@ -83,7 +83,7 @@ function RouteComponent() {
         data={rolesData?.data ?? []}
         pageCount={rolesData?.pagination?.totalPages ?? 1}
         currentPage={page}
-        handleFilterChange={handleFilterChange}
+        onChangeFilter={onChangeFilter}
         search={search}
         rowSelection={rowSelection}
         setRowSelection={setRowSelection}

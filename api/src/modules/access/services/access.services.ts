@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { access, modules, users } from "@/db/schema";
+import { access, modules, roleAccess, roles, users } from "@/db/schema";
 import { and, asc, count, eq, ilike, isNull, or, SQL } from "drizzle-orm";
 import { IStoreAcces, IUpdateAcces } from "../validators/access.validators";
 
@@ -12,6 +12,34 @@ const selectedAccessFields = {
   created_at: access.created_at,
   updated_at: access.updated_at,
   module_name: modules.name,
+};
+
+export const getPaginatedRoleAccess = async (search: string, limit: number, offset: number, roleUuid?: string) => {
+  const searchFilter: SQL[] = [];
+
+  if (search) {
+    searchFilter.push(ilike(access.code, `%${search}%`));
+    searchFilter.push(ilike(access.label, `%${search}%`));
+  }
+
+  const data = await db
+    .select({
+      id: access.id,
+      uuid: access.uuid,
+      code: access.code,
+      label: access.label,
+      moduleName: modules.name,
+    })
+    .from(access)
+    .innerJoin(modules, eq(access.module_id, modules.id))
+    .innerJoin(roleAccess, eq(roleAccess.access_id, access.id))
+    .innerJoin(roles, eq(roleAccess.role_id, roles.id))
+    .where(and(isNull(access.deleted_at), or(...searchFilter), roleUuid ? eq(roles.uuid, roleUuid) : undefined))
+    .orderBy(asc(modules.name), asc(access.code))
+    .limit(limit)
+    .offset(offset);
+
+  return data;
 };
 
 export const getPaginatedaccess = async (search: string, limit: number, offset: number) => {

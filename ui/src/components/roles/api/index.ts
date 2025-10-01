@@ -11,6 +11,17 @@ export async function fetchRolesPaginated(page: number, search: string) {
   return data;
 }
 
+export async function fetchRoleAccessPaginated(page: number, search: string, roleId?: string) {
+  const { data } = await apiClient.get(`/roles/show/${roleId}/access`, {
+    params: {
+      page,
+      limit: 10,
+      search,
+    },
+  });
+  return data;
+}
+
 export const fetchRoleById = async (roleId: string) => {
   const { data } = await apiClient.get(`/roles/show/${roleId}`);
   return data;

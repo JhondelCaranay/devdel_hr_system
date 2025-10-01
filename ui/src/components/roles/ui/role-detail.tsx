@@ -3,22 +3,29 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/format";
+import { useAuth } from "@/context/auth-context";
 
 type Props = {
   data: Role & { total_users: string };
+  isloading: boolean;
 };
 
 export const RoleDetails = ({ data }: Props) => {
+  const { hasPermission } = useAuth();
+
+  const canEditRole = hasPermission("roles:edit_roles");
+  const canDeleteRole = hasPermission("roles:delete_roles");
+
   return (
     <Card className="mb-6 shadow-md">
       <CardHeader className="">
         <div className="flex justify-between items-center">
           <CardTitle className="text-xl font-semibold">Role Details</CardTitle>
           <div className="flex space-x-2">
-            <Button variant={"outline"} className="text-sm font-medium">
+            <Button variant={"outline"} className="text-sm font-medium" disabled={!canEditRole}>
               Edit
             </Button>
-            <Button variant={"destructive"} className="text-sm font-medium">
+            <Button variant={"destructive"} className="text-sm font-medium" disabled={!canDeleteRole}>
               Delete
             </Button>
           </div>

@@ -2,21 +2,21 @@ import type { Control, FieldValues, Path } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 
-interface FormInputProps<T extends FieldValues> {
+interface FormFileInputProps<T extends FieldValues> {
   control: Control<T>;
   name: Path<T>;
   label: string;
-  type?: "number" | "text" | "email" | "password";
-  placeholder?: string;
+  multiple?: boolean;
+  accept?: string; // e.g. "image/*,application/pdf"
 }
 
-export function FormInput<T extends FieldValues>({
+export function FormFileInput<T extends FieldValues>({
   control,
   name,
   label,
-  type = "text",
-  placeholder,
-}: FormInputProps<T>) {
+  multiple = false,
+  accept,
+}: FormFileInputProps<T>) {
   return (
     <FormField
       control={control}
@@ -26,15 +26,15 @@ export function FormInput<T extends FieldValues>({
           <FormLabel htmlFor={name}>{label}</FormLabel>
           <FormControl>
             <Input
-              autoComplete="off"
               id={name}
-              {...field}
-              type={type}
-              placeholder={placeholder}
-              value={field.value ?? ""}
-              onChange={(e) =>
-                type === "number" ? field.onChange(e.target.valueAsNumber) : field.onChange(e.target.value)
-              }
+              type="file"
+              multiple={multiple}
+              accept={accept}
+              onChange={(e) => {
+                const files = e.target.files;
+                if (!files) return;
+                field.onChange(multiple ? Array.from(files) : files[0]);
+              }}
             />
           </FormControl>
           <FormMessage />

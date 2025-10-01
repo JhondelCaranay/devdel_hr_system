@@ -65,7 +65,7 @@ function RouteComponent() {
     enabled: openFilter, // Only fetch when the filter drawer is open
   });
 
-  const handleFilterChange = (key: string, value: string | number) => {
+  const onChangeFilter = (key: string, value: string | number) => {
     navigate({
       search: (old) => ({
         ...old,
@@ -79,7 +79,7 @@ function RouteComponent() {
     }
   };
 
-  const handleUsersDelete = (ids: number[]) => {
+  const onDeleteUserIds = (ids: number[]) => {
     console.log("Deleting IDs:", ids);
   };
 
@@ -125,7 +125,7 @@ function RouteComponent() {
           className="w-full"
           options={roleOptionsData ?? []}
           value={role_uuid}
-          onChange={handleFilterChange}
+          onChange={onChangeFilter}
           placeholder="Select Role..."
           searchPlaceholder="Search Role..."
         />
@@ -138,7 +138,7 @@ function RouteComponent() {
         data={userData?.data ?? []}
         pageCount={userData?.pagination?.totalPages ?? 1}
         currentPage={page}
-        handleFilterChange={handleFilterChange}
+        onChangeFilter={onChangeFilter}
         rowSelection={rowSelection}
         setRowSelection={setRowSelection}
         search={search}
@@ -153,7 +153,7 @@ function RouteComponent() {
                   variant="destructive"
                   onClick={() => {
                     const selectedIds = Object.keys(rowSelection || {}).map((id) => Number(id));
-                    handleUsersDelete(selectedIds);
+                    onDeleteUserIds(selectedIds);
                   }}
                   disabled={false}
                 >

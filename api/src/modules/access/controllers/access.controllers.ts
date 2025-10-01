@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
 import * as accessService from "../services/access.services";
+import * as rolesService from "../../roles/services/roles.services";
 import { IStoreAcces, IUpdateAcces } from "../validators/access.validators";
 
 export const getPaginatedaccess = async (req: Request, res: Response) => {
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 10;
   const search = (req.query.search as string) || "";
+
   const offset = (page - 1) * limit;
 
   const data = await accessService.getPaginatedaccess(search, limit, offset);

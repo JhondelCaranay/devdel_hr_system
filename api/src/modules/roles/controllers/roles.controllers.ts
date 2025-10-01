@@ -22,6 +22,33 @@ export const getPaginatedRoles = async (req: Request, res: Response) => {
   });
 };
 
+export const getPaginatedRoleAccess = async (req: Request, res: Response) => {
+  const { uuid }: { uuid?: string } = req.params;
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 10;
+  const search = (req.query.search as string) || "";
+  const offset = (page - 1) * limit;
+
+  const role = await rolesService.getRoleByUUID(uuid);
+
+  if (!role) {
+    return res.status(404).json({ message: "Role not found" });
+  }
+
+  const data = await rolesService.getPaginatedRoleAccess(role.id, search, limit, offset);
+  const total = await rolesService.getPaginatedTotalRoleAccess(role.id, search);
+
+  return res.json({
+    data: data,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  });
+};
+
 export const getTotalRoles = async (req: Request, res: Response) => {
   const total = await rolesService.getTotalRoles();
   return res.json({ total });
@@ -34,7 +61,6 @@ export const getRoleOptions = async (req: Request, res: Response) => {
 
 export const getRole = async (req: Request, res: Response) => {
   const { uuid }: { uuid?: string } = req.params;
-  console.log("🚀 ~ getRole ~ uuid:", uuid);
   const role = await rolesService.getRoleByUUID(uuid);
 
   if (!role) {

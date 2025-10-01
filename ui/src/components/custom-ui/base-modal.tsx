@@ -20,7 +20,15 @@ interface BaseModalProps {
   size?: ModalSize;
 }
 
-export function BaseModal({ open, onOpenChange, title, description, children, footer, size = "md" }: BaseModalProps) {
+export function BaseModal({
+  open = false,
+  onOpenChange,
+  title,
+  description = "",
+  children,
+  footer,
+  size = "md",
+}: BaseModalProps) {
   // Map size prop to Tailwind classes
   const sizeClasses: Record<ModalSize, string> = {
     sm: "sm:max-w-[360px] w-[90%]",
@@ -35,7 +43,7 @@ export function BaseModal({ open, onOpenChange, title, description, children, fo
       <DialogContent className={`${sizeClasses[size]} max-h-[90vh] overflow-y-auto`}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          {description && <DialogDescription>{description}</DialogDescription>}
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
         <div className="py-2">{children}</div>

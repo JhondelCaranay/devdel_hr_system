@@ -33,7 +33,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   pageCount: number;
   currentPage: number;
-  handleFilterChange: (key: string, value: string | number) => void;
+  onChangeFilter: (key: string, value: string | number) => void;
   search: string;
   pageKey?: string;
   searchKey?: string;
@@ -52,7 +52,7 @@ export function DataTable<TData, TValue>({
   data,
   pageCount,
   currentPage,
-  handleFilterChange,
+  onChangeFilter,
   search,
   pageKey = "page",
   searchKey = "search",
@@ -88,7 +88,7 @@ export function DataTable<TData, TValue>({
   });
 
   const debounced = useDebouncedCallback((value) => {
-    handleFilterChange(searchKey, value);
+    onChangeFilter(searchKey, value);
   }, 500);
 
   return (
@@ -103,6 +103,7 @@ export function DataTable<TData, TValue>({
       <CardContent>
         <div className="flex flex-col lg:flex-row lg:items-center justify-between py-4 gap-4">
           <Input
+            id="search"
             defaultValue={search}
             placeholder="Search something..."
             onChange={(e) => debounced(e.target.value)}
@@ -198,7 +199,7 @@ export function DataTable<TData, TValue>({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handleFilterChange(pageKey, currentPage - 1)}
+                onClick={() => onChangeFilter(pageKey, currentPage - 1)}
                 disabled={currentPage <= 1}
               >
                 Previous
@@ -214,7 +215,7 @@ export function DataTable<TData, TValue>({
                     key={i}
                     variant={page === currentPage ? "default" : "outline"}
                     size="sm"
-                    onClick={() => handleFilterChange(pageKey, page as number)}
+                    onClick={() => onChangeFilter(pageKey, page as number)}
                   >
                     {page}
                   </Button>
@@ -224,7 +225,7 @@ export function DataTable<TData, TValue>({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handleFilterChange(pageKey, currentPage + 1)}
+                onClick={() => onChangeFilter(pageKey, currentPage + 1)}
                 disabled={currentPage >= pageCount}
               >
                 Next

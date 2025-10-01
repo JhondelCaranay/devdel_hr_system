@@ -7,6 +7,7 @@ const router = Router();
 
 router.get("/", validate(rolesChema.rolesPaginatedSchema), rolesController.getPaginatedRoles);
 router.get("/show/:uuid", rolesController.getRole);
+router.get("/show/:uuid/access", rolesController.getPaginatedRoleAccess);
 router.post("/store", validate(rolesChema.storeRoleSchema), rolesController.storeRole);
 router.patch("/update/:uuid", validate(rolesChema.storeRoleSchema), rolesController.updateRole);
 router.delete("/destroy/:uuid", rolesController.destroyRole);
