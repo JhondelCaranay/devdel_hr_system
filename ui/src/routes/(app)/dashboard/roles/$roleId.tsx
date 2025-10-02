@@ -2,8 +2,7 @@ import { RoleAccessColumns } from "@/components/access/api/columns";
 import { DataTable } from "@/components/custom-ui/data-table";
 import FetchErrorMessage from "@/components/custom-ui/fetch-error-message";
 import { fetchRoleAccessPaginated, fetchRoleById } from "@/components/roles/api";
-import { UseCopyExistingAccessModal } from "@/components/roles/hooks/use-copy-existing-access";
-import CopyExistingAccessModal from "@/components/roles/ui/copy-existing-access-modal";
+import { useCopyExistingAccessModal } from "@/components/roles/hooks/use-role-modal-store";
 import { RoleDetails, RoleDetailSkeleton } from "@/components/roles/ui/role-detail";
 import { Button } from "@/components/ui/button";
 import { requirePermission } from "@/lib/auth-guards";
@@ -50,25 +49,18 @@ function RouteComponent() {
   } = Route.useRouteContext();
   const [rowSelection, setRowSelection] = useState({});
   const { roleId } = Route.useParams();
+  console.log("🚀 ~ RouteComponent ~ roleId:", roleId);
   const { ra_page, ra_search } = Route.useSearch();
   const navigate = Route.useNavigate();
 
-  const { onOpenChange: onCopyAccessModalOpenChange } = UseCopyExistingAccessModal();
+  const { onOpenChange: onCopyAccessModalOpenChange } = useCopyExistingAccessModal();
 
-  const {
-    data: roleData,
-    isLoading: roleDataIsLoading,
-    isError: roleDataIsError,
-  } = useQuery<RoleDetails>({
+  const { data: roleData, ...roleQuery } = useQuery<RoleDetails>({
     queryKey: ["roles", roleId],
     queryFn: () => fetchRoleById(roleId),
   });
 
-  const {
-    data: accessData,
-    isLoading: accessDataIsLoading,
-    isError: accessDataIsError,
-  } = useQuery<RoleAccessPaginated>({
+  const { data: roleAccessData, ...roleAccessQuery } = useQuery<RoleAccessPaginated>({
     queryKey: ["access", ra_page, ra_search],
     queryFn: () => fetchRoleAccessPaginated(ra_page, ra_search, roleId),
     enabled: !!roleId,
@@ -95,7 +87,7 @@ function RouteComponent() {
   const canEditRole = hasPermission("roles:edit_roles");
   const hasSelectedRows = Object.keys(rowSelection || {}).length > 0;
 
-  const isError = roleDataIsError || accessDataIsError;
+  const isError = roleQuery.isError || roleAccessQuery.isError;
 
   if (isError) {
     return <FetchErrorMessage />;
@@ -103,16 +95,19 @@ function RouteComponent() {
 
   return (
     <div className="w-full py-10">
+      {/* <pre>
+        <code>{JSON.stringify(roleData, null, 2)}</code>
+      </pre> */}
       {/* Detail section */}
-      {roleDataIsLoading && <RoleDetailSkeleton />}
-      {roleData && <RoleDetails data={roleData.data} isloading={roleDataIsLoading} />}
+      {roleQuery.isLoading && <RoleDetailSkeleton />}
+      {roleData?.data && <RoleDetails data={roleData?.data} />}
       {/* Role access section */}
       <DataTable
         title="Role Access"
-        isLoading={accessDataIsLoading}
+        isLoading={roleAccessQuery.isLoading}
         columns={RoleAccessColumns}
-        data={accessData?.data ?? []}
-        pageCount={accessData?.pagination?.totalPages ?? 1}
+        data={roleAccessData?.data ?? []}
+        pageCount={roleAccessData?.pagination?.totalPages ?? 1}
         currentPage={ra_page}
         onChangeFilter={onChangeFilter}
         search={ra_search}
@@ -130,7 +125,6 @@ function RouteComponent() {
             >
               Copy Existing Access
             </Button>
-            <CopyExistingAccessModal />
             <Button variant="outline" className="text-sm font-medium" disabled={!canEditRole}>
               Add Access
             </Button>
@@ -140,7 +134,7 @@ function RouteComponent() {
           <>
             {hasSelectedRows && (
               <div className="text-muted-foreground flex-1 text-sm">
-                {Object.keys(rowSelection || {}).length} of {accessData?.pagination.total} row(s)
+                {Object.keys(rowSelection || {}).length} of {roleAccessData?.pagination.total} row(s)
               </div>
             )}
             {hasSelectedRows && (

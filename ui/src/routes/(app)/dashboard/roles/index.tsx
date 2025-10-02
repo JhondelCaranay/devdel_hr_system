@@ -1,6 +1,7 @@
 import { DataTable } from "@/components/custom-ui/data-table";
 import FetchErrorMessage from "@/components/custom-ui/fetch-error-message";
 import { fetchRolesPaginated } from "@/components/roles/api";
+import { useCreateRoleModal } from "@/components/roles/hooks/use-role-modal-store";
 import { columns } from "@/components/roles/ui/columns";
 import { Button } from "@/components/ui/button";
 import { requirePermission } from "@/lib/auth-guards";
@@ -38,17 +39,16 @@ type RolesPaginated = {
 };
 
 function RouteComponent() {
+  const {
+    auth: { hasPermission },
+  } = Route.useRouteContext();
   const [rowSelection, setRowSelection] = useState({});
-  // const [, setOpenFilter] = useState(false);
-
   const { page, search } = Route.useSearch();
   const navigate = Route.useNavigate();
 
-  const {
-    data: rolesData,
-    isLoading: rolesDataIsLoading,
-    isError: rolesDataIsError,
-  } = useQuery<RolesPaginated>({
+  const createRoleModal = useCreateRoleModal();
+
+  const { data: rolesData, ...roleQuery } = useQuery<RolesPaginated>({
     queryKey: ["roles", page, search],
     queryFn: () => fetchRolesPaginated(page, search),
   });
@@ -67,8 +67,10 @@ function RouteComponent() {
     }
   };
 
-  const isError = rolesDataIsError;
-  const isLoading = rolesDataIsLoading;
+  const canCreateRole = hasPermission("roles:create_roles");
+
+  const isError = roleQuery.isError;
+  const isLoading = roleQuery.isLoading;
 
   if (isError) {
     return <FetchErrorMessage />;
@@ -89,7 +91,12 @@ function RouteComponent() {
         setRowSelection={setRowSelection}
         headerComponent={
           <>
-            <Button variant="outline" className="text-sm font-medium">
+            <Button
+              variant="default"
+              className="text-sm font-medium"
+              onClick={() => createRoleModal.onOpenChange(true)}
+              disabled={!canCreateRole}
+            >
               Add Roles
             </Button>
           </>

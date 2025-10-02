@@ -22,7 +22,7 @@ const showRoleFields = {
     CONCAT(
       COUNT(${users.id}),
       ' ',
-      CASE WHEN COUNT(${users.id}) = 1 THEN 'User' ELSE 'Users' END
+      CASE WHEN COUNT(${users.id}) <= 1 THEN 'User' ELSE 'Users' END
     )
   `,
 };
@@ -156,7 +156,7 @@ export const GetRoleDetailsById = async (id: number) => {
   const [data] = await db
     .select(showRoleFields)
     .from(roles)
-    .innerJoin(users, eq(users.role_id, roles.id))
+    .leftJoin(users, eq(users.role_id, roles.id))
     .where(and(eq(roles.id, id), isNull(roles.deleted_at)))
     .groupBy(roles.id);
   return data;

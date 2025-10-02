@@ -46,23 +46,15 @@ function RouteComponent() {
   const { page, search, role_uuid } = Route.useSearch();
   const navigate = Route.useNavigate();
 
-  const {
-    data: userData,
-    isLoading: userDataIsLoading,
-    isError: userDataIsError,
-  } = useQuery<UsersPaginated>({
+  const { data: userData, ...userQuery } = useQuery<UsersPaginated>({
     queryKey: ["users-paginated", page, search, role_uuid],
     queryFn: () => fetchUsersPaginated(page, search, role_uuid),
   });
 
-  const {
-    data: roleOptionsData,
-    isLoading: roleOptionsDataIsLoading,
-    isError: roleOptionsDataIsError,
-  } = useQuery<Option[]>({
+  const { data: roleOptionsData, ...roleOptionsQuery } = useQuery<Option[]>({
     queryKey: ["roles-options"],
     queryFn: fetchRoleOptions,
-    enabled: openFilter, // Only fetch when the filter drawer is open
+    enabled: openFilter,
   });
 
   const onChangeFilter = (key: string, value: string | number) => {
@@ -72,7 +64,7 @@ function RouteComponent() {
         [key]: value,
         ...(key !== "page" ? { page: 1 } : {}),
       }),
-      replace: true, // Optional: replace the current history entry
+      replace: true,
     });
     if (key !== "page") {
       setRowSelection({});
@@ -83,8 +75,8 @@ function RouteComponent() {
     console.log("Deleting IDs:", ids);
   };
 
-  const isError = userDataIsError || roleOptionsDataIsError;
-  const isLoading = userDataIsLoading || roleOptionsDataIsLoading;
+  const isError = userQuery.isError || roleOptionsQuery.isError;
+  const isLoading = userQuery.isLoading || roleOptionsQuery.isLoading;
 
   if (isError) {
     return <FetchErrorMessage />;

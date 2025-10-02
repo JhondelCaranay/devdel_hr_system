@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 
 import z from "zod";
 import { BaseModal } from "@/components/custom-ui/base-modal";
-import { UseCopyExistingAccessModal } from "../hooks/use-copy-existing-access";
 import { FormSearchInput } from "@/components/custom-ui/form-search-input";
 import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/custom-ui/form-input";
 import { FormFileInput } from "@/components/custom-ui/form-file-input";
+import { useCopyExistingAccessModal } from "../../hooks/use-role-modal-store";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -22,7 +22,7 @@ const formSchema = z.object({
 export type FormValues = z.infer<typeof formSchema>;
 
 const CopyExistingAccessModal = () => {
-  const copyExistingAccessModal = UseCopyExistingAccessModal();
+  const copyExistingAccessModal = useCopyExistingAccessModal();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),

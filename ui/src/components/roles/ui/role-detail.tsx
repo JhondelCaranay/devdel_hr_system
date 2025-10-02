@@ -7,7 +7,6 @@ import { useAuth } from "@/context/auth-context";
 
 type Props = {
   data: Role & { total_users: string };
-  isloading: boolean;
 };
 
 export const RoleDetails = ({ data }: Props) => {
@@ -33,20 +32,21 @@ export const RoleDetails = ({ data }: Props) => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2 text-sm">
-          <div>
-            <span className="font-medium text-gray-700">Name:</span> <span>{data.name}</span>
+          <div className="space-x-1">
+            <span className="font-semibold text-gray-700">Name:</span> <span>{data.name}</span>
           </div>
-          <div>
-            <span className="font-medium text-gray-700">Description:</span> <span>{data.description || "N/A"}</span>
+          <div className="space-x-1">
+            <span className="font-semibold text-gray-700">Description:</span> <span>{data.description || "N/A"}</span>
           </div>
-          <div>
-            <span className="font-medium text-gray-700">Total Users:</span> <span>{data.total_users || "0 Users"}</span>
+          <div className="space-x-1">
+            <span className="font-semibold text-gray-700">Total Users:</span>{" "}
+            <span>{data.total_users || "0 Users"}</span>
           </div>
-          <div>
-            <span className="font-medium text-gray-700">Created At:</span> <span>{formatDate(data.created_at)}</span>
+          <div className="space-x-1">
+            <span className="font-semibold text-gray-700">Created At:</span> <span>{formatDate(data.created_at)}</span>
           </div>
-          <div>
-            <span className="font-medium text-gray-700">Updated At:</span> <span>{formatDate(data.updated_at)}</span>
+          <div className="space-x-1">
+            <span className="font-semibold text-gray-700">Updated At:</span> <span>{formatDate(data.updated_at)}</span>
           </div>
         </div>
       </CardContent>
