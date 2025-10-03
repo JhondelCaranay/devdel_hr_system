@@ -10,6 +10,11 @@ router.get("/show/:uuid", rolesController.getRole);
 router.get("/show/:uuid/access", rolesController.getPaginatedRoleAccess);
 router.post("/store", validate(rolesChema.storeRoleSchema), rolesController.storeRole);
 router.patch("/update/:uuid", validate(rolesChema.storeRoleSchema), rolesController.updateRole);
+router.patch(
+  "/update/:uuid/copy-access",
+  validate(rolesChema.copyRoleAccessSchema),
+  rolesController.updateCopyRoleAccess
+);
 router.delete("/destroy/:uuid", rolesController.destroyRole);
 router.patch("/restore/:uuid", rolesController.restoreRole);
 router.get("/total", rolesController.getTotalRoles);

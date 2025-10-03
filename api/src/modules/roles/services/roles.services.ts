@@ -27,16 +27,6 @@ const showRoleFields = {
   `,
 };
 
-const selectedRoleAccessFields = {
-  id: access.id,
-  uuid: access.uuid,
-  code: access.code,
-  label: access.label,
-  module_name: modules.name,
-  created_at: access.created_at,
-  updated_at: access.updated_at,
-};
-
 export const getPaginatedRoles = async (search: string, limit: number, offset: number) => {
   const searchFilter: SQL[] = [];
 
@@ -66,45 +56,6 @@ export const getPaginatedTotalRoles = async (search: string) => {
     .select({ total: count() })
     .from(roles)
     .where(and(isNull(roles.deleted_at), or(...searchFilter)));
-  return data.total;
-};
-
-export const getPaginatedRoleAccess = async (roleId: number, search: string, limit: number, offset: number) => {
-  const searchFilter: SQL[] = [];
-
-  if (search) {
-    searchFilter.push(ilike(access.code, `%${search}%`));
-    searchFilter.push(ilike(access.label, `%${search}%`));
-  }
-
-  const data = await db
-    .select(selectedRoleAccessFields)
-    .from(access)
-    .innerJoin(modules, eq(access.module_id, modules.id))
-    .innerJoin(roleAccess, eq(roleAccess.access_id, access.id))
-    .innerJoin(roles, eq(roleAccess.role_id, roles.id))
-    .where(and(eq(roles.id, roleId), isNull(access.deleted_at), or(...searchFilter)))
-    .orderBy(asc(modules.name), asc(access.code))
-    .limit(limit)
-    .offset(offset);
-
-  return data;
-};
-
-export const getPaginatedTotalRoleAccess = async (roleId: number, search: string) => {
-  const searchFilter: SQL[] = [];
-
-  if (search) {
-    searchFilter.push(ilike(access.code, `%${search}%`));
-    searchFilter.push(ilike(access.label, `%${search}%`));
-  }
-  const [data] = await db
-    .select({ total: count() })
-    .from(access)
-    .innerJoin(modules, eq(access.module_id, modules.id))
-    .innerJoin(roleAccess, eq(roleAccess.access_id, access.id))
-    .innerJoin(roles, eq(roleAccess.role_id, roles.id))
-    .where(and(eq(roles.id, roleId), isNull(access.deleted_at), or(...searchFilter)));
   return data.total;
 };
 

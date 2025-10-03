@@ -17,3 +17,9 @@ export const storeRoleSchema = z.object({
     description: z.string().max(255, "Description must be at most 255 characters").optional(),
   }),
 });
+
+export const copyRoleAccessSchema = z.object({
+  body: z.object({
+    copy_from_uuid: z.string("copy_from_uuid is required"),
+  }),
+});

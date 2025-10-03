@@ -1,14 +1,14 @@
 import { create } from "zustand";
 
 type ModalState = {
-  id?: number;
+  uuid?: string;
   isOpen: boolean;
-  onOpenChange: (open: boolean, id?: number) => void;
+  onOpenChange: (open: boolean, uuid?: string) => void;
 };
 
 export const createBaseModalStore = () =>
   create<ModalState>((set) => ({
-    id: undefined,
+    uuid: undefined,
     isOpen: false,
-    onOpenChange: (open: boolean, id?: number) => set({ isOpen: open, id: id }),
+    onOpenChange: (open: boolean, uuid?: string) => set({ isOpen: open, uuid: uuid }),
   }));

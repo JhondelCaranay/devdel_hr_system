@@ -8,7 +8,6 @@ import { useAuth } from "./context/auth-context";
 import { AuthProvider } from "./providers/auth-provider";
 import { Toaster as Sonner } from "sonner";
 import QueryProvider from "./providers/query-provider";
-import ModalProvider from "./providers/modal-provider";
 
 // Create a new router instance
 const router = createRouter({
@@ -43,7 +42,6 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <AuthProvider>
         <QueryProvider>
-          <ModalProvider />
           <Sonner />
           <InnerApp />
         </QueryProvider>

@@ -1,69 +1,83 @@
+import type { Option } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-
-import z from "zod";
 import { BaseModal } from "@/components/custom-ui/base-modal";
-import { FormSearchInput } from "@/components/custom-ui/form-search-input";
 import { Form } from "@/components/ui/form";
-import { FormInput } from "@/components/custom-ui/form-input";
-import { FormFileInput } from "@/components/custom-ui/form-file-input";
 import { useCopyExistingAccessModal } from "../../hooks/use-role-modal-store";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { copyExistingAccess, fetchRoleOptions } from "../../api";
+import { FormSearchInput } from "@/components/custom-ui/form-search-input";
+import { CopyExistingAccessSchema, type ExistingAccessFormValues } from "../../schema";
 
-const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.email("Required"),
-  number: z.number("Required").min(2, "Number must be at least 2"),
-  file: z.instanceof(File).optional(),
-  role: z.string().min(1, "Role is required").optional(),
-});
-
-export type FormValues = z.infer<typeof formSchema>;
+import { Route } from "@/routes/(app)/dashboard/roles/$roleId";
 
 const CopyExistingAccessModal = () => {
   const copyExistingAccessModal = useCopyExistingAccessModal();
+  const queryClient = useQueryClient();
+  const navigate = Route.useNavigate();
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      number: undefined,
-      file: undefined,
+  const roleId = copyExistingAccessModal.uuid;
+
+  const { data: roleOptionsData, ...roleOptionsQuery } = useQuery<Option[]>({
+    queryKey: ["roles-options"],
+    queryFn: fetchRoleOptions,
+    enabled: !!roleId,
+  });
+
+  const mutation = useMutation({
+    mutationFn: copyExistingAccess,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["roles"] });
+      queryClient.invalidateQueries({ queryKey: ["access"] });
+      toast.success("Data updated successfully");
+      form.reset();
+      copyExistingAccessModal.onOpenChange(false);
+      navigate({
+        search: (old) => ({
+          ...old,
+          ...{ ra_page: 1 },
+        }),
+        replace: true,
+      });
+    },
+    onError: () => {
+      toast.error("Failed to update data. Please try again later.");
     },
   });
 
-  const onSubmit = (values: FormValues) => {
-    console.log("Form submitted:", values);
+  const isFormDisabble = mutation.isPending || roleOptionsQuery.isLoading;
 
-    form.reset();
-    copyExistingAccessModal.onOpenChange(false);
+  const form = useForm<ExistingAccessFormValues>({
+    resolver: zodResolver(CopyExistingAccessSchema),
+    defaultValues: {
+      copy_from_uuid: undefined,
+      copy_to_uuid: roleId ?? undefined,
+    },
+    disabled: isFormDisabble,
+  });
+
+  const onSubmit = async (values: ExistingAccessFormValues) => {
+    await mutation.mutateAsync(values);
   };
 
-  const dataOptions = [
-    { label: "1", value: "option1" },
-    { label: "2", value: "option2" },
-    { label: "3", value: "option3" },
-  ];
+  const isDisabled = form.formState.disabled;
 
-  const isDisabled = form.formState.isSubmitting;
+  // remvove the current active role
+  const roleOptions = (roleOptionsData ?? []).filter((role) => role.value !== roleId);
 
   return (
     <BaseModal
       open={copyExistingAccessModal.isOpen}
       onOpenChange={copyExistingAccessModal.onOpenChange}
-      title="Add User"
-      description="Fill in the details below to add a new access."
+      title="Update Data"
+      description="Change the fields below to keep your data up to date."
       size="md"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormInput control={form.control} name="name" label="Name" placeholder="Enter name" />
-          <FormInput control={form.control} name="number" label="Number" placeholder="Enter number" type="number" />
-          <FormInput control={form.control} name="email" label="Email" placeholder="Enter email" type="email" />
-          <FormFileInput control={form.control} name="file" label="File Upload" />
-          <FormSearchInput control={form.control} name="role" label="Role" options={dataOptions} />
+          <FormSearchInput control={form.control} name="copy_from_uuid" label="Role" options={roleOptions} />
           <Button type="submit" className="w-full" disabled={isDisabled}>
             Submit
           </Button>
@@ -74,5 +88,3 @@ const CopyExistingAccessModal = () => {
 };
 
 export default CopyExistingAccessModal;
-
-export const CopyExistingAccessForm = () => {};

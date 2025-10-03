@@ -97,7 +97,7 @@ function RouteComponent() {
               onClick={() => createRoleModal.onOpenChange(true)}
               disabled={!canCreateRole}
             >
-              Add Roles
+              Add Role
             </Button>
           </>
         }

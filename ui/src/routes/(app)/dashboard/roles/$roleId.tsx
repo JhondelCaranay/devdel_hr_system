@@ -1,16 +1,17 @@
+import type { Access, Pagination, Role } from "@/types";
+import FetchErrorMessage from "@/components/custom-ui/fetch-error-message";
+import z from "zod";
+
 import { RoleAccessColumns } from "@/components/access/api/columns";
 import { DataTable } from "@/components/custom-ui/data-table";
-import FetchErrorMessage from "@/components/custom-ui/fetch-error-message";
 import { fetchRoleAccessPaginated, fetchRoleById } from "@/components/roles/api";
 import { useCopyExistingAccessModal } from "@/components/roles/hooks/use-role-modal-store";
-import { RoleDetails, RoleDetailSkeleton } from "@/components/roles/ui/role-detail";
+import { RoleDetails } from "@/components/roles/ui/role-detail";
 import { Button } from "@/components/ui/button";
 import { requirePermission } from "@/lib/auth-guards";
-import type { Access, Pagination, Role } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import z from "zod";
 
 const PageSearchSchema = z.object({
   ra_page: z.number().default(1),
@@ -49,11 +50,10 @@ function RouteComponent() {
   } = Route.useRouteContext();
   const [rowSelection, setRowSelection] = useState({});
   const { roleId } = Route.useParams();
-  console.log("🚀 ~ RouteComponent ~ roleId:", roleId);
   const { ra_page, ra_search } = Route.useSearch();
   const navigate = Route.useNavigate();
 
-  const { onOpenChange: onCopyAccessModalOpenChange } = useCopyExistingAccessModal();
+  const copyExistingAccessModal = useCopyExistingAccessModal();
 
   const { data: roleData, ...roleQuery } = useQuery<RoleDetails>({
     queryKey: ["roles", roleId],
@@ -95,12 +95,8 @@ function RouteComponent() {
 
   return (
     <div className="w-full py-10">
-      {/* <pre>
-        <code>{JSON.stringify(roleData, null, 2)}</code>
-      </pre> */}
       {/* Detail section */}
-      {roleQuery.isLoading && <RoleDetailSkeleton />}
-      {roleData?.data && <RoleDetails data={roleData?.data} />}
+      <RoleDetails data={roleData?.data} />
       {/* Role access section */}
       <DataTable
         title="Role Access"
@@ -120,7 +116,7 @@ function RouteComponent() {
             <Button
               variant={"outline"}
               className="text-sm font-medium"
-              onClick={() => onCopyAccessModalOpenChange(true)}
+              onClick={() => copyExistingAccessModal.onOpenChange(true, roleData?.data.uuid)}
               disabled={!canEditRole}
             >
               Copy Existing Access
