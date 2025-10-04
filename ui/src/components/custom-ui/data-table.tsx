@@ -26,6 +26,48 @@ import { PaginationSkeleton, TableSkeleton } from "./data-table-skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Separator } from "../ui/separator";
 
+{
+  /* 
+  USAGE
+  
+  <DataTable
+  title="Users"
+  isLoading={isLoading}
+  columns={columns}
+  data={userData?.data ?? []}
+  pageCount={userData?.pagination?.totalPages ?? 1}
+  currentPage={page}
+  onChangeFilter={onChangeFilter}
+  rowSelection={rowSelection}
+  setRowSelection={setRowSelection}
+  search={search}
+  tableComponent={
+    <>
+      {Boolean(Object.keys(rowSelection || {}).length) && (
+        <>
+          <div className="text-muted-foreground flex-1 text-sm">
+            {Object.keys(rowSelection || {}).length} of {userData?.pagination.total} row(s)
+          </div>
+          <Button
+            variant="destructive"
+            onClick={() => {
+              const selectedIds = Object.keys(rowSelection || {}).map((id) => Number(id));
+              onDeleteUserIds(selectedIds);
+            }}
+            disabled={false}
+          >
+            Delete
+          </Button>
+        </>
+      )}
+      <Button variant="outline" onClick={() => setOpenFilter(true)}>
+        Filters
+      </Button>
+    </>
+  }
+/> */
+}
+
 interface DataTableProps<TData, TValue> {
   title: string;
   isLoading?: boolean;

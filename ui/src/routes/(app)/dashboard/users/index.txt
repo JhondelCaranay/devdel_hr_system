@@ -1,21 +1,17 @@
-import type { Pagination, User, Option } from "@/types";
-import z from "zod";
 import { BaseDrawer } from "@/components/custom-ui/base-drawer";
 import { CompoBox } from "@/components/custom-ui/combobox";
-import { DataTableColumnFilter, DataTableDeleteSelectedRows, DataTableV2 } from "@/components/custom-ui/data-table-v2";
+import { DataTable } from "@/components/custom-ui/data-table";
+import FetchErrorMessage from "@/components/custom-ui/fetch-error-message";
 import { fetchRoleOptions } from "@/components/roles/api";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { fetchUsersPaginated } from "@/components/users/api";
 import { columns } from "@/components/users/ui/columns";
 import { requirePermission } from "@/lib/auth-guards";
+import type { Pagination, User, Option } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { useDebouncedCallback } from "use-debounce";
-import FetchErrorMessage from "@/components/custom-ui/fetch-error-message";
-import useDatatable from "@/hooks/use-data-table";
+import z from "zod";
 
 type UsersPaginated = {
   data: User[];
@@ -45,6 +41,7 @@ export const Route = createFileRoute("/(app)/dashboard/users/")({
   },
 });
 function RouteComponent() {
+  const [rowSelection, setRowSelection] = useState({});
   const [openFilter, setOpenFilter] = useState(false);
   const { page, search, role_uuid } = Route.useSearch();
   const navigate = Route.useNavigate();
@@ -78,18 +75,8 @@ function RouteComponent() {
     console.log("Deleting IDs:", ids);
   };
 
-  const debounced = useDebouncedCallback((value) => {
-    onChangeFilter("search", value);
-  }, 500);
-
   const isError = userQuery.isError || roleOptionsQuery.isError;
   const isLoading = userQuery.isLoading || roleOptionsQuery.isLoading;
-
-  const { table, rowSelection, setRowSelection } = useDatatable({
-    data: userData?.data ?? [],
-    columns: columns,
-    pageCount: userData?.pagination?.totalPages ?? 1,
-  });
 
   if (isError) {
     return <FetchErrorMessage />;
@@ -97,7 +84,6 @@ function RouteComponent() {
 
   return (
     <div className="w-full py-10">
-      {/* FILTER MODAL */}
       <BaseDrawer
         open={openFilter}
         onOpenChange={setOpenFilter}
@@ -105,14 +91,24 @@ function RouteComponent() {
         size="md"
         side="right"
         description="Customize your list with filters."
-        onClear={() =>
-          navigate({
-            search: (old) => ({
-              ...old,
-              role_uuid: "",
-            }),
-            replace: true,
-          })
+        footer={
+          <>
+            <Button
+              variant="outline"
+              onClick={() =>
+                navigate({
+                  search: (old) => ({
+                    ...old,
+                    role_uuid: "",
+                  }),
+                  replace: true,
+                })
+              }
+            >
+              Clear
+            </Button>
+            <Button onClick={() => setOpenFilter(false)}>Close</Button>
+          </>
         }
       >
         <p className="mb-2 font-medium text-sm">Roles</p>
@@ -127,49 +123,42 @@ function RouteComponent() {
         />
       </BaseDrawer>
 
-      {/* TABLE */}
-      <Card className="mt-4">
-        <CardHeader>
-          {/* TABLE HEADER */}
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-xl font-semibold">Users</CardTitle>
-            <div className="flex space-x-2"></div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {/* TABLE FILTERS */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between py-4 gap-4">
-            <Input
-              id="search"
-              defaultValue={search}
-              placeholder="Search something..."
-              onChange={(e) => debounced(e.target.value)}
-              className="w-full lg:max-w-sm bg-white"
-            />
-
-            <div className="flex gap-4 items-center">
-              <DataTableDeleteSelectedRows
-                rowSelection={rowSelection}
-                onDeleteIds={onDeleteUserIds}
-                totalRows={userData?.pagination.total || 0}
-              />
-              <Button variant="outline" onClick={() => setOpenFilter(true)}>
-                Filters
-              </Button>
-              <DataTableColumnFilter table={table} />
-            </div>
-          </div>
-          {/* DATA TABLE */}
-          <DataTableV2
-            table={table}
-            columns={columns}
-            currentPage={page}
-            isLoading={isLoading}
-            pageCount={userData?.pagination?.totalPages ?? 1}
-            onChangeFilter={onChangeFilter}
-          />
-        </CardContent>
-      </Card>
+      <DataTable
+        title="Users"
+        isLoading={isLoading}
+        columns={columns}
+        data={userData?.data ?? []}
+        pageCount={userData?.pagination?.totalPages ?? 1}
+        currentPage={page}
+        onChangeFilter={onChangeFilter}
+        rowSelection={rowSelection}
+        setRowSelection={setRowSelection}
+        search={search}
+        tableComponent={
+          <>
+            {Boolean(Object.keys(rowSelection || {}).length) && (
+              <>
+                <div className="text-muted-foreground flex-1 text-sm">
+                  {Object.keys(rowSelection || {}).length} of {userData?.pagination.total} row(s)
+                </div>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    const selectedIds = Object.keys(rowSelection || {}).map((id) => Number(id));
+                    onDeleteUserIds(selectedIds);
+                  }}
+                  disabled={false}
+                >
+                  Delete
+                </Button>
+              </>
+            )}
+            <Button variant="outline" onClick={() => setOpenFilter(true)}>
+              Filters
+            </Button>
+          </>
+        }
+      />
     </div>
   );
 }
