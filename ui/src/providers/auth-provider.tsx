@@ -32,7 +32,7 @@ interface AuthUser {
     ✅ Matches /settings, /settings/security, /settings/preferences, etc.
 */
 const authRoutePatterns = [
-  /^\/$/, // matches "/"
+  // /^\/$/, // matches "/"
   /^\/register(\/.*)?$/,
   /^\/dashboard(\/.*)?$/, // matches "/dashboard" and anything starting with "/dashboard/"
   /^\/profile(\/.*)?$/, // matches "/profile" and nested routes like "/profile/edit"

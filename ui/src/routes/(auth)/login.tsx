@@ -38,25 +38,13 @@ function RouteComponent() {
   }
 
   return (
-    <div className="h-screen lg:h-full flex justify-center items-center bg-blue-500 p-4 lg:p-8">
+    <div className="h-screen lg:h-[90vh] flex justify-center items-center bg-blue-500 p-4 lg:p-8">
       <Card className="w-full h-fit max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Sign In</CardTitle>
           <CardDescription>Enter your credentials to access your account</CardDescription>
         </CardHeader>
         <CardContent>
-          <pre>
-            <code>
-              {JSON.stringify(
-                {
-                  authUser: auth.user,
-                  isAuthenticated: auth.isAuthenticated,
-                },
-                null,
-                2
-              )}
-            </code>
-          </pre>
           <LoginForm
             onSubmit={onSubmit}
             defaultValues={{

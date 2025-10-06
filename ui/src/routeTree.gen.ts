@@ -12,6 +12,8 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
+import { Route as ServicesRouteImport } from './routes/services'
+import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -39,6 +41,16 @@ const DemosRoute = DemosRouteImport.update({
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
   id: '/unauthorized',
   path: '/unauthorized',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesRoute = ServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsRoute = JobsRouteImport.update({
+  id: '/jobs',
+  path: '/jobs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -124,6 +136,8 @@ const appDashboardRolesRoleIdRoute = appDashboardRolesRoleIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof authRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/jobs': typeof JobsRoute
+  '/services': typeof ServicesRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/dashboard': typeof appDashboardRouteRouteWithChildren
   '/login': typeof authLoginRoute
@@ -142,6 +156,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof authRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/jobs': typeof JobsRoute
+  '/services': typeof ServicesRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
@@ -160,6 +176,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/(auth)': typeof authRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/jobs': typeof JobsRoute
+  '/services': typeof ServicesRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/(app)/dashboard': typeof appDashboardRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
@@ -181,6 +199,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/jobs'
+    | '/services'
     | '/unauthorized'
     | '/dashboard'
     | '/login'
@@ -199,6 +219,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/jobs'
+    | '/services'
     | '/unauthorized'
     | '/login'
     | '/register'
@@ -216,6 +238,8 @@ export interface FileRouteTypes {
     | '/'
     | '/(auth)'
     | '/about'
+    | '/jobs'
+    | '/services'
     | '/unauthorized'
     | '/(app)/dashboard'
     | '/(auth)/login'
@@ -237,6 +261,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   authRouteRoute: typeof authRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  JobsRoute: typeof JobsRoute
+  ServicesRoute: typeof ServicesRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
   appDashboardRouteRoute: typeof appDashboardRouteRouteWithChildren
   DemosDemoIdRoute: typeof DemosDemoIdRoute
@@ -257,6 +283,20 @@ declare module '@tanstack/react-router' {
       path: '/unauthorized'
       fullPath: '/unauthorized'
       preLoaderRoute: typeof UnauthorizedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services': {
+      id: '/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs': {
+      id: '/jobs'
+      path: '/jobs'
+      fullPath: '/jobs'
+      preLoaderRoute: typeof JobsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -427,6 +467,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   authRouteRoute: authRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  JobsRoute: JobsRoute,
+  ServicesRoute: ServicesRoute,
   UnauthorizedRoute: UnauthorizedRoute,
   appDashboardRouteRoute: appDashboardRouteRouteWithChildren,
   DemosDemoIdRoute: DemosDemoIdRoute,

@@ -11,8 +11,8 @@ export const Route = createFileRoute("/(auth)")({
 function RouteComponent() {
   return (
     <div className="w-full h-screen bg-gradient-to-br from-slate-950 to-slate-100">
-      <div className="container h-full mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 items-center rounded-lg shadow-md overflow-hidden min-h-80vh">
+      <div className="container mx-auto px-12 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 items-center rounded-lg shadow-md overflow-hidden min-h-[90vh]">
           {/* Welcome Section */}
           <div className="hidden lg:flex flex-col justify-center space-y-6 text-center lg:text-left bg-white h-[90vh] p-8 shadow-lg">
             <div className="space-y-4 text-center">
