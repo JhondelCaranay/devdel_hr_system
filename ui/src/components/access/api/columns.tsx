@@ -30,7 +30,7 @@ export const columns: ColumnDef<Access>[] = [
   },
 ];
 
-export const RoleAccessColumns: ColumnDef<Access>[] = [
+export const roleAccessColumns: ColumnDef<Access>[] = [
   {
     id: "select",
     header: ({ table }) => (
