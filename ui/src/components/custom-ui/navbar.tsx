@@ -10,6 +10,7 @@ const Navbar = () => {
           DevDel
         </Link>
         <nav className="flex items-center gap-6 font-medium text-gray-700">
+          <NavLink to="/" label="Home" />
           <NavLink to="/jobs" label="Jobs" />
           <NavLink to="/services" label="Services" />
           <NavLink to="/about" label="About" />
