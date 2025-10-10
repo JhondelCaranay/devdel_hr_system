@@ -16,6 +16,7 @@ import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import FetchErrorMessage from "@/components/custom-ui/fetch-error-message";
 import useDatatable from "@/hooks/use-data-table";
+import { Permission } from "@/lib/constants/permissions";
 
 type UsersPaginated = {
   data: User[];
@@ -31,7 +32,7 @@ const PageSearchSchema = z.object({
 export const Route = createFileRoute("/(app)/dashboard/users/")({
   validateSearch: PageSearchSchema,
   beforeLoad: ({ context, location }) => {
-    requirePermission(context.auth, "users:view_users_list_page", location.href);
+    requirePermission(context.auth, Permission.USERS_VIEW_LIST_PAGE, location.href);
   },
   component: RouteComponent,
   head: () => {
@@ -97,6 +98,51 @@ function RouteComponent() {
 
   return (
     <div className="w-full py-10">
+      {/* TABLE */}
+      <Card className="mt-4">
+        <CardHeader>
+          {/* TABLE HEADER */}
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-xl font-semibold">Users</CardTitle>
+            <div className="flex space-x-2"></div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {/* TABLE FILTERS */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between py-4 gap-4">
+            <Input
+              id="search"
+              defaultValue={search}
+              placeholder="Search something..."
+              onChange={(e) => debounced(e.target.value)}
+              className="w-full lg:max-w-sm bg-white"
+            />
+
+            <div className="flex gap-4 items-center">
+              <DataTableDeleteSelectedRows
+                rowSelection={rowSelection}
+                onDeleteIds={onDeleteUserIds}
+                totalRows={userData?.pagination.total || 0}
+                canDelete={false}
+              />
+              <Button variant="outline" onClick={() => setOpenFilter(true)}>
+                Filters
+              </Button>
+              <DataTableColumnFilter table={table} />
+            </div>
+          </div>
+          {/* DATA TABLE */}
+          <DataTableV2
+            table={table}
+            columns={columns}
+            currentPage={page}
+            isLoading={isLoading}
+            pageCount={userData?.pagination?.totalPages ?? 1}
+            onChangeFilter={onChangeFilter}
+          />
+        </CardContent>
+      </Card>
+
       {/* FILTER MODAL */}
       <BaseDrawer
         open={openFilter}
@@ -126,50 +172,6 @@ function RouteComponent() {
           searchPlaceholder="Search Role..."
         />
       </BaseDrawer>
-
-      {/* TABLE */}
-      <Card className="mt-4">
-        <CardHeader>
-          {/* TABLE HEADER */}
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-xl font-semibold">Users</CardTitle>
-            <div className="flex space-x-2"></div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {/* TABLE FILTERS */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between py-4 gap-4">
-            <Input
-              id="search"
-              defaultValue={search}
-              placeholder="Search something..."
-              onChange={(e) => debounced(e.target.value)}
-              className="w-full lg:max-w-sm bg-white"
-            />
-
-            <div className="flex gap-4 items-center">
-              <DataTableDeleteSelectedRows
-                rowSelection={rowSelection}
-                onDeleteIds={onDeleteUserIds}
-                totalRows={userData?.pagination.total || 0}
-              />
-              <Button variant="outline" onClick={() => setOpenFilter(true)}>
-                Filters
-              </Button>
-              <DataTableColumnFilter table={table} />
-            </div>
-          </div>
-          {/* DATA TABLE */}
-          <DataTableV2
-            table={table}
-            columns={columns}
-            currentPage={page}
-            isLoading={isLoading}
-            pageCount={userData?.pagination?.totalPages ?? 1}
-            onChangeFilter={onChangeFilter}
-          />
-        </CardContent>
-      </Card>
     </div>
   );
 }

@@ -12,9 +12,9 @@ import { Button } from "@/components/ui/button";
 import { requirePermission } from "@/lib/auth-guards";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { DataTableColumnFilter, DataTableV2 } from "@/components/custom-ui/data-table-v2";
+import { DataTableColumnFilter, DataTableDeleteSelectedRows, DataTableV2 } from "@/components/custom-ui/data-table-v2";
 import { useDebouncedCallback } from "use-debounce";
+import { Permission } from "@/lib/constants/permissions";
 
 const PageSearchSchema = z.object({
   ra_page: z.number().default(1),
@@ -24,7 +24,7 @@ const PageSearchSchema = z.object({
 export const Route = createFileRoute("/(app)/dashboard/roles/$roleId")({
   validateSearch: PageSearchSchema,
   beforeLoad: ({ context, location }) => {
-    requirePermission(context.auth, "roles:view_roles_detail_page", location.href);
+    requirePermission(context.auth, Permission.ROLES_VIEW_DETAIL_PAGE, location.href);
   },
   component: RouteComponent,
   head: () => {
@@ -48,10 +48,7 @@ type RoleAccessPaginated = {
 };
 
 function RouteComponent() {
-  const {
-    auth: { hasPermission },
-  } = Route.useRouteContext();
-  const [rowSelection, setRowSelection] = useState({});
+  const { auth } = Route.useRouteContext();
   const { roleId } = Route.useParams();
   const { ra_page, ra_search } = Route.useSearch();
   const navigate = Route.useNavigate();
@@ -87,8 +84,10 @@ function RouteComponent() {
     console.log("Deleting IDs:", ids);
   };
 
-  const canEditRole = hasPermission("roles:edit_roles");
-  const hasSelectedRows = Object.keys(rowSelection || {}).length > 0;
+  const isDataAdmin = roleData?.data.name === "Admin";
+  const canEditRoleAccess = auth.hasPermission(Permission.ROLES_ACCESS_EDIT) && !isDataAdmin;
+  const canCreateRoleAccess = auth.hasPermission(Permission.ROLES_ACCESS_CREATE) && !isDataAdmin;
+  const canDeleteRoleAccess = auth.hasPermission(Permission.ROLES_ACCESS_DELETE) && !isDataAdmin;
 
   const debounced = useDebouncedCallback((value) => {
     onChangeFilter("search", value);
@@ -96,7 +95,7 @@ function RouteComponent() {
 
   const isError = roleQuery.isError || roleAccessQuery.isError;
 
-  const { table } = useDatatable({
+  const { table, rowSelection, setRowSelection } = useDatatable({
     data: roleAccessData?.data ?? [],
     columns: roleAccessColumns,
     pageCount: roleAccessData?.pagination?.totalPages ?? 1,
@@ -121,11 +120,11 @@ function RouteComponent() {
                 variant={"outline"}
                 className="text-sm font-medium"
                 onClick={() => copyExistingAccessModal.onOpenChange(true, roleData?.data.uuid)}
-                disabled={!canEditRole}
+                disabled={!canEditRoleAccess}
               >
                 Copy Existing Access
               </Button>
-              <Button variant="outline" className="text-sm font-medium" disabled={!canEditRole}>
+              <Button variant="outline" className="text-sm font-medium" disabled={!canCreateRoleAccess}>
                 Add Access
               </Button>
             </div>
@@ -143,23 +142,12 @@ function RouteComponent() {
             />
 
             <div className="flex gap-4 items-center">
-              {hasSelectedRows && (
-                <div className="text-muted-foreground flex-1 text-sm">
-                  {Object.keys(rowSelection || {}).length} of {roleAccessData?.pagination.total} row(s)
-                </div>
-              )}
-              {hasSelectedRows && (
-                <Button
-                  variant="destructive"
-                  onClick={() => {
-                    const selectedIds = Object.keys(rowSelection || {}).map((id) => Number(id));
-                    onDeleteRoleAccessIds(selectedIds);
-                  }}
-                  disabled={!canEditRole}
-                >
-                  Delete
-                </Button>
-              )}
+              <DataTableDeleteSelectedRows
+                rowSelection={rowSelection}
+                onDeleteIds={onDeleteRoleAccessIds}
+                totalRows={roleAccessData?.pagination.total || 0}
+                canDelete={!canDeleteRoleAccess}
+              />
               <DataTableColumnFilter table={table} />
             </div>
           </div>
