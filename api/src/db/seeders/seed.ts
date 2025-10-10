@@ -19,53 +19,33 @@ async function seeder() {
   // CREATE ROLES
   const roles = await db.insert(schema.roles).values(roleData).returning();
   console.log("Roles seeded.");
+
   // CREATE MODULES
   const modules = await db.insert(schema.modules).values(moduleData).returning();
   console.log("Modules seeded.");
+
   // CREATE ACCESS
-  const homeAccess = await createAccesssByModule(db, homeAccessData, modules.find((m) => m.name === "Home")!.id);
-  const hrAccess = await createAccesssByModule(db, hrAccessData, modules.find((m) => m.name === "HR")!.id);
-  const financeAccess = await createAccesssByModule(
-    db,
-    financeAccessData,
-    modules.find((m) => m.name === "Finance")!.id
-  );
-  const developerAccess = await createAccesssByModule(
-    db,
-    developersAccessData,
-    modules.find((m) => m.name === "Developer")!.id
-  );
-  const profileAccess = await createAccesssByModule(
-    db,
-    profileAccessData,
-    modules.find((m) => m.name === "Profile")!.id
-  );
+  await createAccesssByModule(db, homeAccessData, modules.find((m) => m.name === "Home")!.id);
+  await createAccesssByModule(db, hrAccessData, modules.find((m) => m.name === "HR")!.id);
+  await createAccesssByModule(db, financeAccessData, modules.find((m) => m.name === "Finance")!.id);
+  await createAccesssByModule(db, developersAccessData, modules.find((m) => m.name === "Developer")!.id);
+  await createAccesssByModule(db, profileAccessData, modules.find((m) => m.name === "Profile")!.id);
   console.log("Access seeded.");
+
   // CREATE ROLE ACCESS
-  const adminRoleAccess = await createRoleAccessByRole(
-    db,
-    roles.find((r) => r.name === "admin")!.id,
-    adminRoleAccessData
-  );
-  const ceoRoleAccess = await createRoleAccessByRole(db, roles.find((r) => r.name === "ceo")!.id, ceoRoleAccessData);
-  const hrRoleAccess = await createRoleAccessByRole(db, roles.find((r) => r.name === "hr")!.id, hrRoleAccessData);
-  const financeRoleAccess = await createRoleAccessByRole(
-    db,
-    roles.find((r) => r.name === "finance")!.id,
-    financeRoleAccessData
-  );
-  const employeeRoleAccess = await createRoleAccessByRole(
-    db,
-    roles.find((r) => r.name === "employee")!.id,
-    employeeRoleAccessData
-  );
+  await createRoleAccessByRole(db, roles.find((r) => r.name === "admin")!.id, adminRoleAccessData);
+  await createRoleAccessByRole(db, roles.find((r) => r.name === "ceo")!.id, ceoRoleAccessData);
+  await createRoleAccessByRole(db, roles.find((r) => r.name === "hr")!.id, hrRoleAccessData);
+  await createRoleAccessByRole(db, roles.find((r) => r.name === "finance")!.id, financeRoleAccessData);
+  await createRoleAccessByRole(db, roles.find((r) => r.name === "employee")!.id, employeeRoleAccessData);
   console.log("Role Access seeded.");
+
   // CREATE USERS
-  const adminUser = await createUserByRole(db, userData[0], roles.find((r) => r.name === "admin")!.id);
-  const ceoUser = await createUserByRole(db, userData[1], roles.find((r) => r.name === "ceo")!.id);
-  const hrUser = await createUserByRole(db, userData[2], roles.find((r) => r.name === "hr")!.id);
-  const financeUser = await createUserByRole(db, userData[3], roles.find((r) => r.name === "finance")!.id);
-  const employeeUser = await createUserByRole(db, userData[4], roles.find((r) => r.name === "employee")!.id);
+  await createUserByRole(db, userData[0], roles.find((r) => r.name === "admin")!.id, "admin");
+  await createUserByRole(db, userData[1], roles.find((r) => r.name === "ceo")!.id, "ceo");
+  await createUserByRole(db, userData[2], roles.find((r) => r.name === "hr")!.id, "hr");
+  await createUserByRole(db, userData[3], roles.find((r) => r.name === "finance")!.id, "finance");
+  await createUserByRole(db, userData[4], roles.find((r) => r.name === "employee")!.id, "employee");
   console.log("Users seeded.");
 
   console.log("Seeding completed.");
@@ -74,7 +54,7 @@ async function seeder() {
 }
 seeder();
 
-const createUserByRole = async (db: dbType, data: schema.InsertUser, role_id: number) => {
+const createUserByRole = async (db: dbType, data: schema.InsertUser, role_id: number, username: string) => {
   const insertedUsers = await db
     .insert(schema.users)
     .values({ ...data, role_id })
@@ -85,7 +65,7 @@ const createUserByRole = async (db: dbType, data: schema.InsertUser, role_id: nu
 
   await createCredential({
     userId: insertedUsers[0].id,
-    username: data.email!.split("@")[0],
+    username: username,
     password: hashedPassword,
     status: "active",
   });
@@ -117,6 +97,8 @@ const modulesData: schema.InsertModule[] = [
 export const homeAccessData: Omit<schema.InsertAccess, "module_id">[] = [
   // overview
   { code: "home:view_overview_page", label: "View overview page" },
+  // notice board
+  { code: "notice_board:view_notice_board_page", label: "View notice board page" },
   // notice board employee of the month
   { code: "notice_board:create_employee_of_the_month", label: "Create employee of the month" },
   { code: "notice_board:edit_employee_of_the_month", label: "Edit employee of the month" },
@@ -289,6 +271,34 @@ const financeAccessData: Omit<schema.InsertAccess, "module_id">[] = [
     code: "cheques:import_cheques",
     label: "Import Cheques (CSV, Excel, PDF, etc.)",
   },
+  // cheques
+  { code: "purchasing:view_purchasing_list_page", label: "View purchasing page" },
+  { code: "purchasing:view_purchasing_detail_page", label: "View purchasing page" },
+  { code: "purchasing:create_purchasing", label: "Create purchasing" },
+  { code: "purchasing:edit_purchasing", label: "Edit purchasing" },
+  { code: "purchasing:delete_purchasing", label: "Delete purchasing" },
+  {
+    code: "purchasing:export_purchasing",
+    label: "Export Purchasing (CSV, Excel, PDF, etc.)",
+  },
+  {
+    code: "purchasing:import_purchasing",
+    label: "Import Purchasing (CSV, Excel, PDF, etc.)",
+  },
+  // cheques
+  { code: "accounts_payable:view_accounts_payable_list_page", label: "View accounts payable page" },
+  { code: "accounts_payable:view_accounts_payable_detail_page", label: "View accounts payable page" },
+  { code: "accounts_payable:create_accounts_payable", label: "Create accounts payable" },
+  { code: "accounts_payable:edit_accounts_payable", label: "Edit accounts payable" },
+  { code: "accounts_payable:delete_accounts_payable", label: "Delete accounts payable" },
+  {
+    code: "accounts_payable:export_accounts_payable",
+    label: "Export Accounts_payable (CSV, Excel, PDF, etc.)",
+  },
+  {
+    code: "accounts_payable:import_accounts_payable",
+    label: "Import Cheques (CSV, Excel, PDF, etc.)",
+  },
 ];
 
 const developersAccessData: Omit<schema.InsertAccess, "module_id">[] = [
@@ -406,6 +416,7 @@ export const hrRoleAccessData: string[] = [
 export const financeRoleAccessData: string[] = [
   // home
   "home:view_overview_page",
+  "notice_board:view_notice_board_page",
   // profile
   "profile:view_profile_page",
   "profile:change_password",
@@ -422,6 +433,7 @@ export const financeRoleAccessData: string[] = [
 export const employeeRoleAccessData: string[] = [
   // home
   "home:view_overview_page",
+  "notice_board:view_notice_board_page",
   // profile
   "profile:view_profile_page",
   "profile:change_password",

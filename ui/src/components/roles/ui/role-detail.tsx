@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { deleteRole } from "../api";
 import { useNavigate } from "@tanstack/react-router";
+import { Permission } from "@/lib/constants/permissions";
 
 type Props = {
   data?: Role & { total_users: string };
@@ -52,8 +53,8 @@ export const RoleDetails = ({ data }: Props) => {
     }
   };
 
-  const canEditRole = hasPermission("roles:edit_roles");
-  const canDeleteRole = hasPermission("roles:delete_roles");
+  const canEditRole = hasPermission(Permission.ROLES_EDIT);
+  const canDeleteRole = hasPermission(Permission.ROLES_EDIT);
 
   if (!data) {
     return <RoleDetailSkeleton />;

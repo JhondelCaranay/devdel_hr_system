@@ -13,12 +13,14 @@ export type DataTableDeleteSelectedRowsProps = {
   rowSelection: object;
   totalRows: number;
   onDeleteIds: (ids: number[]) => void;
+  canDelete: boolean;
 };
 
 export const DataTableDeleteSelectedRows = ({
   rowSelection,
   totalRows,
   onDeleteIds,
+  canDelete,
 }: DataTableDeleteSelectedRowsProps) => {
   return (
     <>
@@ -34,7 +36,7 @@ export const DataTableDeleteSelectedRows = ({
             const selectedIds = Object.keys(rowSelection || {}).map((id) => Number(id));
             onDeleteIds(selectedIds);
           }}
-          disabled={false}
+          disabled={canDelete}
         >
           Delete
         </Button>

@@ -13,12 +13,22 @@ import {
 } from "@/components/ui/sidebar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { developersLinks, financeLinks, generaLinks, helpLinks, humanResourceLinks, userLinks } from "@/lib/links";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  developersLinks,
+  financeLinks,
+  generaLinks,
+  helpLinks,
+  humanResourceLinks,
+  userLinks,
+  type MenuLinkType,
+} from "@/lib/constants/links";
 import AppSidebarLinkGroup from "./app-sidebar-link-groups";
+import { useAuth } from "@/context/auth-context";
 
 const AppSidebarMenu = () => {
   const { state } = useSidebar();
+  const { hasPermission } = useAuth();
   const [collapsible, setCollapsible] = useState(false);
 
   const isCollapse = state === "collapsed";
@@ -27,22 +37,41 @@ const AppSidebarMenu = () => {
     setCollapsible(state === "collapsed");
   }, [state]);
 
+  // ✅ Helper function to filter links based on user permission
+  const filterLinksByPermission = useCallback(
+    (links: MenuLinkType[]) => links.filter((link) => hasPermission(link.access)),
+    [hasPermission]
+  );
+
+  // ✅ UseMemo to avoid recalculating on every render
+  const filteredLinks = useMemo(
+    () => ({
+      general: filterLinksByPermission(generaLinks),
+      hr: filterLinksByPermission(humanResourceLinks),
+      finance: filterLinksByPermission(financeLinks),
+      dev: filterLinksByPermission(developersLinks),
+      user: filterLinksByPermission(userLinks),
+      help: filterLinksByPermission(helpLinks),
+    }),
+    [filterLinksByPermission]
+  );
+
   return (
     <SidebarContent>
-      {isCollapse && <SidebarSeparator />}
-      <AppSidebarLinkGroup title="Home" links={generaLinks} />
+      {isCollapse && filteredLinks.general.length > 0 && <SidebarSeparator />}
+      {filteredLinks.general.length > 0 && <AppSidebarLinkGroup title="Home" links={filteredLinks.general} />}
 
-      {isCollapse && <SidebarSeparator />}
-      <AppSidebarLinkGroup title="Human Resource" links={humanResourceLinks} />
+      {isCollapse && filteredLinks.hr.length > 0 && <SidebarSeparator />}
+      {filteredLinks.hr.length > 0 && <AppSidebarLinkGroup title="Human Resource" links={filteredLinks.hr} />}
 
-      {isCollapse && <SidebarSeparator />}
-      <AppSidebarLinkGroup title="Finance" links={financeLinks} />
+      {isCollapse && filteredLinks.finance.length > 0 && <SidebarSeparator />}
+      {filteredLinks.finance.length > 0 && <AppSidebarLinkGroup title="Finance" links={filteredLinks.finance} />}
 
-      {isCollapse && <SidebarSeparator />}
-      <AppSidebarLinkGroup title="Developers" links={developersLinks} />
+      {isCollapse && filteredLinks.dev.length > 0 && <SidebarSeparator />}
+      {filteredLinks.dev.length > 0 && <AppSidebarLinkGroup title="Developers" links={filteredLinks.dev} />}
 
-      {isCollapse && <SidebarSeparator />}
-      <AppSidebarLinkGroup title="For me" links={userLinks} />
+      {isCollapse && filteredLinks.user.length > 0 && <SidebarSeparator />}
+      {filteredLinks.user.length > 0 && <AppSidebarLinkGroup title="For me" links={filteredLinks.user} />}
 
       {isCollapse && <SidebarSeparator />}
       <Collapsible

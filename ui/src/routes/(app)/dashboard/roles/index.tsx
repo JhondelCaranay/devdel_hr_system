@@ -14,6 +14,7 @@ import useDatatable from "@/hooks/use-data-table";
 import z from "zod";
 import { DataTableColumnFilter, DataTableV2 } from "@/components/custom-ui/data-table-v2";
 import { useDebouncedCallback } from "use-debounce";
+import { Permission } from "@/lib/constants/permissions";
 
 const PageSearchSchema = z.object({
   page: z.number().default(1),
@@ -23,7 +24,7 @@ const PageSearchSchema = z.object({
 export const Route = createFileRoute("/(app)/dashboard/roles/")({
   validateSearch: PageSearchSchema,
   beforeLoad: ({ context, location }) => {
-    requirePermission(context.auth, "roles:view_roles_list_page", location.href);
+    requirePermission(context.auth, Permission.PAYROLL_VIEW_LIST_PAGE, location.href);
   },
   component: RouteComponent,
   head: () => {
@@ -43,9 +44,7 @@ type RolesPaginated = {
 };
 
 function RouteComponent() {
-  const {
-    auth: { hasPermission },
-  } = Route.useRouteContext();
+  const { auth } = Route.useRouteContext();
   const [, setRowSelection] = useState({});
   const { page, search } = Route.useSearch();
   const navigate = Route.useNavigate();
@@ -71,7 +70,7 @@ function RouteComponent() {
     }
   };
 
-  const canCreateRole = hasPermission("roles:create_roles");
+  const canCreateRole = auth.hasPermission(Permission.ROLES_CREATE);
 
   const debounced = useDebouncedCallback((value) => {
     onChangeFilter("search", value);
@@ -120,7 +119,6 @@ function RouteComponent() {
               onChange={(e) => debounced(e.target.value)}
               className="w-full lg:max-w-sm bg-white"
             />
-
             <div className="flex gap-4 items-center">
               <DataTableColumnFilter table={table} />
             </div>
