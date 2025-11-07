@@ -20,7 +20,7 @@ export type MenuLinkType = {
 
 export const generaLinks: MenuLinkType[] = [
   {
-    title: "Overview",
+    title: "Home",
     url: "/dashboard",
     icon: LayoutDashboard,
     access: Permission.HOME_VIEW_OVERVIEW_PAGE,

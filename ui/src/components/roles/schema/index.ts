@@ -14,7 +14,7 @@ export const editRoleSchema = z.object({
 export type EditRoleFormValues = z.infer<typeof editRoleSchema>;
 
 export const CopyExistingAccessSchema = z.object({
-  copy_from_uuid: z.string("UUID is required"),
-  copy_to_uuid: z.string("UUID is required"),
+  copy_from_uuid: z.string("Role is required"),
+  copy_to_uuid: z.string("Role is required"),
 });
 export type ExistingAccessFormValues = z.infer<typeof CopyExistingAccessSchema>;

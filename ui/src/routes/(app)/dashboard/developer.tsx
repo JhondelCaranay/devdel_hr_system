@@ -1,3 +1,4 @@
+import ExampleForm from "@/components/dummy-form";
 import { Button } from "@/components/ui/button";
 import { requirePermission } from "@/lib/auth-guards";
 import { apiClient } from "@/lib/axios";
@@ -68,14 +69,16 @@ function RouteComponent() {
         log out
       </Button>
       <div className="text-sm font-mono bg-blue-900 text-white p-2 rounded">Timer: {seconds} sec</div>
-      <pre className="text-xs bg-slate-900 p-2 rounded mb-4 text-white">
+      {/* <pre className="text-xs bg-slate-900 p-2 rounded mb-4 text-white">
         <p>fetch demo</p>
         <code>{JSON.stringify({ demos: data }, null, 2)}</code>
       </pre>
       <pre className="text-xs bg-slate-900 p-2 rounded mb-4 text-white">
         <p>auth</p>
         <code>{JSON.stringify({ auth: auth }, null, 2)}</code>
-      </pre>
+      </pre> */}
+
+      <ExampleForm />
     </div>
   );
 }

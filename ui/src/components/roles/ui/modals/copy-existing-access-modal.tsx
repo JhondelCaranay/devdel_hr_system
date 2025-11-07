@@ -3,15 +3,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { BaseModal } from "@/components/custom-ui/base-modal";
-import { Form } from "@/components/ui/form";
 import { useCopyExistingAccessModal } from "../../hooks/use-role-modal-store";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { copyExistingAccess, fetchRoleOptions } from "../../api";
-import { FormSearchInput } from "@/components/custom-ui/form-search-input";
 import { CopyExistingAccessSchema, type ExistingAccessFormValues } from "../../schema";
 
 import { Route } from "@/routes/(app)/dashboard/roles/$roleId";
+import { Field, FieldGroup } from "@/components/ui/field";
+import { FormSearchInput } from "@/components/custom-ui/form/form-search-input";
 
 const CopyExistingAccessModal = () => {
   const copyExistingAccessModal = useCopyExistingAccessModal();
@@ -62,7 +62,7 @@ const CopyExistingAccessModal = () => {
     await mutation.mutateAsync(values);
   };
 
-  const isDisabled = form.formState.disabled;
+  // const isDisabled = form.formState.disabled;
 
   // remvove the current active role
   const roleOptions = (roleOptionsData ?? []).filter((role) => role.value !== roleId);
@@ -75,14 +75,28 @@ const CopyExistingAccessModal = () => {
       description="Change the fields below to keep your data up to date."
       size="md"
     >
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormSearchInput control={form.control} name="copy_from_uuid" label="Role" options={roleOptions} />
-          <Button type="submit" className="w-full" disabled={isDisabled}>
-            Submit
-          </Button>
-        </form>
-      </Form>
+      <form id="form-role-copy-access" onSubmit={form.handleSubmit(onSubmit)}>
+        <FieldGroup>
+          <FormSearchInput
+            control={form.control}
+            name="copy_from_uuid"
+            label="Role"
+            options={roleOptions}
+            placeholder="Select role"
+            searchPlaceholder="Search categories..."
+            emptyMessage="No category found."
+            description="Choose a role filter results."
+          />
+          <Field orientation="horizontal" className="flex justify-end">
+            <Button type="button" variant="outline" onClick={() => form.reset()}>
+              Reset
+            </Button>
+            <Button type="submit" form="form-role-copy-access">
+              Submit
+            </Button>
+          </Field>
+        </FieldGroup>
+      </form>
     </BaseModal>
   );
 };

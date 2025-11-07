@@ -2,13 +2,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { BaseModal } from "@/components/custom-ui/base-modal";
-import { Form } from "@/components/ui/form";
-import { FormInput } from "@/components/custom-ui/form-input";
 import { useCreateRoleModal } from "../../hooks/use-role-modal-store";
 import { createRoleSchema, type CreateRoleFormValues } from "../../schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createRole } from "../../api";
 import { toast } from "sonner";
+import { Field, FieldGroup } from "@/components/ui/field";
+import { FormInput } from "@/components/custom-ui/form/form-input";
 
 const CreateRoleModal = () => {
   const createRoleModal = useCreateRoleModal();
@@ -40,8 +40,6 @@ const CreateRoleModal = () => {
     await mutation.mutateAsync(values);
   };
 
-  const isDisabled = form.formState.disabled;
-
   return (
     <BaseModal
       open={createRoleModal.isOpen}
@@ -50,15 +48,20 @@ const CreateRoleModal = () => {
       description="Fill in the details below to add new data."
       size="md"
     >
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form id="form-role-access-copy" onSubmit={form.handleSubmit(onSubmit)}>
+        <FieldGroup>
           <FormInput control={form.control} name="name" label="Name" placeholder="Enter name" />
           <FormInput control={form.control} name="description" label="Description" placeholder="Enter description" />
-          <Button type="submit" className="w-full" disabled={isDisabled}>
-            Submit
-          </Button>
-        </form>
-      </Form>
+          <Field orientation="horizontal" className="flex justify-end">
+            <Button variant="outline" type="button" onClick={() => form.reset()}>
+              Reset
+            </Button>
+            <Button type="submit" form="form-role-access-copy">
+              Submit
+            </Button>
+          </Field>
+        </FieldGroup>
+      </form>
     </BaseModal>
   );
 };
