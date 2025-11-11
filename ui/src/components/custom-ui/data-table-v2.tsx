@@ -100,7 +100,7 @@ export function DataTableV2<TData, TValue>({
       {isLoading ? (
         <TableSkeleton />
       ) : (
-        <Table className="rounded-lg bg-slate-100/20">
+        <Table className="rounded-lg bg-slate-100/20 dark:bg-[oklch(0.25_0.06_265_/_0.4)] dark:border dark:border-[oklch(0.3_0.04_265_/_0.4)]">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

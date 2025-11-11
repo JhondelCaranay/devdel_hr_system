@@ -8,6 +8,7 @@ import { useAuth } from "./context/auth-context";
 import { AuthProvider } from "./providers/auth-provider";
 import { Toaster as Sonner } from "sonner";
 import QueryProvider from "./providers/query-provider";
+import { ThemeProvider } from "./providers/theme-provider";
 
 // Create a new router instance
 const router = createRouter({
@@ -42,8 +43,10 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <AuthProvider>
         <QueryProvider>
-          <Sonner />
-          <InnerApp />
+          <ThemeProvider defaultTheme="dark" storageKey="react-ui-theme">
+            <Sonner />
+            <InnerApp />
+          </ThemeProvider>
         </QueryProvider>
       </AuthProvider>
     </StrictMode>

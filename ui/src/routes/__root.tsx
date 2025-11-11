@@ -22,8 +22,21 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <div className="min-h-screen relative">
       <HeadContent />
-      <div className="absolute inset-0 -z-10 h-full w-full bg-blue-50/50 bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
-        <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#c5d5ff,transparent)]"></div>
+      <div
+        className="absolute inset-0 -z-10 h-full w-full 
+  bg-blue-50/50 
+  bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] 
+  bg-[size:6rem_4rem]
+  dark:bg-[#0f172a] 
+  dark:bg-[linear-gradient(to_right,#1e3a8a33_1px,transparent_1px),linear-gradient(to_bottom,#1e3a8a33_1px,transparent_1px)]
+"
+      >
+        <div
+          className="absolute inset-0 
+    bg-[radial-gradient(circle_800px_at_100%_200px,#c5d5ff,transparent)] 
+    dark:bg-[radial-gradient(circle_800px_at_100%_200px,#1e3a8a,#0f172a_50%,transparent_90%)]
+    "
+        ></div>
       </div>
       <ModalProvider />
       <Outlet />

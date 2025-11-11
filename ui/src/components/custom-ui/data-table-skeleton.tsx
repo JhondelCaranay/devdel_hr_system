@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export const TableSkeleton = () => (
-  <div className="overflow-hidden rounded-md bg-white">
+  <div className="overflow-hidden rounded-md bg-whit  dark:bg-[oklch(0.25_0.06_265_/_0.4)] dark:border dark:border-[oklch(0.3_0.04_265_/_0.4)]">
     <Table className="border border-collapse">
       <TableHeader>
         <TableRow>

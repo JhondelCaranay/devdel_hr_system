@@ -55,6 +55,24 @@ function RouteComponent() {
       <pre>
         <code>{JSON.stringify({ canCreateUser, canUpdateUser, canDeleteUser }, null, 2)}</code>
       </pre>
+      <Button className="self-start" variant={"default"}>
+        button
+      </Button>
+      <Button className="self-start" variant={"destructive"}>
+        button
+      </Button>
+      <Button className="self-start" variant={"outline"}>
+        button
+      </Button>
+      <Button className="self-start" variant={"ghost"}>
+        button
+      </Button>
+      <Button className="self-start" variant={"link"}>
+        button
+      </Button>
+      <Button className="self-start" variant={"secondary"}>
+        button
+      </Button>
       <Button disabled={!canCreateUser} className="self-start" onClick={handleClick}>
         You can create user!
       </Button>
