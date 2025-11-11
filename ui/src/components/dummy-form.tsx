@@ -14,6 +14,7 @@ import { Field, FieldGroup } from "./ui/field";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormDate } from "./custom-ui/form/form-input-date";
 import { FormRichText } from "./custom-ui/form/form-rich-text-editor";
+import { isHtmlEmpty } from "@/lib/utils";
 
 // ✅ Validation schema using Zod (optional)
 const schema = z.object({
@@ -24,6 +25,9 @@ const schema = z.object({
   profilePicture: z.any().optional(),
   agreeTerms: z.boolean(),
   remarks: z.string().optional(),
+  remarks_richtext: z.string().refine((val) => !isHtmlEmpty(val), {
+    message: "Remarks cannot be empty",
+  }),
   status: z.string().min(1, "Select a status"),
   richText: z.string(),
 });
@@ -41,6 +45,7 @@ export default function ExampleForm() {
       profilePicture: undefined,
       agreeTerms: false,
       remarks: "",
+      remarks_richtext: "",
       status: "",
       richText: "",
     },
@@ -78,8 +83,8 @@ export default function ExampleForm() {
           <FieldGroup>
             <FormRichText
               control={form.control}
-              name="remarks"
-              label="Remarks"
+              name="remarks_richtext"
+              label="Remarks Rich Text"
               placeholder="Write your bug report..."
             />
 
