@@ -7,6 +7,7 @@ export function notAuthenticated(auth: AuthState) {
   if (auth.isAuthenticated) {
     throw redirect({
       to: "/dashboard",
+      reloadDocument: true,
     });
   }
 }

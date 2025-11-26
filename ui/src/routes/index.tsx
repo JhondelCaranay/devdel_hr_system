@@ -11,18 +11,18 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="min-h-screen flex flex-col   text-gray-900">
+    <div className="min-h-screen flex flex-col text-gray-900 dark:text-foreground bg-transparent transition-colors duration-300">
       <Navbar />
       <main className="flex flex-col items-center justify-center flex-grow text-center px-6 py-20">
         <motion.h1
-          className="text-6xl font-extrabold mb-6"
+          className="text-6xl font-extrabold mb-6 text-gray-900 dark:text-foreground"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          Welcome to <span className="text-blue-600">DevDel</span>
+          Welcome to <span className="text-blue-600 dark:text-primary">DevDel</span>
         </motion.h1>
 
-        <p className="text-gray-600 text-lg max-w-2xl mb-8">
+        <p className="text-gray-600 dark:text-muted-foreground text-lg max-w-2xl mb-8">
           The platform for developers to grow, collaborate, and create modern web experiences.
         </p>
 
@@ -37,21 +37,12 @@ function Index() {
 
       <section className="grid gap-6 md:grid-cols-3 w-full max-w-6xl mx-auto px-6 pb-20">
         {[
-          {
-            title: "Build Fast",
-            desc: "Accelerate your development with modern stacks and reusable templates.",
-          },
-          {
-            title: "Collaborate",
-            desc: "Join a network of talented developers and open-source contributors.",
-          },
-          {
-            title: "Deploy Easily",
-            desc: "From local to cloud, DevDel supports your workflow with simple tools.",
-          },
+          { title: "Build Fast", desc: "Accelerate your development with modern stacks and reusable templates." },
+          { title: "Collaborate", desc: "Join a network of talented developers and open-source contributors." },
+          { title: "Deploy Easily", desc: "From local to cloud, DevDel supports your workflow with simple tools." },
         ].map((feature, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}>
-            <Card className="shadow-lg min-h-48 hover:shadow-xl transition-shadow">
+            <Card className="shadow-lg min-h-48 hover:shadow-xl transition-shadow dark:bg-card dark:text-card-foreground">
               <CardHeader>
                 <CardTitle>{feature.title}</CardTitle>
               </CardHeader>

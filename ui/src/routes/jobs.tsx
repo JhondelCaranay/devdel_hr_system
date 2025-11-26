@@ -26,27 +26,29 @@ function RouteComponent() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col to-gray-100">
+    <div className="min-h-screen flex flex-col bg-transparent text-gray-900 dark:text-foreground transition-colors duration-300">
       <Navbar />
 
       <main className="max-w-5xl mx-auto flex-grow px-6 py-20 text-center">
-        <h1 className="text-5xl font-bold mb-8">
-          Join the <span className="text-blue-600">DevDel</span> Team
+        <h1 className="text-5xl font-bold mb-8 text-gray-900 dark:text-foreground">
+          Join the <span className="text-blue-600 dark:text-primary">DevDel</span> Team
         </h1>
-        <p className="text-gray-600 mb-12 max-w-2xl mx-auto">
+        <p className="text-gray-600 dark:text-muted-foreground mb-12 max-w-2xl mx-auto">
           We're looking for passionate developers who love building modern apps and learning new tech.
         </p>
 
         <div className="grid gap-8 md:grid-cols-2">
           {jobs.map((job, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}>
-              <Card className="shadow-lg hover:shadow-xl transition-all">
+              <Card className="shadow-lg hover:shadow-xl transition-all dark:bg-card dark:text-card-foreground">
                 <CardHeader>
                   <CardTitle>{job.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p>{job.desc}</p>
-                  <Button className="w-full mt-4">Apply Now</Button>
+                  <Button className="w-full mt-4 dark:bg-primary dark:text-primary-foreground hover:dark:bg-primary/90 transition-colors">
+                    Apply Now
+                  </Button>
                 </CardContent>
               </Card>
             </motion.div>

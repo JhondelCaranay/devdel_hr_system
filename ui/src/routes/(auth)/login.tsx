@@ -38,11 +38,13 @@ function RouteComponent() {
   }
 
   return (
-    <div className="h-screen lg:h-[90vh] flex justify-center items-center bg-blue-500 p-4 lg:p-8">
-      <Card className="w-full h-fit max-w-md">
+    <div className="h-screen lg:h-[90vh] flex justify-center items-center bg-blue-500 dark:bg-blue-800 p-4 lg:p-8 transition-colors duration-300">
+      <Card className="w-full h-fit max-w-md dark:bg-card dark:text-card-foreground shadow-lg dark:shadow-lg">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Sign In</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+          <CardTitle className="text-2xl font-bold dark:text-foreground">Sign In</CardTitle>
+          <CardDescription className="dark:text-muted-foreground">
+            Enter your credentials to access your account
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <LoginForm
@@ -52,9 +54,9 @@ function RouteComponent() {
               password: "",
             }}
           />
-          <div className="mt-4 text-center text-sm text-muted-foreground">
+          <div className="mt-4 text-center text-sm text-muted-foreground dark:text-muted-foreground">
             Don't have an account?{" "}
-            <a href="#" className="text-primary hover:underline">
+            <a href="#" className="text-primary dark:text-primary hover:underline">
               Sign up
             </a>
           </div>

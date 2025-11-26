@@ -28,7 +28,7 @@ import { useAuth } from "@/context/auth-context";
 
 const AppSidebarMenu = () => {
   const { state } = useSidebar();
-  const { hasPermission } = useAuth();
+  const { hasPermission, isAuthenticated } = useAuth();
   const [collapsible, setCollapsible] = useState(false);
 
   const isCollapse = state === "collapsed";

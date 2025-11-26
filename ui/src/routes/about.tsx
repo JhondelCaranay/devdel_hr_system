@@ -9,8 +9,23 @@ export const Route = createFileRoute("/about")({
 });
 
 function About() {
+  const sections = [
+    {
+      title: "Our Mission",
+      text: "To empower developers globally by providing accessible education, collaboration, and opportunities.",
+    },
+    {
+      title: "Our Vision",
+      text: "To create a world where every developer can innovate freely and make meaningful impact.",
+    },
+    {
+      title: "Our Values",
+      text: "Innovation, collaboration, integrity, and continuous learning are at the heart of DevDel.",
+    },
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col text-gray-900">
+    <div className="min-h-screen flex flex-col bg-transparent text-gray-900 dark:text-foreground transition-colors duration-300">
       <Navbar />
 
       {/* Hero Section */}
@@ -18,42 +33,29 @@ function About() {
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-5xl font-bold mb-4 text-gray-900"
+          className="text-5xl font-bold mb-4 text-gray-900 dark:text-foreground"
         >
-          About <span className="text-blue-600">DevDel</span>
+          About <span className="text-blue-600 dark:text-primary">DevDel</span>
         </motion.h1>
-        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+        <p className="text-gray-600 dark:text-muted-foreground text-lg max-w-2xl mx-auto">
           Building tools, knowledge, and communities that empower developers worldwide.
         </p>
       </section>
 
       {/* Mission, Vision, Values */}
       <section className="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto px-6 pb-20">
-        {[
-          {
-            title: "Our Mission",
-            text: "To empower developers globally by providing accessible education, collaboration, and opportunities.",
-          },
-          {
-            title: "Our Vision",
-            text: "To create a world where every developer can innovate freely and make meaningful impact.",
-          },
-          {
-            title: "Our Values",
-            text: "Innovation, collaboration, integrity, and continuous learning are at the heart of DevDel.",
-          },
-        ].map((item, i) => (
+        {sections.map((item, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 + i * 0.2 }}
           >
-            <Card className="shadow-sm hover:shadow-md transition-all border border-gray-100">
+            <Card className="shadow-sm hover:shadow-md transition-all border border-gray-100 dark:border-border dark:bg-card dark:text-card-foreground">
               <CardHeader>
-                <CardTitle className="text-blue-600">{item.title}</CardTitle>
+                <CardTitle className="text-blue-600 dark:text-primary">{item.title}</CardTitle>
               </CardHeader>
-              <CardContent className="text-gray-600">{item.text}</CardContent>
+              <CardContent className="text-gray-600 dark:text-muted-foreground">{item.text}</CardContent>
             </Card>
           </motion.div>
         ))}
@@ -62,8 +64,8 @@ function About() {
       {/* Description Card */}
       <section className="max-w-6xl mx-auto px-6 pb-12">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          <Card className="shadow-md border border-gray-100">
-            <CardContent className="p-8 text-gray-700 leading-relaxed">
+          <Card className="shadow-md border border-gray-100 dark:border-border dark:bg-card dark:text-card-foreground">
+            <CardContent className="p-8 text-gray-700 dark:text-foreground leading-relaxed">
               <p>
                 DevDel was founded with the vision to make software development more accessible and impactful. Our goal
                 is to connect developers, startups, and enterprises through innovation, mentorship, and cutting-edge
