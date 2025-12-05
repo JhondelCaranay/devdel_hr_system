@@ -15,6 +15,7 @@ router.patch(
   validate(rolesChema.copyRoleAccessSchema),
   rolesController.updateCopyRoleAccess
 );
+router.patch("/update/:uuid/add-access", validate(rolesChema.addRoleAccessSchema), rolesController.addRoleAccess);
 router.delete("/destroy/:uuid", rolesController.destroyRole);
 router.patch("/restore/:uuid", rolesController.restoreRole);
 router.get("/total", rolesController.getTotalRoles);

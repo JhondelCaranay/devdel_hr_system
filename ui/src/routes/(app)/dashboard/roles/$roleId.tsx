@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { roleAccessColumns } from "@/components/access/api/columns";
 import { fetchRoleAccessPaginated, fetchRoleById } from "@/components/roles/api";
-import { useCopyExistingAccessModal } from "@/components/roles/hooks/use-role-modal-store";
+import { useAddRoleAccessModal, useCopyExistingAccessModal } from "@/components/roles/hooks/use-role-modal-store";
 import { RoleDetails } from "@/components/roles/ui/role-detail";
 import { Button } from "@/components/ui/button";
 import { requirePermission } from "@/lib/auth-guards";
@@ -54,6 +54,7 @@ function RouteComponent() {
   const navigate = Route.useNavigate();
 
   const copyExistingAccessModal = useCopyExistingAccessModal();
+  const copyAddRoleAccessModal = useAddRoleAccessModal();
 
   const { data: roleData, ...roleQuery } = useQuery<RoleDetails>({
     queryKey: ["roles", roleId],
@@ -114,7 +115,7 @@ function RouteComponent() {
         <CardHeader>
           {/* TABLE HEADER */}
           <div className="flex justify-between items-center">
-            <CardTitle className="text-xl font-semibold">Roles</CardTitle>
+            <CardTitle className="text-xl font-semibold">Role Access</CardTitle>
             <div className="flex space-x-2">
               <Button
                 variant={"outline"}
@@ -124,7 +125,12 @@ function RouteComponent() {
               >
                 Copy Existing Access
               </Button>
-              <Button variant="outline" className="text-sm font-medium" disabled={!canCreateRoleAccess}>
+              <Button
+                variant="outline"
+                className="text-sm font-medium"
+                onClick={() => copyAddRoleAccessModal.onOpenChange(true, roleData?.data.uuid)}
+                disabled={!canCreateRoleAccess}
+              >
                 Add Access
               </Button>
             </div>

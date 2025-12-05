@@ -15,11 +15,6 @@ export const validate =
         return res.status(400).json(result.error.flatten().fieldErrors);
       }
 
-      // // override with parsed + coerced values
-      // if (result.data.body) req.body = result.data.body;
-      // if (result.data.query) Object.assign(req.query, result.data);
-      // if (result.data.params) Object.assign(req.params, result.data);
-
       next();
     } catch (err) {
       if (err instanceof ZodError) {

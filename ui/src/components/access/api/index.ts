@@ -10,13 +10,15 @@ export async function fetchAccessPaginated(page: number, search: string) {
   });
   return data;
 }
+export const fetchAccessById = async (accessId: string) => {
+  const { data } = await apiClient.get(`/access/show/${accessId}`);
+  return data;
+};
 
-// export const fetchRoleById = async (roleId: string) => {
-//   const { data } = await apiClient.get(`/access/show/${roleId}`);
-//   return data;
-// };
-
-// export async function fetchRoleOptions() {
-//   const { data } = await apiClient.get("/access/options");
-//   return data;
-// }
+export async function fetchAccessOptions(roleId?: string) {
+  console.log("🚀 ~ fetchAccessOptions ~ roleId:", roleId);
+  const { data } = await apiClient.get(`/access/options`, {
+    params: roleId ? { role_id: roleId } : {},
+  });
+  return data;
+}

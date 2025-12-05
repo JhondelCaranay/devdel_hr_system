@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { access, modules, roleAccess, roles, users } from "@/db/schema";
-import { and, asc, count, eq, ilike, isNull, or, SQL } from "drizzle-orm";
+import { and, asc, count, eq, ilike, isNull, notInArray, or, sql, SQL } from "drizzle-orm";
 import { IStoreAcces, IUpdateAcces } from "../validators/access.validators";
 
 const selectedAccessFields = {
@@ -81,6 +81,44 @@ export const getTotalaccess = async () => {
   const [data] = await db.select({ total: count() }).from(access).where(isNull(access.deleted_at));
   return data.total;
 };
+export const getAccessOptions = async (role_id?: number) => {
+  console.log("🚀 ~ getAccessOptions ~ role_id:", role_id);
+  const searchFilter: SQL[] = [];
+  // let whereCondition = isNull(access.deleted_at);
+
+  if (role_id) {
+    searchFilter.push(
+      notInArray(
+        access.id,
+        db
+          .select({ id: roleAccess.access_id })
+          .from(roleAccess)
+          .where(eq(roleAccess.role_id, Number(role_id)))
+      )
+    );
+  }
+  const data = await db
+    .select({
+      value: access.uuid,
+      label: sql<string>`
+        CONCAT(
+          INITCAP(${access.label}),
+          ' (',
+          COUNT(${roles.id}),
+          CASE WHEN COUNT(${roles.id}) = 1 THEN ' role' ELSE ' roles' END,
+          ')'
+        )
+      `,
+    })
+    .from(access)
+    .leftJoin(roleAccess, eq(roleAccess.access_id, access.id))
+    .leftJoin(roles, eq(roles.id, roleAccess.role_id))
+    .where(and(isNull(access.deleted_at), ...searchFilter))
+    .groupBy(access.id, access.uuid, access.label)
+    .orderBy(asc(access.label));
+
+  return data;
+};
 
 export const getAccessByCode = async (code: string) => {
   const [data] = await db
@@ -91,10 +129,11 @@ export const getAccessByCode = async (code: string) => {
   return data;
 };
 
-export const getRoleByUUID = async (uuid: string) => {
+export const getAccessByUUID = async (uuid: string) => {
   const [data] = await db
     .select(selectedAccessFields)
     .from(access)
+    .innerJoin(modules, eq(access.module_id, modules.id))
     .where(and(eq(access.uuid, uuid)));
   return data;
 };

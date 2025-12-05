@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as rolesService from "../services/roles.services";
+import * as accessService from "../../access/services/access.services";
 import * as rolesAccessService from "../services/roles-access.services";
 
 export const getPaginatedRoles = async (req: Request, res: Response) => {
@@ -138,6 +139,39 @@ export const updateCopyRoleAccess = async (req: Request, res: Response) => {
 
   return res.status(200).json({
     message: "Role access copied successfully",
+    data: `Inserted access ${inserted.length}`,
+  });
+};
+
+export const addRoleAccess = async (req: Request, res: Response) => {
+  const { uuid: role_uuid } = req.params;
+  const { access_uuid }: { access_uuid: string } = req.body;
+
+  const [role, access] = await Promise.all([
+    rolesService.getRoleByUUID(role_uuid),
+    accessService.getAccessByUUID(access_uuid),
+  ]);
+
+  if (!role) {
+    return res.status(404).json({ message: "Role not found" });
+  }
+
+  if (!access) {
+    return res.status(404).json({ message: "Access not found" });
+  }
+
+  const existingRoleAccess = await rolesAccessService.getRoleAccessByRoleId(role.id);
+
+  const alreadyAssigned = existingRoleAccess.find((ra) => ra.access_id === access.id);
+
+  if (alreadyAssigned) {
+    return res.status(400).json({ message: "Access already assigned to role" });
+  }
+
+  const inserted = await rolesAccessService.createRoleAccessForRole(role.id, [access.id]);
+
+  return res.status(200).json({
+    message: "Role access added successfully",
     data: `Inserted access ${inserted.length}`,
   });
 };

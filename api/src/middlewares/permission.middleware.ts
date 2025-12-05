@@ -5,7 +5,7 @@ export interface AuthRequest extends Request {
   user?: JWT;
 }
 
-// ✅ Single permission check
+// Single permission check
 export const permission = (permission: string) => {
   return async (req: AuthRequest, res: Response, next: NextFunction) => {
     if (!req.user) {
@@ -23,7 +23,7 @@ export const permission = (permission: string) => {
   };
 };
 
-// ✅ Must have ALL permissions
+// Must have ALL permissions
 export const hasAllPermission = (permissions: string[]) => {
   return async (req: AuthRequest, res: Response, next: NextFunction) => {
     if (!req.user) {
@@ -42,7 +42,7 @@ export const hasAllPermission = (permissions: string[]) => {
   };
 };
 
-// ✅ Must have AT LEAST ONE permission
+// Must have AT LEAST ONE permission
 export const hasAnyPermission = (permissions: string[]) => {
   return async (req: AuthRequest, res: Response, next: NextFunction) => {
     if (!req.user) {

@@ -18,3 +18,9 @@ export const CopyExistingAccessSchema = z.object({
   copy_to_uuid: z.string("Role is required"),
 });
 export type ExistingAccessFormValues = z.infer<typeof CopyExistingAccessSchema>;
+
+export const AddRoleAccessSchema = z.object({
+  access_uuid: z.string("Access Id is required"),
+  role_uuid: z.string("Role Id is required"),
+});
+export type AddRoleAccessFormValues = z.infer<typeof AddRoleAccessSchema>;

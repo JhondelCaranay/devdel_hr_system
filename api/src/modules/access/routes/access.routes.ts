@@ -11,5 +11,6 @@ router.patch("/update/:uuid", validate(accessChema.updateAccesschema), accessCon
 router.delete("/destroy/:uuid", accessController.destroyRole);
 router.patch("/restore/:uuid", accessController.restoreRole);
 router.get("/total", accessController.getTotalaccess);
+router.get("/options", accessController.getAccessOptions);
 
 export default router;

@@ -1,5 +1,10 @@
 import apiClient from "@/lib/axios";
-import type { CreateRoleFormValues, EditRoleFormValues, ExistingAccessFormValues } from "../schema";
+import type {
+  AddRoleAccessFormValues,
+  CreateRoleFormValues,
+  EditRoleFormValues,
+  ExistingAccessFormValues,
+} from "../schema";
 
 export async function fetchRolesPaginated(page: number, search: string) {
   const { data } = await apiClient.get("/roles", {
@@ -50,6 +55,13 @@ export const editRole = async (role: EditRoleFormValues) => {
 export const copyExistingAccess = async (role: ExistingAccessFormValues) => {
   const { copy_to_uuid, ...rest } = role;
   const { data } = await apiClient.patch(`/roles/update/${copy_to_uuid}/copy-access`, rest);
+  return data;
+};
+
+export const addRoleAccess = async (role: AddRoleAccessFormValues) => {
+  const { data } = await apiClient.patch(`/roles/update/${role.role_uuid}/add-access`, {
+    access_uuid: role.access_uuid,
+  });
   return data;
 };
 

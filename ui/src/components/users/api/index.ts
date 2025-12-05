@@ -5,7 +5,7 @@ export async function fetchUsersPaginated(page: number, search: string, role_uui
   const { data } = await apiClient.get("/users", {
     params: {
       page,
-      limit: 2,
+      limit: 10,
       search,
       role_uuid,
     },

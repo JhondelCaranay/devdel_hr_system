@@ -23,3 +23,9 @@ export const copyRoleAccessSchema = z.object({
     copy_from_uuid: z.string("copy_from_uuid is required"),
   }),
 });
+
+export const addRoleAccessSchema = z.object({
+  body: z.object({
+    access_uuid: z.string("access_uuid is required"),
+  }),
+});
