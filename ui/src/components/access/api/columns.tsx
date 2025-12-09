@@ -6,6 +6,7 @@ import { SortableHeader } from "@/components/custom-ui/sortable-header";
 import type { Access } from "@/types";
 import { formatDate } from "@/lib/format";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RoleAccessColumnAction } from "./column-action";
 
 export const columns: ColumnDef<Access>[] = [
   {
@@ -69,6 +70,15 @@ export const roleAccessColumns: ColumnDef<Access>[] = [
     cell: ({ row }) => {
       const data = row.original;
       return <span>{formatDate(data.created_at)}</span>;
+    },
+  },
+  {
+    id: "actions",
+    size: 50,
+    minSize: 50,
+    cell: ({ row }) => {
+      const data = row.original;
+      return <RoleAccessColumnAction data={data} />;
     },
   },
 ];

@@ -271,7 +271,7 @@ const financeAccessData: Omit<schema.InsertAccess, "module_id">[] = [
     code: "cheques:import_cheques",
     label: "Import Cheques (CSV, Excel, PDF, etc.)",
   },
-  // cheques
+  // purchasing
   { code: "purchasing:view_purchasing_list_page", label: "View purchasing page" },
   { code: "purchasing:view_purchasing_detail_page", label: "View purchasing page" },
   { code: "purchasing:create_purchasing", label: "Create purchasing" },
@@ -302,7 +302,7 @@ const financeAccessData: Omit<schema.InsertAccess, "module_id">[] = [
 ];
 
 const developersAccessData: Omit<schema.InsertAccess, "module_id">[] = [
-  // developer users
+  // users
   { code: "users:view_users_list_page", label: "View users page" },
   { code: "users:view_users_detail_page", label: "View users page" },
   { code: "users:create_users", label: "Create users" },
@@ -319,7 +319,7 @@ const developersAccessData: Omit<schema.InsertAccess, "module_id">[] = [
     code: "users:import_users",
     label: "Import Users (CSV, Excel, PDF, etc.)",
   },
-  // roles users
+  // roles
   { code: "roles:view_roles_list_page", label: "View roles page" },
   { code: "roles:view_roles_detail_page", label: "View roles page" },
   { code: "roles:create_roles", label: "Create roles" },
@@ -335,6 +335,20 @@ const developersAccessData: Omit<schema.InsertAccess, "module_id">[] = [
   {
     code: "roles:import_roles",
     label: "Import Roles (CSV, Excel, PDF, etc.)",
+  },
+  // access
+  { code: "access:view_access_list_page", label: "View access page" },
+  { code: "access:view_access_detail_page", label: "View access page" },
+  { code: "access:create_access", label: "Create access" },
+  { code: "access:edit_access", label: "Edit access" },
+  { code: "access:delete_access", label: "Delete access" },
+  {
+    code: "access:export_access",
+    label: "Export Access (CSV, Excel, PDF, etc.)",
+  },
+  {
+    code: "access:import_access",
+    label: "Import Access (CSV, Excel, PDF, etc.)",
   },
 ];
 

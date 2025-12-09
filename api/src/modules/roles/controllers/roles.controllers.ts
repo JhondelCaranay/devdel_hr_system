@@ -172,7 +172,38 @@ export const addRoleAccess = async (req: Request, res: Response) => {
 
   return res.status(200).json({
     message: "Role access added successfully",
-    data: `Inserted access ${inserted.length}`,
+  });
+};
+
+export const removeRoleAccess = async (req: Request, res: Response) => {
+  const { uuid: role_uuid } = req.params;
+  const { access_uuid }: { access_uuid: string } = req.body;
+
+  const [role, access] = await Promise.all([
+    rolesService.getRoleByUUID(role_uuid),
+    accessService.getAccessByUUID(access_uuid),
+  ]);
+
+  if (!role) {
+    return res.status(404).json({ message: "Role not found" });
+  }
+
+  if (!access) {
+    return res.status(404).json({ message: "Access not found" });
+  }
+
+  const existingRoleAccess = await rolesAccessService.getRoleAccessByRoleId(role.id);
+
+  const assigned = existingRoleAccess.find((ra) => ra.access_id === access.id);
+
+  if (!assigned) {
+    return res.status(400).json({ message: "Access is not assigned to this role" });
+  }
+
+  await rolesAccessService.deleteRoleAccess(role.id, access.id);
+
+  return res.status(200).json({
+    message: "Role access removed successfully",
   });
 };
 

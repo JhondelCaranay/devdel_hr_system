@@ -24,3 +24,6 @@ export const AddRoleAccessSchema = z.object({
   role_uuid: z.string("Role Id is required"),
 });
 export type AddRoleAccessFormValues = z.infer<typeof AddRoleAccessSchema>;
+
+export const RemoveRoleAccessSchema = AddRoleAccessSchema.partial();
+export type RemoveRoleAccessFormValues = z.infer<typeof RemoveRoleAccessSchema>;

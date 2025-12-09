@@ -4,6 +4,7 @@ import type {
   CreateRoleFormValues,
   EditRoleFormValues,
   ExistingAccessFormValues,
+  RemoveRoleAccessFormValues,
 } from "../schema";
 
 export async function fetchRolesPaginated(page: number, search: string) {
@@ -60,6 +61,13 @@ export const copyExistingAccess = async (role: ExistingAccessFormValues) => {
 
 export const addRoleAccess = async (role: AddRoleAccessFormValues) => {
   const { data } = await apiClient.patch(`/roles/update/${role.role_uuid}/add-access`, {
+    access_uuid: role.access_uuid,
+  });
+  return data;
+};
+
+export const deleteRoleAccess = async (role: RemoveRoleAccessFormValues) => {
+  const { data } = await apiClient.patch(`/roles/update/${role.role_uuid}/remove-access`, {
     access_uuid: role.access_uuid,
   });
   return data;

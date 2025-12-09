@@ -29,3 +29,5 @@ export const addRoleAccessSchema = z.object({
     access_uuid: z.string("access_uuid is required"),
   }),
 });
+
+export const removeRoleAccessSchema = addRoleAccessSchema.partial();
