@@ -107,7 +107,6 @@ export const updateCopyRoleAccess = async (req: Request, res: Response) => {
   const { uuid: copy_to_uuid } = req.params;
   const { copy_from_uuid }: { copy_from_uuid: string } = req.body;
 
-  // get both roles
   const copyFromData = await rolesService.getRoleByUUID(copy_from_uuid);
   if (!copyFromData) {
     return res.status(404).json({ message: "Role not found" });
@@ -118,10 +117,8 @@ export const updateCopyRoleAccess = async (req: Request, res: Response) => {
     return res.status(404).json({ message: "Role not found" });
   }
 
-  // clear existing access
   await rolesAccessService.deleteRoleAccessByRoleId(copyToData.id);
 
-  // fetch access from source
   const fromAccess = await rolesAccessService.getRoleAccessByRoleId(copyFromData.id);
 
   if (fromAccess.length === 0) {
@@ -131,7 +128,6 @@ export const updateCopyRoleAccess = async (req: Request, res: Response) => {
     });
   }
 
-  // insert into target
   const inserted = await rolesAccessService.createRoleAccessForRole(
     copyToData.id,
     fromAccess.map((a) => a.access_id)

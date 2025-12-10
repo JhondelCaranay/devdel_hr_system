@@ -38,9 +38,9 @@ export const getPaginatedRoles = async (search: string, limit: number, offset: n
     .select(selectedRoleFields)
     .from(roles)
     .where(and(isNull(roles.deleted_at), or(...searchFilter)))
-    .orderBy(asc(roles.name)) // order by is mandatory
-    .limit(limit) // the number of rows to return
-    .offset(offset); // the number of rows to skip
+    .orderBy(asc(roles.name))
+    .limit(limit)
+    .offset(offset);
 
   return data;
 };

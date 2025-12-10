@@ -14,18 +14,9 @@ router.patch("/restore/:uuid", rolesController.restoreRole);
 router.get("/total", rolesController.getTotalRoles);
 router.get("/options", rolesController.getRoleOptions);
 
-// ROLE ACCESS
 router.get("/show/:uuid/access", rolesController.getPaginatedRoleAccess);
-router.patch(
-  "/update/:uuid/copy-access",
-  validate(rolesChema.copyRoleAccessSchema),
-  rolesController.updateCopyRoleAccess
-);
+router.patch("/update/:uuid/copy-access", validate(rolesChema.copyRoleAccessSchema), rolesController.updateCopyRoleAccess);
 router.patch("/update/:uuid/add-access", validate(rolesChema.addRoleAccessSchema), rolesController.addRoleAccess);
-router.patch(
-  "/update/:uuid/remove-access",
-  validate(rolesChema.removeRoleAccessSchema),
-  rolesController.removeRoleAccess
-);
+router.patch("/update/:uuid/remove-access", validate(rolesChema.removeRoleAccessSchema), rolesController.removeRoleAccess);
 
 export default router;

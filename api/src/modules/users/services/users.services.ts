@@ -33,9 +33,9 @@ export const getPaginatedUsers = async (search: string, limit: number, offset: n
     .from(users)
     .innerJoin(roles, eq(users.role_id, roles.id))
     .where(and(or(...searchFilter), or(...roleFilter), isNull(users.deleted_at)))
-    .orderBy(asc(users.first_name)) // order by is mandatory
-    .limit(limit) // the number of rows to return
-    .offset(offset); // the number of rows to skip
+    .orderBy(asc(users.first_name))
+    .limit(limit)
+    .offset(offset);
 
   return data;
 };

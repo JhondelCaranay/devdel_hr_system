@@ -55,12 +55,10 @@ export const getRoleAccessByRoleId = async (roleId: number) => {
   return await db.select().from(roleAccess).where(eq(roleAccess.role_id, roleId));
 };
 
-// clear all access
 export const deleteRoleAccessByRoleId = async (roleId: number) => {
   return await db.delete(roleAccess).where(eq(roleAccess.role_id, roleId));
 };
 
-// clear specific access
 export const deleteRoleAccess = async (roleId: number, accessId: number) => {
   return await db
     .delete(roleAccess)

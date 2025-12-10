@@ -82,9 +82,7 @@ export const getTotalaccess = async () => {
   return data.total;
 };
 export const getAccessOptions = async (role_id?: number) => {
-  console.log("🚀 ~ getAccessOptions ~ role_id:", role_id);
   const searchFilter: SQL[] = [];
-  // let whereCondition = isNull(access.deleted_at);
 
   if (role_id) {
     searchFilter.push(
