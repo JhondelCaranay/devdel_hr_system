@@ -68,25 +68,10 @@ const CopyExistingAccessModal = () => {
   const roleOptions = (roleOptionsData ?? []).filter((role) => role.value !== roleId);
 
   return (
-    <BaseModal
-      open={copyExistingAccessModal.isOpen}
-      onOpenChange={copyExistingAccessModal.onOpenChange}
-      title="Copy Existing Access"
-      description="Change the fields below to keep your data up to date."
-      size="md"
-    >
+    <BaseModal open={copyExistingAccessModal.isOpen} onOpenChange={copyExistingAccessModal.onOpenChange} title="Copy Existing Access" description="Change the fields below to keep your data up to date." size="md">
       <form id="form-role-copy-access" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
-          <FormSearchInput
-            control={form.control}
-            name="copy_from_uuid"
-            label="Role"
-            options={roleOptions}
-            placeholder="Select role"
-            searchPlaceholder="Search categories..."
-            emptyMessage="No category found."
-            description="Choose a role filter results."
-          />
+          <FormSearchInput control={form.control} name="copy_from_uuid" label="Role" options={roleOptions} placeholder="Select role" searchPlaceholder="Search categories..." emptyMessage="No category found." description="Choose a role filter results." />
           <Field orientation="horizontal" className="flex justify-end">
             <Button type="button" variant="outline" onClick={() => form.reset()}>
               Reset

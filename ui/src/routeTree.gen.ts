@@ -29,7 +29,9 @@ import { Route as appDashboardDeveloperRouteImport } from './routes/(app)/dashbo
 import { Route as appDashboardUsersIndexRouteImport } from './routes/(app)/dashboard/users/index'
 import { Route as appDashboardRolesIndexRouteImport } from './routes/(app)/dashboard/roles/index'
 import { Route as appDashboardEmployeesIndexRouteImport } from './routes/(app)/dashboard/employees/index'
+import { Route as appDashboardAccessIndexRouteImport } from './routes/(app)/dashboard/access/index'
 import { Route as appDashboardRolesRoleIdRouteImport } from './routes/(app)/dashboard/roles/$roleId'
+import { Route as appDashboardAccessAccessIdRouteImport } from './routes/(app)/dashboard/access/$accessId'
 
 const DemosRouteImport = createFileRoute('/demos')()
 
@@ -127,11 +129,22 @@ const appDashboardEmployeesIndexRoute =
     path: '/employees/',
     getParentRoute: () => appDashboardRouteRoute,
   } as any)
+const appDashboardAccessIndexRoute = appDashboardAccessIndexRouteImport.update({
+  id: '/access/',
+  path: '/access/',
+  getParentRoute: () => appDashboardRouteRoute,
+} as any)
 const appDashboardRolesRoleIdRoute = appDashboardRolesRoleIdRouteImport.update({
   id: '/roles/$roleId',
   path: '/roles/$roleId',
   getParentRoute: () => appDashboardRouteRoute,
 } as any)
+const appDashboardAccessAccessIdRoute =
+  appDashboardAccessAccessIdRouteImport.update({
+    id: '/access/$accessId',
+    path: '/access/$accessId',
+    getParentRoute: () => appDashboardRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof authRouteRouteWithChildren
@@ -148,7 +161,9 @@ export interface FileRoutesByFullPath {
   '/dashboard/developer': typeof appDashboardDeveloperRoute
   '/dashboard/settings': typeof appDashboardSettingsRoute
   '/dashboard/': typeof appDashboardIndexRoute
+  '/dashboard/access/$accessId': typeof appDashboardAccessAccessIdRoute
   '/dashboard/roles/$roleId': typeof appDashboardRolesRoleIdRoute
+  '/dashboard/access': typeof appDashboardAccessIndexRoute
   '/dashboard/employees': typeof appDashboardEmployeesIndexRoute
   '/dashboard/roles': typeof appDashboardRolesIndexRoute
   '/dashboard/users': typeof appDashboardUsersIndexRoute
@@ -166,7 +181,9 @@ export interface FileRoutesByTo {
   '/dashboard/developer': typeof appDashboardDeveloperRoute
   '/dashboard/settings': typeof appDashboardSettingsRoute
   '/dashboard': typeof appDashboardIndexRoute
+  '/dashboard/access/$accessId': typeof appDashboardAccessAccessIdRoute
   '/dashboard/roles/$roleId': typeof appDashboardRolesRoleIdRoute
+  '/dashboard/access': typeof appDashboardAccessIndexRoute
   '/dashboard/employees': typeof appDashboardEmployeesIndexRoute
   '/dashboard/roles': typeof appDashboardRolesIndexRoute
   '/dashboard/users': typeof appDashboardUsersIndexRoute
@@ -189,7 +206,9 @@ export interface FileRoutesById {
   '/(app)/dashboard/developer': typeof appDashboardDeveloperRoute
   '/(app)/dashboard/settings': typeof appDashboardSettingsRoute
   '/(app)/dashboard/': typeof appDashboardIndexRoute
+  '/(app)/dashboard/access/$accessId': typeof appDashboardAccessAccessIdRoute
   '/(app)/dashboard/roles/$roleId': typeof appDashboardRolesRoleIdRoute
+  '/(app)/dashboard/access/': typeof appDashboardAccessIndexRoute
   '/(app)/dashboard/employees/': typeof appDashboardEmployeesIndexRoute
   '/(app)/dashboard/roles/': typeof appDashboardRolesIndexRoute
   '/(app)/dashboard/users/': typeof appDashboardUsersIndexRoute
@@ -211,7 +230,9 @@ export interface FileRouteTypes {
     | '/dashboard/developer'
     | '/dashboard/settings'
     | '/dashboard/'
+    | '/dashboard/access/$accessId'
     | '/dashboard/roles/$roleId'
+    | '/dashboard/access'
     | '/dashboard/employees'
     | '/dashboard/roles'
     | '/dashboard/users'
@@ -229,7 +250,9 @@ export interface FileRouteTypes {
     | '/dashboard/developer'
     | '/dashboard/settings'
     | '/dashboard'
+    | '/dashboard/access/$accessId'
     | '/dashboard/roles/$roleId'
+    | '/dashboard/access'
     | '/dashboard/employees'
     | '/dashboard/roles'
     | '/dashboard/users'
@@ -251,7 +274,9 @@ export interface FileRouteTypes {
     | '/(app)/dashboard/developer'
     | '/(app)/dashboard/settings'
     | '/(app)/dashboard/'
+    | '/(app)/dashboard/access/$accessId'
     | '/(app)/dashboard/roles/$roleId'
+    | '/(app)/dashboard/access/'
     | '/(app)/dashboard/employees/'
     | '/(app)/dashboard/roles/'
     | '/(app)/dashboard/users/'
@@ -404,11 +429,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appDashboardEmployeesIndexRouteImport
       parentRoute: typeof appDashboardRouteRoute
     }
+    '/(app)/dashboard/access/': {
+      id: '/(app)/dashboard/access/'
+      path: '/access'
+      fullPath: '/dashboard/access'
+      preLoaderRoute: typeof appDashboardAccessIndexRouteImport
+      parentRoute: typeof appDashboardRouteRoute
+    }
     '/(app)/dashboard/roles/$roleId': {
       id: '/(app)/dashboard/roles/$roleId'
       path: '/roles/$roleId'
       fullPath: '/dashboard/roles/$roleId'
       preLoaderRoute: typeof appDashboardRolesRoleIdRouteImport
+      parentRoute: typeof appDashboardRouteRoute
+    }
+    '/(app)/dashboard/access/$accessId': {
+      id: '/(app)/dashboard/access/$accessId'
+      path: '/access/$accessId'
+      fullPath: '/dashboard/access/$accessId'
+      preLoaderRoute: typeof appDashboardAccessAccessIdRouteImport
       parentRoute: typeof appDashboardRouteRoute
     }
   }
@@ -432,7 +471,9 @@ interface appDashboardRouteRouteChildren {
   appDashboardDeveloperRoute: typeof appDashboardDeveloperRoute
   appDashboardSettingsRoute: typeof appDashboardSettingsRoute
   appDashboardIndexRoute: typeof appDashboardIndexRoute
+  appDashboardAccessAccessIdRoute: typeof appDashboardAccessAccessIdRoute
   appDashboardRolesRoleIdRoute: typeof appDashboardRolesRoleIdRoute
+  appDashboardAccessIndexRoute: typeof appDashboardAccessIndexRoute
   appDashboardEmployeesIndexRoute: typeof appDashboardEmployeesIndexRoute
   appDashboardRolesIndexRoute: typeof appDashboardRolesIndexRoute
   appDashboardUsersIndexRoute: typeof appDashboardUsersIndexRoute
@@ -442,7 +483,9 @@ const appDashboardRouteRouteChildren: appDashboardRouteRouteChildren = {
   appDashboardDeveloperRoute: appDashboardDeveloperRoute,
   appDashboardSettingsRoute: appDashboardSettingsRoute,
   appDashboardIndexRoute: appDashboardIndexRoute,
+  appDashboardAccessAccessIdRoute: appDashboardAccessAccessIdRoute,
   appDashboardRolesRoleIdRoute: appDashboardRolesRoleIdRoute,
+  appDashboardAccessIndexRoute: appDashboardAccessIndexRoute,
   appDashboardEmployeesIndexRoute: appDashboardEmployeesIndexRoute,
   appDashboardRolesIndexRoute: appDashboardRolesIndexRoute,
   appDashboardUsersIndexRoute: appDashboardUsersIndexRoute,

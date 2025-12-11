@@ -17,6 +17,7 @@ import { useDebouncedCallback } from "use-debounce";
 import FetchErrorMessage from "@/components/custom-ui/fetch-error-message";
 import useDatatable from "@/hooks/use-data-table";
 import { Permission } from "@/lib/constants/permissions";
+import { PageTitle } from "@/lib/utils";
 
 type UsersPaginated = {
   data: User[];
@@ -35,16 +36,9 @@ export const Route = createFileRoute("/(app)/dashboard/users/")({
     requirePermission(context.auth, Permission.USERS_VIEW_LIST_PAGE, location.href);
   },
   component: RouteComponent,
-  head: () => {
-    return {
-      meta: [
-        {
-          title: "HR System / Users",
-        },
-      ],
-    };
-  },
+  head: () => PageTitle("HR System / Roles"),
 });
+
 function RouteComponent() {
   const [openFilter, setOpenFilter] = useState(false);
   const { page, search, role_uuid } = Route.useSearch();
@@ -79,7 +73,7 @@ function RouteComponent() {
     console.log("Deleting IDs:", ids);
   };
 
-  const debounced = useDebouncedCallback((value) => {
+  const debouncedSearch = useDebouncedCallback((value) => {
     onChangeFilter("search", value);
   }, 500);
 
@@ -110,21 +104,10 @@ function RouteComponent() {
         <CardContent>
           {/* TABLE FILTERS */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between py-4 gap-4">
-            <Input
-              id="search"
-              defaultValue={search}
-              placeholder="Search something..."
-              onChange={(e) => debounced(e.target.value)}
-              className="w-full lg:max-w-sm bg-white"
-            />
+            <Input id="search" defaultValue={search} placeholder="Search something..." onChange={(e) => debouncedSearch(e.target.value)} className="w-full lg:max-w-sm bg-white" />
 
             <div className="flex gap-4 items-center">
-              <DataTableDeleteSelectedRows
-                rowSelection={rowSelection}
-                onDeleteIds={onDeleteUserIds}
-                totalRows={userData?.pagination.total || 0}
-                canDelete={false}
-              />
+              <DataTableDeleteSelectedRows rowSelection={rowSelection} onDeleteIds={onDeleteUserIds} totalRows={userData?.pagination.total || 0} canDelete={false} />
               <Button variant="outline" onClick={() => setOpenFilter(true)}>
                 Filters
               </Button>
@@ -132,14 +115,7 @@ function RouteComponent() {
             </div>
           </div>
           {/* DATA TABLE */}
-          <DataTableV2
-            table={table}
-            columns={columns}
-            currentPage={page}
-            isLoading={isLoading}
-            pageCount={userData?.pagination?.totalPages ?? 1}
-            onChangeFilter={onChangeFilter}
-          />
+          <DataTableV2 table={table} columns={columns} currentPage={page} isLoading={isLoading} pageCount={userData?.pagination?.totalPages ?? 1} onChangeFilter={onChangeFilter} />
         </CardContent>
       </Card>
 
@@ -162,15 +138,7 @@ function RouteComponent() {
         }
       >
         <p className="mb-2 font-medium text-sm">Roles</p>
-        <CompoBox
-          filterKey="role_uuid"
-          className="w-full"
-          options={roleOptionsData ?? []}
-          value={role_uuid}
-          onChange={onChangeFilter}
-          placeholder="Select Role..."
-          searchPlaceholder="Search Role..."
-        />
+        <CompoBox filterKey="role_uuid" className="w-full" options={roleOptionsData ?? []} value={role_uuid} onChange={onChangeFilter} placeholder="Select Role..." searchPlaceholder="Search Role..." />
       </BaseDrawer>
     </div>
   );

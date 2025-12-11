@@ -15,6 +15,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { DataTableColumnFilter, DataTableDeleteSelectedRows, DataTableV2 } from "@/components/custom-ui/data-table-v2";
 import { useDebouncedCallback } from "use-debounce";
 import { Permission } from "@/lib/constants/permissions";
+import { PageTitle } from "@/lib/utils";
 
 const PageSearchSchema = z.object({
   ra_page: z.number().default(1),
@@ -27,15 +28,7 @@ export const Route = createFileRoute("/(app)/dashboard/roles/$roleId")({
     requirePermission(context.auth, Permission.ROLES_VIEW_DETAIL_PAGE, location.href);
   },
   component: RouteComponent,
-  head: () => {
-    return {
-      meta: [
-        {
-          title: "HR System / Roles / Details",
-        },
-      ],
-    };
-  },
+  head: () => PageTitle("HR System / Roles / Details"),
 });
 
 type RoleDetails = {
@@ -90,7 +83,7 @@ function RouteComponent() {
   const canCreateRoleAccess = auth.hasPermission(Permission.ROLES_ACCESS_CREATE) && !isDataAdmin;
   const canDeleteRoleAccess = auth.hasPermission(Permission.ROLES_ACCESS_DELETE) && !isDataAdmin;
 
-  const debounced = useDebouncedCallback((value) => {
+  const debouncedSearch = useDebouncedCallback((value) => {
     onChangeFilter("search", value);
   }, 500);
 
@@ -117,20 +110,10 @@ function RouteComponent() {
           <div className="flex justify-between items-center">
             <CardTitle className="text-xl font-semibold">Role Access</CardTitle>
             <div className="flex space-x-2">
-              <Button
-                variant={"outline"}
-                className="text-sm font-medium"
-                onClick={() => copyExistingAccessModal.onOpenChange(true, roleData?.data.uuid)}
-                disabled={!canEditRoleAccess}
-              >
+              <Button variant={"outline"} className="text-sm font-medium" onClick={() => copyExistingAccessModal.onOpenChange(true, roleData?.data.uuid)} disabled={!canEditRoleAccess}>
                 Copy Existing Access
               </Button>
-              <Button
-                variant="outline"
-                className="text-sm font-medium"
-                onClick={() => copyAddRoleAccessModal.onOpenChange(true, roleData?.data.uuid)}
-                disabled={!canCreateRoleAccess}
-              >
+              <Button variant="outline" className="text-sm font-medium" onClick={() => copyAddRoleAccessModal.onOpenChange(true, roleData?.data.uuid)} disabled={!canCreateRoleAccess}>
                 Add Access
               </Button>
             </div>
@@ -139,34 +122,15 @@ function RouteComponent() {
         <CardContent>
           {/* TABLE FILTERS */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between py-4 gap-4">
-            <Input
-              id="search"
-              defaultValue={ra_search}
-              placeholder="Search something..."
-              onChange={debounced}
-              className="w-full lg:max-w-sm bg-white"
-            />
+            <Input id="search" defaultValue={ra_search} placeholder="Search something..." onChange={(e) => debouncedSearch(e.target.value)} className="w-full lg:max-w-sm bg-white" />
 
             <div className="flex gap-4 items-center">
-              <DataTableDeleteSelectedRows
-                rowSelection={rowSelection}
-                onDeleteIds={onDeleteRoleAccessIds}
-                totalRows={roleAccessData?.pagination.total || 0}
-                canDelete={!canDeleteRoleAccess}
-              />
+              <DataTableDeleteSelectedRows rowSelection={rowSelection} onDeleteIds={onDeleteRoleAccessIds} totalRows={roleAccessData?.pagination.total || 0} canDelete={!canDeleteRoleAccess} />
               <DataTableColumnFilter table={table} />
             </div>
           </div>
           {/* DATA TABLE */}
-          <DataTableV2
-            table={table}
-            columns={roleAccessColumns}
-            currentPage={ra_page}
-            isLoading={roleAccessQuery.isLoading}
-            pageCount={roleAccessData?.pagination?.totalPages ?? 1}
-            onChangeFilter={onChangeFilter}
-            pageKey="ra_page"
-          />
+          <DataTableV2 table={table} columns={roleAccessColumns} currentPage={ra_page} isLoading={roleAccessQuery.isLoading} pageCount={roleAccessData?.pagination?.totalPages ?? 1} onChangeFilter={onChangeFilter} pageKey="ra_page" />
         </CardContent>
       </Card>
     </div>

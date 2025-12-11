@@ -1,7 +1,4 @@
-import type { Pagination, Role } from "@/types";
-import { fetchRolesPaginated } from "@/components/roles/api";
-import { useCreateRoleModal } from "@/components/roles/hooks/use-role-modal-store";
-import { columns } from "@/components/roles/ui/columns";
+import type { Pagination, Access } from "@/types";
 import { Button } from "@/components/ui/button";
 import { requirePermission } from "@/lib/auth-guards";
 import { useQuery } from "@tanstack/react-query";
@@ -11,28 +8,31 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import FetchErrorMessage from "@/components/custom-ui/fetch-error-message";
 import useDatatable from "@/hooks/use-data-table";
-import z from "zod";
 import { DataTableColumnFilter, DataTableV2 } from "@/components/custom-ui/data-table-v2";
 import { useDebouncedCallback } from "use-debounce";
 import { Permission } from "@/lib/constants/permissions";
+import { useCreateAccessModal } from "@/components/access/hooks/use-access-modal-store";
+import { fetchAccessPaginated } from "@/components/access/api";
+import { accessColumns } from "@/components/access/ui/columns";
 import { PageTitle } from "@/lib/utils";
+import z from "zod";
 
 const PageSearchSchema = z.object({
   page: z.number().default(1),
   search: z.string().default(""),
 });
 
-export const Route = createFileRoute("/(app)/dashboard/roles/")({
+export const Route = createFileRoute("/(app)/dashboard/access/")({
   validateSearch: PageSearchSchema,
   beforeLoad: ({ context, location }) => {
     requirePermission(context.auth, Permission.PAYROLL_VIEW_LIST_PAGE, location.href);
   },
   component: RouteComponent,
-  head: () => PageTitle("HR System / Roles"),
+  head: () => PageTitle("HR System / Access"),
 });
 
-type RolesPaginated = {
-  data: Role[];
+type AccesssPaginated = {
+  data: Access[];
   pagination: Pagination;
 };
 
@@ -41,12 +41,11 @@ function RouteComponent() {
   const [, setRowSelection] = useState({});
   const { page, search } = Route.useSearch();
   const navigate = Route.useNavigate();
+  const createAccessModal = useCreateAccessModal();
 
-  const createRoleModal = useCreateRoleModal();
-
-  const { data: rolesData, ...roleQuery } = useQuery<RolesPaginated>({
-    queryKey: ["roles", page, search],
-    queryFn: () => fetchRolesPaginated(page, search),
+  const { data: accesssData, ...accessQuery } = useQuery<AccesssPaginated>({
+    queryKey: ["access", page, search],
+    queryFn: () => fetchAccessPaginated(page, search),
   });
 
   const onChangeFilter = (key: string, value: string | number) => {
@@ -63,19 +62,19 @@ function RouteComponent() {
     }
   };
 
-  const canCreateRole = auth.hasPermission(Permission.ROLES_CREATE);
-
   const debouncedSearch = useDebouncedCallback((value) => {
     onChangeFilter("search", value);
   }, 500);
 
-  const isError = roleQuery.isError;
-  const isLoading = roleQuery.isLoading;
+  const canCreateAccess = auth.hasPermission(Permission.ACCESS_CREATE);
+
+  const isError = accessQuery.isError;
+  const isLoading = accessQuery.isLoading;
 
   const { table } = useDatatable({
-    data: rolesData?.data ?? [],
-    columns: columns,
-    pageCount: rolesData?.pagination?.totalPages ?? 1,
+    data: accesssData?.data ?? [],
+    columns: accessColumns,
+    pageCount: accesssData?.pagination?.totalPages ?? 1,
   });
 
   if (isError) {
@@ -87,10 +86,10 @@ function RouteComponent() {
       <Card className="mt-4">
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle className="text-xl font-semibold">Roles</CardTitle>
+            <CardTitle className="text-xl font-semibold">Access</CardTitle>
             <div className="flex space-x-2">
-              <Button variant="default" className="text-sm font-medium" onClick={() => createRoleModal.onOpenChange(true)} disabled={!canCreateRole}>
-                Add Role
+              <Button variant="default" className="text-sm font-medium" onClick={() => createAccessModal.onOpenChange(true)} disabled={!canCreateAccess}>
+                Add Access
               </Button>
             </div>
           </div>
@@ -102,7 +101,7 @@ function RouteComponent() {
               <DataTableColumnFilter table={table} />
             </div>
           </div>
-          <DataTableV2 table={table} columns={columns} currentPage={page} isLoading={isLoading} pageCount={rolesData?.pagination?.totalPages ?? 1} onChangeFilter={onChangeFilter} />
+          <DataTableV2 table={table} columns={accessColumns} currentPage={page} isLoading={isLoading} pageCount={accesssData?.pagination?.totalPages ?? 1} onChangeFilter={onChangeFilter} />
         </CardContent>
       </Card>
     </div>

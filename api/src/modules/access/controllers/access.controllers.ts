@@ -1,18 +1,18 @@
 import { Request, Response } from "express";
 import * as accessService from "../services/access.services";
 import * as rolesService from "../../roles/services/roles.services";
-import { IStoreAcces, IUpdateAcces } from "../validators/access.validators";
+import { IStoreAccess, IUpdateAccess } from "../validators/access.validators";
 
-export const getPaginatedaccess = async (req: Request, res: Response) => {
+export const getPaginatedAccess = async (req: Request, res: Response) => {
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 10;
   const search = (req.query.search as string) || "";
 
   const offset = (page - 1) * limit;
 
-  const data = await accessService.getPaginatedaccess(search, limit, offset);
+  const data = await accessService.getPaginatedAccess(search, limit, offset);
 
-  const total = await accessService.getPaginatedTotalaccess(search);
+  const total = await accessService.getPaginatedTotalAccess(search);
 
   return res.json({
     data: data,
@@ -25,7 +25,7 @@ export const getPaginatedaccess = async (req: Request, res: Response) => {
   });
 };
 
-export const getTotalaccess = async (req: Request, res: Response) => {
+export const getTotalAccess = async (req: Request, res: Response) => {
   const total = await accessService.getTotalaccess();
   return res.json({ total });
 };
@@ -43,13 +43,26 @@ export const getAccessOptions = async (req: Request, res: Response) => {
   return res.json(data);
 };
 
-export const storeRole = async (req: Request, res: Response) => {
-  const { code, label, module_id }: IStoreAcces = req.body;
+export const getAccess = async (req: Request, res: Response) => {
+  const { uuid }: { uuid?: string } = req.params;
+  const access = await accessService.getAccessByUUID(uuid);
 
-  const existingRole = await accessService.getAccessByCode(code);
+  if (!access) {
+    return res.status(404).json({ message: "Access not found" });
+  }
 
-  if (existingRole) {
-    return res.status(400).json({ message: "Role code already exists" });
+  const detailedAccess = await accessService.GetAccessDetailsById(access.id);
+
+  return res.status(200).json({ data: detailedAccess });
+};
+
+export const storeAccess = async (req: Request, res: Response) => {
+  const { code, label, module_id }: IStoreAccess = req.body;
+
+  const existingAccess = await accessService.getAccessByCode(code);
+
+  if (existingAccess) {
+    return res.status(400).json({ message: "Access code already exists" });
   }
 
   const data = await accessService.createAccess({ code, label, module_id });
@@ -57,43 +70,43 @@ export const storeRole = async (req: Request, res: Response) => {
   return res.status(201).json(data);
 };
 
-export const updateRole = async (req: Request, res: Response) => {
+export const updateAccess = async (req: Request, res: Response) => {
   const { uuid } = req.params;
-  const { code, label, module_id }: IUpdateAcces = req.body;
+  const { code, label, module_id }: IUpdateAccess = req.body;
 
-  const existingRole = await accessService.getAccessByUUID(uuid);
+  const existingAccess = await accessService.getAccessByUUID(uuid);
 
-  if (!existingRole) {
-    return res.status(404).json({ message: "Role not found" });
+  if (!existingAccess) {
+    return res.status(404).json({ message: "Access not found" });
   }
 
-  const data = await accessService.updateRole(existingRole.id, { code, label, module_id });
+  const data = await accessService.updateAccess(existingAccess.id, { code, label, module_id });
 
   return res.status(200).json(data);
 };
 
-export const destroyRole = async (req: Request, res: Response) => {
+export const destroyAccess = async (req: Request, res: Response) => {
   const { uuid } = req.params;
-  const existingRole = await accessService.getAccessByUUID(uuid);
+  const existingAccess = await accessService.getAccessByUUID(uuid);
 
-  if (!existingRole) {
-    return res.status(404).json({ message: "Role not found" });
+  if (!existingAccess) {
+    return res.status(404).json({ message: "Access not found" });
   }
 
-  const data = await accessService.deleteRole(existingRole.id);
+  const data = await accessService.deleteAccess(existingAccess.id);
 
   return res.status(200).json(data);
 };
 
-export const restoreRole = async (req: Request, res: Response) => {
+export const restoreAccess = async (req: Request, res: Response) => {
   const { uuid } = req.params;
-  const existingRole = await accessService.getAccessByUUID(uuid);
+  const existingAccess = await accessService.getAccessByUUID(uuid);
 
-  if (!existingRole) {
-    return res.status(404).json({ message: "Role not found" });
+  if (!existingAccess) {
+    return res.status(404).json({ message: "Access not found" });
   }
 
-  const data = await accessService.restoreRole(existingRole.id);
+  const data = await accessService.restoreAccess(existingAccess.id);
 
   return res.status(200).json({ data });
 };

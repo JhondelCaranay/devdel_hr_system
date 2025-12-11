@@ -22,10 +22,7 @@ export const RoleDetails = ({ data }: Props) => {
   const editRoleModal = useEditRoleModal();
   const navigate = useNavigate();
 
-  const [DeleteRoleConfirmDialog, confirm] = useConfirm(
-    "Are you sure?",
-    "You are about to delete this record. This action is permanent and cannot be undone."
-  );
+  const [DeleteRoleConfirmDialog, confirm] = useConfirm("Are you sure?", "You are about to delete this record. This action is permanent and cannot be undone.");
 
   const mutation = useMutation({
     mutationFn: deleteRole,
@@ -66,20 +63,10 @@ export const RoleDetails = ({ data }: Props) => {
         <div className="flex justify-between items-center">
           <CardTitle className="text-xl font-semibold">Role Details</CardTitle>
           <div className="flex space-x-2">
-            <Button
-              variant={"outline"}
-              className="text-sm font-medium"
-              disabled={!canEditRole}
-              onClick={() => editRoleModal.onOpenChange(true, data.uuid)}
-            >
+            <Button variant={"outline"} className="text-sm font-medium" disabled={!canEditRole} onClick={() => editRoleModal.onOpenChange(true, data.uuid)}>
               Edit
             </Button>
-            <Button
-              variant={"destructive"}
-              className="text-sm font-medium"
-              disabled={!canDeleteRole}
-              onClick={onDeleteRole}
-            >
+            <Button variant={"destructive"} className="text-sm font-medium" disabled={!canDeleteRole} onClick={onDeleteRole}>
               Delete
             </Button>
           </div>
@@ -94,8 +81,7 @@ export const RoleDetails = ({ data }: Props) => {
             <span className="font-semibold text-gray-700">Description:</span> <span>{data.description || "N/A"}</span>
           </div>
           <div className="space-x-1">
-            <span className="font-semibold text-gray-700">Total Users:</span>{" "}
-            <span>{data.total_users || "0 Users"}</span>
+            <span className="font-semibold text-gray-700">Total Users:</span> <span>{data.total_users || "0 Users"}</span>
           </div>
           <div className="space-x-1">
             <span className="font-semibold text-gray-700">Created At:</span> <span>{formatDate(data.created_at)}</span>

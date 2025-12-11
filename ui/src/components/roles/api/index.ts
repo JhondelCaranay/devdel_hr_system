@@ -1,11 +1,5 @@
 import apiClient from "@/lib/axios";
-import type {
-  AddRoleAccessFormValues,
-  CreateRoleFormValues,
-  EditRoleFormValues,
-  ExistingAccessFormValues,
-  RemoveRoleAccessFormValues,
-} from "../schema";
+import type { AddRoleAccessFormValues, CreateRoleFormValues, EditRoleFormValues, ExistingAccessFormValues, RemoveRoleAccessFormValues } from "../schema";
 
 export async function fetchRolesPaginated(page: number, search: string) {
   const { data } = await apiClient.get("/roles", {
@@ -40,9 +34,6 @@ export async function fetchRoleOptions() {
 }
 
 export const createRole = async (role: CreateRoleFormValues) => {
-  // // simulate 3 sec delay
-  // await new Promise((resolve) => setTimeout(resolve, 1000));
-
   const { data } = await apiClient.post("/roles/store", role);
   return data;
 };

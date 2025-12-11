@@ -5,6 +5,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function PageTitle(title: string) {
+  return {
+    meta: [
+      {
+        title: title,
+      },
+    ],
+  };
+}
+
 export function isHtmlEmpty(html: string): boolean {
   // Create a DOM parser
   const parser = new DOMParser();

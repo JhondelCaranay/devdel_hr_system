@@ -17,11 +17,7 @@ export const access = pgTable(
     created_at: timestamp().defaultNow().notNull(),
     deleted_at: timestamp(),
   },
-  (table) => [
-    index("access_uuid_idx").on(table.uuid),
-    index("access_module_id_idx").on(table.module_id),
-    uniqueIndex("access_code_idx").on(table.code),
-  ]
+  (table) => [index("access_uuid_idx").on(table.uuid), index("access_module_id_idx").on(table.module_id), uniqueIndex("access_code_idx").on(table.code)]
 );
 
 export const accessRelations = relations(access, ({ one, many }) => ({

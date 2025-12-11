@@ -150,6 +150,13 @@ export const Permission = {
   ROLES_EDIT: "roles:edit_roles",
   ROLES_DELETE: "roles:delete_roles",
 
+  // access
+  ACCESS_VIEW_LIST_PAGE: "access:view_access_list_page",
+  ACCESS_VIEW_DETAIL_PAGE: "access:view_access_detail_page",
+  ACCESS_CREATE: "access:create_access",
+  ACCESS_EDIT: "access:edit_access",
+  ACCESS_DELETE: "access:delete_access",
+
   ROLES_ACCESS_CREATE: "roles:create_roles_access",
   ROLES_ACCESS_EDIT: "roles:edit_roles_access",
   ROLES_ACCESS_DELETE: "roles:delete_roles_access",

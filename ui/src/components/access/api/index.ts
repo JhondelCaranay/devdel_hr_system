@@ -16,7 +16,6 @@ export const fetchAccessById = async (accessId: string) => {
 };
 
 export async function fetchAccessOptions(roleId?: string) {
-  console.log("🚀 ~ fetchAccessOptions ~ roleId:", roleId);
   const { data } = await apiClient.get(`/access/options`, {
     params: roleId ? { role_id: roleId } : {},
   });
